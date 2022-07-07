@@ -1,0 +1,40 @@
+# This workflow will lint helm charts in packs and then push the packs to the configured Pack Repository
+
+name: Lint helm charts and push packs to repo
+
+on:
+  push:
+    branches:
+      - "main"
+  workflow_dispatch:
+
+env:
+  PACK_REGISTRY: "packs-spectro.dreamworx.nl"
+
+jobs:
+  lint:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+    # Installs Helm binary
+    - name: Helm tool installer
+      uses: Azure/setup-helm@v3
+
+    # Checks out the repository this file is in
+    - uses: actions/checkout@v3
+    
+    # Builds and pushes an image up to your Azure Container Registry
+    - name: Lint all Helm charts found in repo
+      run: |
+        find -name charts -exec helm lint {} \;
+
+  #push:
+  #  permissions:
+  #    contents: read
+  #  runs-on: ubuntu-latest
+  #  needs: lint
+  #  steps:
+  #  # Checks out the repository this file is in
+  #  - uses: actions/checkout@v3
+    
