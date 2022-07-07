@@ -38,7 +38,8 @@ jobs:
       run: |
         wget -q https://spectro-cli.s3.amazonaws.com/v2.6.0/linux/spectro
         chmod +x spectro
-        ./spectro version
+        mv spectro /usr/bin/
+        spectro version
 
     - name: Login to Spectro Pack Registry
       env:
@@ -55,4 +56,4 @@ jobs:
         PACK_USER: ${{ secrets.PACK_USER }}
         PACK_PASSWORD: ${{ secrets.PACK_PASSWORD }}
       run: |
-        find stable -maxdepth 1 -mindepth 1 -exec ./spectro pack push -r $PACK_REGISTRY -f -m "Force pushed by Github Action" {} +
+        find stable -maxdepth 1 -mindepth 1 -exec spectro pack push -r $PACK_REGISTRY -f -m "Force pushed by Github Action" {} +
