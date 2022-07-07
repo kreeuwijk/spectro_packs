@@ -37,8 +37,9 @@ jobs:
     - name: Install Spectro CLI
       run: |
         wget -q https://spectro-cli.s3.amazonaws.com/v2.6.0/linux/spectro
+        echo $PATH
         chmod +x spectro
-        mv spectro /usr/bin/
+        sudo mv spectro /usr/local/bin/
         spectro version
 
     - name: Login to Spectro Pack Registry
