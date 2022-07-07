@@ -1,0 +1,2 @@
+To retrieve the password for KOTS admin console run: 
+  kubectl get secret kotsadm-password -o jsonpath='{.data.passwordB64}' | base64 -d

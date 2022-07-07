@@ -1,0 +1,13 @@
+{
+  "addonType":"app services",
+  "cloudTypes": [
+    "all"
+  ],
+  "displayName": "Kubernetes Off-The-Shelf (KOTS)",
+  "charts": [
+    "charts/kotsadm-1.0.0.tgz"
+  ],
+  "layer":"addon",
+  "name": "kotsadm",
+  "version": "1.0.0"
+}

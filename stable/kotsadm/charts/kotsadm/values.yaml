@@ -1,0 +1,48 @@
+# Default values for kotsadm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+kotsadm:
+  version: v1.70.1
+  # If you don't set a kotsadmPassword, retrieve the auto-generated password by
+  # decrypting the data.passwordB64 value of the kotsadm-password token.
+  kotsadmPassword: ""
+  automation:
+    license:
+      slug: ""
+      data: ""
+    skipPreflights: false
+    config:
+      values: ""
+
+ingress:
+  # Set to true to enable an Ingress for kotsadm
+  enabled: false
+  # If you need annotations for e.g. cert-manager, set them here.
+  annotations:
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    # cert-manager.io/cluster-issuer: letsencrypt-production-v2
+  ingressClass: nginx
+  # If Ingress is enabled, set a valid FQDN here
+  fqdn: ""
+  # Kotsadm over Ingress is always HTTPS, so you need a valid SSL certificate
+  tls:
+    enabled: true
+    secretName: ingress-kotsadm-tls
+
+service:
+  # Leave at "ClusterIP" if you're using an Ingress to access the admin console.
+  # If not using an Ingress, set to either "NodePort" or "LoadBalancer" to enable external access.
+  # For "NodePort" or "LoadBalancer" the admin console will be accessible over HTTP, not HTTPS
+  type: ClusterIP
+  # nodePort: 30330 
+  # loadBalancerIP: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""

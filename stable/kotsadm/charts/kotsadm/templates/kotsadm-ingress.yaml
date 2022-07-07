@@ -1,0 +1,28 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations: {{ toYaml .Values.ingress.annotations | nindent 4 }}
+  name: kotsadm
+spec:
+  {{- if .Values.ingress.ingressclass }}
+  ingressClassName: {{ .Values.ingress.ingressClass }}
+  {{- end }}
+  rules:
+  - host: {{ .Values.ingress.fqdn | quote }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: kotsadm
+            port:
+              number: 3000
+        path: /
+        pathType: Prefix
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+  - hosts:
+    - {{ .Values.ingress.fqdn | quote }}
+    secretName: {{ .Values.ingress.tls.secretName | quote }}
+  {{- end }}
+{{- end }}

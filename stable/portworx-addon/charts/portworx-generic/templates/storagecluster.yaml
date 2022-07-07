@@ -1,0 +1,23 @@
+kind: StorageCluster
+apiVersion: core.libopenstorage.org/v1
+metadata:
+  {{- if (default .Values.storageCluster.autoGenerateName true) }}
+  name: "px-cluster-{{ uuidv4 }}"
+  {{- else }}
+  name: {{ .Values.storageCluster.name | default "px-cluster-1234abcd-12ab-12ab-12ab-123456abcdef" | quote }}
+  {{- end }}
+  namespace: kube-system
+  annotations:
+    portworx.io/install-source: "https://install.portworx.com/?operator=true"
+    {{- if eq .Values.license.type "essentials" }}
+    portworx.io/misc-args: "--oem esse"
+    {{- end }}
+spec: {{ toYaml .Values.storageCluster.spec | nindent 2 }}
+  {{- if eq .Values.license.type "saas" }}
+  env:
+  - name: "SAAS_ACCOUNT_KEY_STRING"
+    valueFrom:
+      secretKeyRef:
+        name: px-saas-key
+        key: account-key
+  {{- end }}
