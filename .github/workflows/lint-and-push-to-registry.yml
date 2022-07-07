@@ -47,7 +47,7 @@ jobs:
         PACK_USER: ${{ secrets.PACK_USER }}
         PACK_PASSWORD: ${{ secrets.PACK_PASSWORD }}
       run: |
-        ./spectro registry login $PACK_REGISTRY --username $PACK_USER --password "$PACK_PASSWORD"
+        echo "$PACK_PASSWORD" | ./spectro registry login $PACK_REGISTRY --username $PACK_USER --password-stdin
 
     # Checks out the repository this file is in
     #- uses: actions/checkout@v3
