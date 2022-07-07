@@ -37,6 +37,9 @@ charts:
         imagePullPolicy: Always
         kvdb:
           internal: true
+          # endpoints:
+          # - etcd:https://etcd.company.domain:2379
+          # authSecret: px-kvdb-auth
         storage:
           useAll: true
           journalDevice: auto

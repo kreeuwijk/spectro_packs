@@ -18,6 +18,7 @@ presets:
               # Base64-decoded value of the px-osb-endpoint value in the px-essential secret
               # Leave at the default value unless there are special circumstances
               endpoint: https://pxessentials.portworx.com/osb/billing/v1/register
+
   - name: "px-enterprise-saas"
     displayName: "PX Enterprise SaaS PAYG"
     group: "License Models"
@@ -32,6 +33,7 @@ presets:
             type: saas
             saas:
               key: <PAY-AS-YOU-GO-KEY>
+
   - name: "px-enterprise"
     displayName: "PX Enterprise"
     group: "License Models"
@@ -57,4 +59,128 @@ presets:
               #   - feature1
               #   - feature2
 
+  - name: "px-internal-kvdb"
+    displayName: "Use internal KVDB"
+    group: "Kvdb and Etcd"
+    remove:
+      - charts.portworx-generic.externalKvdb
+      - charts.portworx-generic.storageCluster.spec.kvdb.endpoints
+      - charts.portworx-generic.storageCluster.spec.kvdb.authSecret
+    add: |
+      charts:
+        portworx-generic:
+          storageCluster:
+            spec:
+              kvdb:
+                internal: true
 
+  - name: "px-external-kvdb"
+    displayName: "Use external Kvdb over HTTP"
+    group: "Kvdb and Etcd"
+    remove:
+    - charts.portworx-generic.storageCluster.spec.kvdb.internal
+    - charts.portworx-generic.externalKvdb.cacert
+    - charts.portworx-generic.externalKvdb.key
+    - charts.portworx-generic.externalKvdb.cert
+    add: |
+      charts:
+        portworx-generic:
+          storageCluster:
+            spec:
+              kvdb:
+                endpoints:
+                - etcd:http://etcd.company.domain:2379
+          externalKvdb:
+            useCertsForSSL: false
+
+  - name: "px-external-kvdb-ssl"
+    displayName: "Use external Kvdb over SSL"
+    group: "Kvdb and Etcd"
+    remove:
+    - charts.portworx-generic.storageCluster.spec.kvdb.internal
+    add: |
+      charts:
+        portworx-generic:
+          storageCluster:
+            spec:
+              kvdb:
+                endpoints:
+                - etcd:https://etcd.company.domain:2379
+                authSecret: px-kvdb-auth
+          externalKvdb:
+            useCertsForSSL: true
+
+            # The CA cert to use for etcd authentication. Make sure to follow the same indentation style as given in the example below
+            cacert: |-
+              -----BEGIN CERTIFICATE-----
+              MIIC3DCCAcQCCQCr1j968rOV3zANBgkqhkiG9w0BAQsFADAwMQswCQYDVQQGEwJV
+              UzELMAkGA1UECAwCQ0ExFDASBgNVBAcMC1NhbnRhIENsYXJhMB4XDTIwMDkwNDA1
+              MzcyNFoXDTI1MDkwMzA1MzcyNFowMDELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAkNB
+              MRQwEgYDVQQHDAtTYW50YSBDbGFyYTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
+              AQoCggEBALt2CykKKwncWNQqB6Jg0QXd58qeDk40OF4Ti8DewZiZgpQOgA/+GYO7
+              bx2/oQyAwjvhpTYjmMN5zORJpE3p9A+o57An1+B9D8gm1W1uABVEmwiKZhXpa+3H
+              Zlon58GR+kAJPbMIpvWbjMZb4fxZM0BPo0PHzzITccoaTV4+HY4YoDNAVjfZ1cEn
+              Hu2PUyN8M4RM+HdE4MOQVwqFDq/Fr6mLBMV0PdiwML0tjZ7GSGSjv1hme3mOLvKP
+              qSWx4hCd5oTegEfneUKKnVhH3JLpSU1NaC6jU3vhyowRNOShi77/uJCnkx3mp9JG
+              c4YruKrGc997wmUMsIv0owt49Y3dAi8CAwEAATANBgkqhkiG9w0BAQsFAAOCAQEA
+              kEXPdtpOURiZIi01aNJkzLvm55CAhCg57ZVeyZat4/LOHdvo+eXeZ2LHRvEpbakU
+              4h1TQJqeNTd3txI0eIx8WxpwbJNxesuTecCWSIeaN2AApIWzHev/N7ZYJsZ0EM2f
+              +rYVcX8mcOkLeyKDInCKySxIPok8kU4qQLTWytJbeRYhxh7mSMuZXu7mtSh0HdP1
+              C84Ml+Ib9uY2lbr1+15MhfSKdpvmLVOibRIrdqQirNhl8uU9I1/ExDxXyR2NBMLW
+              tzGgsz5dfFDZ4oMqAc8Nqm9LuvmIZYMCunMZedI2h7jGH3LVQXdM81iZCgJdTgKf
+              i9CNyx+CcwUCkWQzhrHBQA==
+              -----END CERTIFICATE-----
+
+            # The cert to use for etcd authentication. Make sure to follow the same indentation style as given in the example below
+            cert: |-
+              -----BEGIN CERTIFICATE-----
+              MIIDaTCCAlGgAwIBAgIJAPLC+6M3EezhMA0GCSqGSIb3DQEBCwUAMDAxCzAJBgNV
+              BAYTAlVTMQswCQYDVQQIDAJDQTEUMBIGA1UEBwwLU2FudGEgQ2xhcmEwHhcNMjAw
+              OTA0MDUzODIyWhcNMjIxMjA4MDUzODIyWjA4MQswCQYDVQQGEwJVUzETMBEGA1UE
+              CAwKQ2FsaWZvcm5pYTEUMBIGA1UEBwwLU2FudGEgQ2xhcmEwggEiMA0GCSqGSIb3
+              DQEBAQUAA4IBDwAwggEKAoIBAQCycmCHPrX0YNk75cu3H5SQv/D1qND2+2rGvv0Z
+              x28A98KR/Bdchk1QaE+UHYPWejsRWUtEB0Q0KreyxpwH1B4EHNKpP+jV9YqCo5fW
+              3QRipWONKgvrSKkjVp/4U/NAAWCHfruB1d9u/qR4utY7sEKHE9AxmbyG+K19mOB2
+              FJc7NOsTwN8d6uA5ZfFKmv3VtZzl0+Vq1qFSyIZT9zXYM22YjBAqXk9FVoI0FoQt
+              zpymQrsajfS+hNX7lSUVKKv3IplpNqSOyTHRF7TWo5NOH+YRWJHLAgZoq2w/yaEi
+              5IdjLdb1JXmVUyBgq590WcJZDakwD9SPOHrM9K1vTl9I41q7AgMBAAGjfjB8MEoG
+              A1UdIwRDMEGhNKQyMDAxCzAJBgNVBAYTAlVTMQswCQYDVQQIDAJDQTEUMBIGA1UE
+              BwwLU2FudGEgQ2xhcmGCCQCr1j968rOV3zAJBgNVHRMEAjAAMAsGA1UdDwQEAwIE
+              8DAWBgNVHREEDzANggtleGFtcGxlLmNvbTANBgkqhkiG9w0BAQsFAAOCAQEAUOBn
+              YdTif6WlRpQOj+3quGrafJSNL8TqHkpmgaInSpMVFwDsmPF/HoAVVpX+H3oMY8p7
+              Ll4I1Q7szpGRnKpJuzMZp5+gNpmwAz2MdAr7Ae9wH/+o8c2avbfpaHFWVTJZJ6X1
+              Q6m6jmXcU0QSS4zj+lyxDNKnXfwVL8hVp0mXRFfPpb4l5ZCBoj4IA2UgyeU7F/nn
+              nvR5rmg781zc0lUL6X7HaSfQjtPDTSZYFqwE93vSe42JP7NWM96lZHy2IlfE88Wp
+              jUvOOJjaFVuluaJ78uCydMGEkJmipxH+1YXicH47RQ30tD5QyXxGBi+8jw5z0RiR
+              ptWD/oDFCiCjlffyzg==
+              -----END CERTIFICATE-----
+
+            # The key to use for etcd authentication. Make sure to follow the same indentation style as given in the example below
+            key: |-
+              -----BEGIN RSA PRIVATE KEY-----
+              MIIEogIBAAKCAQEAsnJghz619GDZO+XLtx+UkL/w9ajQ9vtqxr79GcdvAPfCkfwX
+              XIZNUGhPlB2D1no7EVlLRAdENCq3ssacB9QeBBzSqT/o1fWKgqOX1t0EYqVjjSoL
+              60ipI1af+FPzQAFgh367gdXfbv6keLrWO7BChxPQMZm8hvitfZjgdhSXOzTrE8Df
+              HergOWXxSpr91bWc5dPlatahUsiGU/c12DNtmIwQKl5PRVaCNBaELc6cpkK7Go30
+              voTV+5UlFSir9yKZaTakjskx0Re01qOTTh/mEViRywIGaKtsP8mhIuSHYy3W9SV5
+              lVMgYKufdFnCWQ2pMA/Ujzh6zPStb05fSONauwIDAQABAoIBAGHELIKspv/m993L
+              Pttrn/fWUWwmO6a1hICzLvQqwfRjyeQ1m48DveQp4j+iFBM0EJymsYfp+0IhjVeT
+              XPUlD/Ts3bYA384pouOEQbJkkPyC5JH40WLtAk3sLeTeCc2tc3eIxa6SwMGNHgtP
+              QgSdwzVCc7RZKGNCZ7sCQSgwi9LRdyjHU0z0KW3lHqsMkK+yEg8zuH2DpIgvFej8
+              KxjwF9ZEsnYDcERdd4TOu2NTEIl5N7F8E6di/CLP/wkfHazjX+qGcuBXjeGhPgdb
+              fKCcrFxhbavaJRMGLqnOD99l/zvySnA+LUSZ35KB/2ZfLMv71Z9oABTlyiR+76GW
+              0lcQjmECgYEA2Jrq2qe7IUZ8CURWJ6rDKgD83LGRCHAWZ+dYvFmdsyfAGMV4+p4V
+              zKSidiTWAgl7ppiZdaEPu/2cH8uohDkdx2CTSUKPUM6+PBhE4hwSA42RlnIpGWbf
+              YEqcZ/qeo1IFb1A1YslwdslCVLc3INEbWairBEGis8aAxUaoEiTiPTMCgYEA0ubQ
+              05BijLK6XH6YfASDLxwRg6jxn3mBqh+pAwE4tVVJVI9yXnNzN4/WKJJM+mdSGfpv
+              UcJy86ZcmHNzanZUPWh80U2pyRoVXvVQpY8hdMQ3neya60mc6+Nneba2LflkBVmd
+              cdoNGO0zAcGb0FKDCF2H3fizDxcoOyUjeKlLnFkCgYABU0lWlyok9PpzUBC642eY
+              TTM+4nNBuvXYIuk/FclKPFcHj8XCus7lVqiL0oPgtVAlX8+okZi4DMA0zZk1XegZ
+              vTSJgTfBRdKSKY/aVlOh4+7dHcu0lRWO0EYOuNDZrPnNiY8aEKN4hpi6TfivYbgq
+              H0cUmpY1RWSqUFlc6w7bUwKBgEMINctoksohbHZFjnWsgX2RsEdmhRWo6vuFgJSB
+              6OJJrzr/NNysWSyJvQm8JldYS5ISNRuJcDvc3oVd/IsT/QZflXx48MQIVE6QLgfR
+              DFMuonbBYyPxi7y11Ies+Q53u8CvkQlEwvDvQ00Fml6GOzuHbs2wZEkhlRnnXfTV
+              6kBRAoGAP9NUZox5ZrwkOx7iH/zEx3X3qzFoN/zSI2iUi2XRWaglGbNAxqX5/ug8
+              xJIi1Z9xbsZ/3cPEdPif2VMdvIy9ZSsBwIEuzRf8YNw6ZGphsO95FKrgmoqA44mm
+              WsqUCBt5+DnOaDyvMkokP+T5tj/2LXemuIi4Q5nrOmw/WwVGGGs=
+              -----END RSA PRIVATE KEY-----

@@ -32,10 +32,14 @@ charts:
       autoGenerateName: true
       # name: px-cluster-1234abcd-12ab-12ab-12ab-123456abcdef
       spec:
+        # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
         image: portworx/oci-monitor:2.10.3
         imagePullPolicy: Always
         kvdb:
           internal: true
+          # endpoints:
+          # - etcd:https://etcd.company.domain:2379
+          # authSecret: px-kvdb-auth
         storage:
           useAll: true
           journalDevice: auto
