@@ -56,4 +56,4 @@ jobs:
         PACK_USER: ${{ secrets.PACK_USER }}
         PACK_PASSWORD: ${{ secrets.PACK_PASSWORD }}
       run: |
-        find stable -maxdepth 1 -mindepth 1 -print0 | xargs -0 -n1 -I {} spectro pack push {} -r $PACK_REGISTRY -f -m "Force pushed by Github Action"
+        find stable -maxdepth 1 -mindepth 1 -type d -print0 | xargs -0 -n1 -I {} spectro pack push {} -r $PACK_REGISTRY -f -m "Force pushed by Github Action"
