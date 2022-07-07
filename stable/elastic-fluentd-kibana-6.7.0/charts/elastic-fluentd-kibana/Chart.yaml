@@ -1,0 +1,24 @@
+apiVersion: v2
+name: elastic-fluentd-kibana
+description: Spectro Helm chart for Elasticsearch (6.7.0), Fluentd (v2.4.0) & Kibana (6.7.0)
+type: application
+version: 0.1.2
+appVersion: 6.7.0
+# Dependencies
+dependencies:
+  - name: elasticsearch
+    version: 1.30.0
+    repository: https://kubernetes-charts.storage.googleapis.com/
+
+  - name: fluentd
+    version: 2.3.2
+    repository: https://kubernetes-charts.storage.googleapis.com/
+
+  - name: kibana
+    version: 3.2.5
+    repository: https://kubernetes-charts.storage.googleapis.com/
+
+  - name: elasticsearch-curator
+    version: 2.1.3
+    repository: https://kubernetes-charts.storage.googleapis.com/
+

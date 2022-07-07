@@ -1,0 +1,49 @@
+presets:
+
+  - name: "kibana-ingress-enabled"
+    displayName: "Enable"
+    group: "Kibana - Ingress"
+    remove: []
+    add: |
+      charts:
+        elastic-fluentd-kibana:
+          kibana:
+            service:
+              type: ClusterIP
+
+            ingress:
+              enabled: true
+              hosts:
+                - kibana.localhost.localdomain
+                - localhost.localdomain/kibana
+              annotations:
+                kubernetes.io/ingress.class: nginx
+                kubernetes.io/tls-acme: "true"
+              # tls:
+              # - secretName: chart-example-tls
+              #   hosts:
+              #     - chart-example.local
+
+  - name: "kibana-ingress-disabled"
+    displayName: "Disable"
+    group: "Kibana - Ingress"
+    remove: []
+    add: |
+      charts:
+        elastic-fluentd-kibana:
+          kibana:
+            service:
+              type: LoadBalancer
+
+            ingress:
+              enabled: false
+              hosts:
+                - kibana.localhost.localdomain
+                - localhost.localdomain/kibana
+              annotations:
+                kubernetes.io/ingress.class: nginx
+                kubernetes.io/tls-acme: "true"
+              # tls:
+              # - secretName: chart-example-tls
+              #   hosts:
+              #     - chart-example.local

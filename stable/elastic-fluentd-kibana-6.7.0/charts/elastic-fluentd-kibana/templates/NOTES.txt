@@ -1,0 +1,8 @@
+Elasticsearch cluster along with elastic-curator, Fluentd & Kibana has been installed.
+
+WARNING:
+You have likely exposed your Elasticsearch cluster & related components to the internet.
+Elasticsearch does not implement any security for public facing clusters by default.
+
+
+

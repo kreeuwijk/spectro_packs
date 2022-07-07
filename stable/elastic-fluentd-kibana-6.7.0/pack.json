@@ -1,0 +1,89 @@
+{
+  "addonType": "logging",
+  "annotations": {
+    "ingressSupported": "true",
+    "docsURL": "https://docs.spectrocloud.com/integrations/kibana"
+  },
+  "ansibleRoles": [
+  ],
+  "cloudTypes": [
+    "all"
+  ],
+  "displayName": "Elasticsearch-Fluentd-Kibana",
+  "eol": "",
+  "group": "",
+  "kubeManifests": [
+  ],
+  "charts": [
+    "charts/elastic-fluentd-kibana-0.1.2.tgz"
+  ],
+  "layer":"addon",
+  "name": "elastic-fluentd-kibana",
+  "version": "6.7.0",
+  "constraints": {
+    "resources": [
+      {
+        "type": "cpu",
+        "minLimit": 1000,
+        "components": [
+          {
+            "resourceRequestParamRef": "charts.elastic-fluentd-kibana.elasticsearch.client.resources.requests.cpu",
+            "replicaCountParamRef": "charts.elastic-fluentd-kibana.elasticsearch.client.replicas",
+            "scheduleType": "worker"
+          },
+          {
+            "resourceRequestParamRef": "charts.elastic-fluentd-kibana.elasticsearch.master.resources.requests.cpu",
+            "replicaCountParamRef": "charts.elastic-fluentd-kibana.elasticsearch.master.replicas",
+            "scheduleType": "worker"
+          },
+          {
+            "resourceRequestParamRef": "charts.elastic-fluentd-kibana.elasticsearch.data.resources.requests.cpu",
+            "replicaCountParamRef": "charts.elastic-fluentd-kibana.elasticsearch.data.replicas",
+            "scheduleType": "worker"
+          },
+          {
+            "resourceRequestParamRef": "charts.elastic-fluentd-kibana.fluentd.resources.requests.cpu",
+            "replicaCountParamRef": "charts.elastic-fluentd-kibana.elasticsearch.data.replicas",
+            "scheduleType": "all"
+          },
+          {
+            "resourceRequestParamRef": "charts.elastic-fluentd-kibana.kibana.resources.requests.cpu",
+            "replicaCountParamRef": "charts.elastic-fluentd-kibana.kibana.replicaCount",
+            "scheduleType": "worker"
+          }
+        ]
+      },
+      {
+        "type": "memory",
+        "minLimit": 2048,
+        "components": [
+          {
+            "resourceRequestParamRef": "charts.elastic-fluentd-kibana.elasticsearch.client.resources.requests.memory",
+            "replicaCountParamRef": "charts.elastic-fluentd-kibana.elasticsearch.client.replicas",
+            "scheduleType": "worker"
+          },
+          {
+            "resourceRequestParamRef": "charts.elastic-fluentd-kibana.elasticsearch.master.resources.requests.memory",
+            "replicaCountParamRef": "charts.elastic-fluentd-kibana.elasticsearch.master.replicas",
+            "scheduleType": "worker"
+          },
+          {
+            "resourceRequestParamRef": "charts.elastic-fluentd-kibana.elasticsearch.data.resources.requests.memory",
+            "replicaCountParamRef": "charts.elastic-fluentd-kibana.elasticsearch.data.replicas",
+            "scheduleType": "worker"
+          },
+          {
+            "resourceRequestParamRef": "charts.elastic-fluentd-kibana.fluentd.resources.requests.memory",
+            "replicaCountParamRef": "charts.elastic-fluentd-kibana.elasticsearch.data.replicas",
+            "scheduleType": "all"
+          },
+          {
+            "resourceRequestParamRef": "charts.elastic-fluentd-kibana.kibana.resources.requests.memory",
+            "replicaCountParamRef": "charts.elastic-fluentd-kibana.kibana.replicaCount",
+            "scheduleType": "worker"
+          }
+        ]
+      }
+    ]
+  }
+}

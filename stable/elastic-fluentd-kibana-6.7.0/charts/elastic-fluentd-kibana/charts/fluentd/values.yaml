@@ -1,0 +1,161 @@
+image:
+  repository: gcr.io/google-containers/fluentd-elasticsearch
+  ## Specify an imagePullPolicy (Required)
+  ## It's recommended to change this to 'Always' if the image tag is 'latest'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
+  tag: v2.4.0
+  pullPolicy: IfNotPresent
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 500Mi
+  # requests:
+  #   cpu: 100m
+#   memory: 200Mi
+
+elasticsearch:
+  host: 'elasticsearch-client'
+  port: 9200
+  scheme: 'http'
+  ssl_version: TLSv1_2
+  buffer_chunk_limit: 2M
+  buffer_queue_limit: 8
+  logstash_prefix: 'logstash'
+
+# If you want to add custom environment variables, use the env dict
+# You can then reference these in your config file e.g.:
+#     user "#{ENV['OUTPUT_USER']}"
+env:
+# OUTPUT_USER: my_user
+
+# If you want to add custom environment variables from secrets, use the secret list
+secret:
+# - name: ELASTICSEARCH_PASSWORD
+#   secret_name: elasticsearch
+#   secret_key: password
+
+rbac:
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+## Specify if a Pod Security Policy for node-exporter must be created
+## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+##
+podSecurityPolicy:
+  enabled: false
+  annotations: {}
+    ## Specify pod annotations
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
+    ##
+    # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+    # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+  # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+
+livenessProbe:
+  enabled: true
+
+annotations: {}
+
+podAnnotations: {}
+  # prometheus.io/scrape: "true"
+# prometheus.io/port: "24231"
+
+## DaemonSet update strategy
+## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+updateStrategy:
+  type: RollingUpdate
+
+tolerations: {}
+  # - key: node-role.kubernetes.io/master
+  #   operator: Exists
+#   effect: NoSchedule
+
+nodeSelector: {}
+
+service: {}
+  # type: ClusterIP
+  # ports:
+  #   - name: "monitor-agent"
+#     port: 24231
+
+configMaps:
+  general.conf: |
+    # Prevent fluentd from handling records containing its own logs. Otherwise
+    # it can lead to an infinite loop, when error in sending one message generates
+    # another message which also fails to be sent and so on.
+    <match fluentd.**>
+      @type null
+    </match>
+    # Used for health checking
+    <source>
+      @type http
+      port 9880
+      bind 0.0.0.0
+    </source>
+    # Emits internal metrics to every minute, and also exposes them on port
+    # 24220. Useful for determining if an output plugin is retryring/erroring,
+    # or determining the buffer queue length.
+    <source>
+      @type monitor_agent
+      bind 0.0.0.0
+      port 24220
+      tag fluentd.monitor.metrics
+    </source>
+  system.conf: |-
+    <system>
+      root_dir /tmp/fluentd-buffers/
+    </system>
+  forward-input.conf: |
+    <source>
+      @type forward
+      port 24224
+      bind 0.0.0.0
+    </source>
+  output.conf: |
+    <match **>
+      @id elasticsearch
+      @type elasticsearch
+      @log_level info
+      include_tag_key true
+      # Replace with the host/port to your Elasticsearch cluster.
+      host "#{ENV['OUTPUT_HOST']}"
+      port "#{ENV['OUTPUT_PORT']}"
+      scheme "#{ENV['OUTPUT_SCHEME']}"
+      ssl_version "#{ENV['OUTPUT_SSL_VERSION']}"
+      logstash_format true
+      <buffer>
+        @type file
+        path /var/log/fluentd-buffers/kubernetes.system.buffer
+        flush_mode interval
+        retry_type exponential_backoff
+        flush_thread_count 2
+        flush_interval 5s
+        retry_forever
+        retry_max_interval 30
+        chunk_limit_size "#{ENV['OUTPUT_BUFFER_CHUNK_LIMIT']}"
+        queue_limit_length "#{ENV['OUTPUT_BUFFER_QUEUE_LIMIT']}"
+        overflow_action block
+      </buffer>
+    </match>
+
+# extraVolumes:
+#   - name: es-certs
+#     secret:
+#       defaultMode: 420
+#       secretName: es-certs
+# extraVolumeMounts:
+#   - name: es-certs
+#     mountPath: /certs
+#     readOnly: true
