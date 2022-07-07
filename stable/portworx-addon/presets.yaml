@@ -1,0 +1,60 @@
+presets:
+  - name: "px-essentials"
+    displayName: "PX Essentials"
+    group: "License Models"
+    remove:
+    - "charts.portworx-generic.license.saas"
+    - "charts.portworx-generic.license.enterprise"
+    add: |
+      charts:
+        portworx-generic:
+          license:
+            # Valid options for "type" are: essentials, saas, enterprise
+            type: essentials
+            essentials:
+              # Base64-decoded value of the px-essen-user-id value in the px-essential secret
+              # Find your Essential Entitlement ID at https://central.portworx.com/profile
+              userId: 1234abcd-12ab-12ab-12ab-123456abcdef
+              # Base64-decoded value of the px-osb-endpoint value in the px-essential secret
+              # Leave at the default value unless there are special circumstances
+              endpoint: https://pxessentials.portworx.com/osb/billing/v1/register
+  - name: "px-enterprise-saas"
+    displayName: "PX Enterprise SaaS PAYG"
+    group: "License Models"
+    remove:
+    - "charts.portworx-generic.license.essentials"
+    - "charts.portworx-generic.license.enterprise"
+    add: |
+      charts:
+        portworx-generic:
+          license:
+            # Valid options for "type" are: essentials, saas, enterprise
+            type: saas
+            saas:
+              key: <PAY-AS-YOU-GO-KEY>
+  - name: "px-enterprise"
+    displayName: "PX Enterprise"
+    group: "License Models"
+    remove:
+    - "charts.portworx-generic.license.essentials"
+    - "charts.portworx-generic.license.saas"
+    add: |
+      charts:
+        portworx-generic:
+          license:
+            # Valid options for "type" are: essentials, saas, enterprise
+            # If you want to deploy the PX Enterprise Trial version, or need manual offline activation,
+            # select the "enterprise" type and set "activateLicense" to false.
+            type: enterprise
+            enterprise:
+              activateLicense: true
+              activationId: <Activation ID>
+              # customLicenseServer:
+              #   url: http://hostname:7070/fne/bin/capability
+              #   importUnknownCa: true
+              #   licenseBorrowInterval: 1w15m
+              #   addFeatures:
+              #   - feature1
+              #   - feature2
+
+
