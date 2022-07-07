@@ -60,7 +60,7 @@ presets:
               #   - feature2
 
   - name: "px-internal-kvdb"
-    displayName: "Use internal KVDB"
+    displayName: "Use internal Kvdb"
     group: "Kvdb and Etcd"
     remove:
       - charts.portworx-generic.externalKvdb
