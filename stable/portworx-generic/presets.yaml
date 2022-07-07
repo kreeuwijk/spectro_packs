@@ -1,8 +1,10 @@
 presets:
   - name: "px-essentials"
-    displayName: "Portworx Essentials"
+    displayName: "PX Essentials"
     group: "License Models"
-    remove: [ "charts.portworx-generic.license" ]
+    remove:
+    - "charts.portworx-generic.license.saas"
+    - "charts.portworx-generic.license.enterprise"
     add: |
       charts:
         portworx-generic:
@@ -17,9 +19,11 @@ presets:
               # Leave at the default value unless there are special circumstances
               endpoint: https://pxessentials.portworx.com/osb/billing/v1/register
   - name: "px-enterprise-saas"
-    displayName: "Portworx Enterprise Pay-as-you-Go"
+    displayName: "PX Enterprise SaaS PAYG"
     group: "License Models"
-    remove: [ "charts.portworx-generic.license" ]
+    remove:
+    - "charts.portworx-generic.license.essentials"
+    - "charts.portworx-generic.license.enterprise"
     add: |
       charts:
         portworx-generic:
@@ -29,9 +33,11 @@ presets:
             saas:
               key: <PAY-AS-YOU-GO-KEY>
   - name: "px-enterprise"
-    displayName: "Portworx Enterprise"
+    displayName: "PX Enterprise"
     group: "License Models"
-    remove: [ "charts.portworx-generic.license" ]
+    remove:
+    - "charts.portworx-generic.license.essentials"
+    - "charts.portworx-generic.license.saas"
     add: |
       charts:
         portworx-generic:
