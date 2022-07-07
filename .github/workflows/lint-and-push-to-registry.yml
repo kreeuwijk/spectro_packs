@@ -37,7 +37,6 @@ jobs:
     - name: Install Spectro CLI
       run: |
         wget -q https://spectro-cli.s3.amazonaws.com/v2.6.0/linux/spectro
-        echo $PATH
         chmod +x spectro
         sudo mv spectro /usr/local/bin/
         spectro version
@@ -47,7 +46,7 @@ jobs:
         PACK_USER: ${{ secrets.PACK_USER }}
         PACK_PASSWORD: ${{ secrets.PACK_PASSWORD }}
       run: |
-        echo "$PACK_PASSWORD" | ./spectro registry login $PACK_REGISTRY --username $PACK_USER --password-stdin
+        echo "$PACK_PASSWORD" | spectro registry login $PACK_REGISTRY --username $PACK_USER --password-stdin
 
     - name: Checkout repo
       uses: actions/checkout@v3
