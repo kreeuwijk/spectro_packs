@@ -17,14 +17,12 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
-    # Installs Helm binary
     - name: Helm tool installer
       uses: Azure/setup-helm@v3
 
-    # Checks out the repository this file is in
-    - uses: actions/checkout@v3
+    - name: Checkout repo
+      uses: actions/checkout@v3
     
-    # Builds and pushes an image up to your Azure Container Registry
     - name: Lint all Helm charts found in repo
       run: |
         shopt -s globstar
@@ -49,12 +47,12 @@ jobs:
       run: |
         echo "$PACK_PASSWORD" | ./spectro registry login $PACK_REGISTRY --username $PACK_USER --password-stdin
 
-    # Checks out the repository this file is in
-    #- uses: actions/checkout@v3
-    # 
-    #- name: Push packs to Spectro Pack Registry
-    #  env:
-    #    PACK_USER: ${{ secrets.PACK_USER }}
-    #    PACK_PASSWORD: ${{ secrets.PACK_PASSWORD }}
-    #  run: |
-    #    spectro spectro pack push portworx-generic -r $PACK_REGISTRY
+    - name: Checkout repo
+      uses: actions/checkout@v3
+     
+    - name: Push packs to Spectro Pack Registry
+      env:
+        PACK_USER: ${{ secrets.PACK_USER }}
+        PACK_PASSWORD: ${{ secrets.PACK_PASSWORD }}
+      run: |
+        find stable -maxdepth 1 -mindepth 1 -exec ./spectro pack push -r $PACK_REGISTRY -f -m "Force pushed by Github Action" {} +
