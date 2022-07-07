@@ -27,7 +27,8 @@ jobs:
     # Builds and pushes an image up to your Azure Container Registry
     - name: Lint all Helm charts found in repo
       run: |
-        find -name charts -exec helm lint {} \;
+        shopt -s globstar
+        ( for d in **/charts/*/; do helm lint $d --with-subcharts; if [ $? == 1 ]; then exit 1; fi; done )
 
   #push:
   #  permissions:
