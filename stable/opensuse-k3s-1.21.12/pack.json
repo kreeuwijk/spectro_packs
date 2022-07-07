@@ -1,0 +1,12 @@
+{
+  "addonType":"system app",
+  "cloudTypes": [
+    "all"
+  ],
+  "commit_msg": "",
+  "displayName": "openSuSE-K3s",
+  "layer":"addon",
+  "name": "opensuse-k3s",
+  "version": "1.21.12-k3s0",
+  "kubeManifests": []
+}

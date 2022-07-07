@@ -1,0 +1,28 @@
+pack:
+  spectrocloud.com/install-priority: "0"
+manifests:
+  opensuse-k3s:
+    stages:
+      network:
+      - if: '[ -f "/run/cos/live_mode" ]'
+        files:
+        - path: /tmp/cloud-init
+          permissions: 0644
+          owner: 0
+          group: 0
+          content: |
+
+            stages:
+              initramfs:
+              - name: "Setup users"
+                users:
+                  p3os:
+                    passwd: p3os
+              network:
+              - if: '[ ! -f "/run/cos/recovery_mode" ]'
+                name: "SSH keys"
+                authorized_keys:
+                  p3os:
+                  - github:saamalik
+                  - github:jeremy-spectro
+                  - github:3pings

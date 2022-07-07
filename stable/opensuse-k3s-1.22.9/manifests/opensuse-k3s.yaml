@@ -1,0 +1,24 @@
+---
+apiVersion: upgrade.cattle.io/v1
+kind: Plan
+metadata:
+  name: os-upgrade
+  namespace: system-upgrade
+  labels:
+    k3s-upgrade: server
+spec:
+  concurrency: 1
+  #version:  latest
+  version: opensuse-k3s-v1.22.9-2
+  nodeSelector:
+    matchExpressions:
+      - {key: kubernetes.io/hostname, operator: Exists}
+  serviceAccountName: system-upgrade
+  cordon: true
+  # drain:
+  #   force: true
+  #   disableEviction: true
+  upgrade:
+    image: gcr.io/spectro-images-public/p6os
+    command:
+    - "/usr/sbin/suc-upgrade"

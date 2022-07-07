@@ -1,0 +1,17 @@
+{
+  "addonType":"system app",
+  "annotations":{
+    "type" : "k8s"
+  },
+  "cloudTypes": [
+    "all"
+  ],
+  "commit_msg": "",
+  "displayName": "openSuSE-K3s",
+  "layer":"addon",
+  "name": "opensuse-k3s",
+  "version": "1.22.9-k3s0",
+  "kubeManifests": [
+    "manifests/opensuse-k3s.yaml"
+  ]
+}

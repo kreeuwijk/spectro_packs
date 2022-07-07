@@ -1,0 +1,25 @@
+---
+apiVersion: upgrade.cattle.io/v1
+kind: Plan
+metadata:
+  name: os-upgrade
+  namespace: system-upgrade
+  labels:
+    k3s-upgrade: server
+spec:
+  concurrency: 1
+  #version:  latest
+  version: opensuse-v1.22.9-0
+  nodeSelector:
+    matchExpressions:
+      - {key: kubernetes.io/hostname, operator: Exists}
+  serviceAccountName: system-upgrade
+  cordon: true
+  drain:
+    force: true
+    disableEviction: true
+  upgrade:
+    image: gcr.io/spectro-images-public/saamalik/p3os
+    command: ['sh', '-xc' ]
+    args:
+    - "/usr/sbin/suc-upgrade; cp /host/etc/resolv.conf.netconfig /host/etc/resolv.conf"
