@@ -30,12 +30,31 @@ jobs:
         shopt -s globstar
         ( for d in **/charts/*/; do helm lint $d --with-subcharts; if [ $? == 1 ]; then exit 1; fi; done )
 
-  #push:
-  #  permissions:
-  #    contents: read
-  #  runs-on: ubuntu-latest
-  #  needs: lint
-  #  steps:
-  #  # Checks out the repository this file is in
-  #  - uses: actions/checkout@v3
-    
+  push:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+    - name: Install Spectro CLI
+      run: |
+        wget https://spectro-cli.s3.amazonaws.com/v2.6.0/linux/spectro
+        chmod +x spectro
+        spectro version
+
+    - name: Login to Spectro Pack Registry
+      env:
+        PACK_USER: ${{ secrets.PACK_USER }}
+        PACK_PASSWORD: ${{ secrets.PACK_PASSWORD }}
+      run: |
+        spectro registry login $PACK_REGISTRY --username $PACK_USER --password "$PACK_PASSWORD"
+
+    # Checks out the repository this file is in
+    #- uses: actions/checkout@v3
+    # 
+    #- name: Push packs to Spectro Pack Registry
+    #  env:
+    #    PACK_USER: ${{ secrets.PACK_USER }}
+    #    PACK_PASSWORD: ${{ secrets.PACK_PASSWORD }}
+    #  run: |
+    #    spectro spectro pack push portworx-generic -r $PACK_REGISTRY
