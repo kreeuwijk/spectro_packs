@@ -1,5 +1,5 @@
 {{- define "portworx-generic.pxLicenseServer" -}}
-{{ cat "/opt/pwx/bin/pxctl license setls" .Values.license.enterprise.customLicenseServer.url | indent 10 }}
+{{ cat "kubectl -n kube-system exec $(kubectl get pods -l name=portworx -n kube-system -o jsonpath='{.items[0].metadata.name}') -c portworx -- /opt/pwx/bin/pxctl license setls" .Values.license.enterprise.customLicenseServer.url | indent 14 }}{{ template "portworx-generic.pxImportUnknownCa" . }}{{ template "portworx-generic.pxlicenseBorrowInterval" . }}{{ template "portworx-generic.pxAddFeatures" . }}
 {{- end }}
 
 {{- define "portworx-generic.pxImportUnknownCa" -}}
@@ -17,7 +17,7 @@
 {{- define "portworx-generic.setPxEnterpriseLicense" -}}
 |
 {{- if .Values.license.enterprise.customLicenseServer }}
-{{ template "portworx-generic.pxLicenseServer" . }}{{ template "portworx-generic.pxImportUnknownCa" . }}{{ template "portworx-generic.pxlicenseBorrowInterval" . }}{{ template "portworx-generic.pxAddFeatures" . }}
+{{ template "portworx-generic.pxLicenseServer" . }}
 {{- end }}
-{{ cat "/opt/pwx/bin/pxctl license activate" .Values.license.enterprise.activationId | indent 10 }}
+{{ cat "kubectl -n kube-system exec $(kubectl get pods -l name=portworx -n kube-system -o jsonpath='{.items[0].metadata.name}') -c portworx -- /opt/pwx/bin/pxctl license activate" .Values.license.enterprise.activationId | indent 14 }}
 {{- end }}

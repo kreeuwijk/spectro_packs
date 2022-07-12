@@ -12,12 +12,13 @@ metadata:
     {{- if eq .Values.license.type "essentials" }}
     portworx.io/misc-args: "--oem esse"
     {{- end }}
-spec: {{ toYaml .Values.storageCluster.spec | nindent 2 }}
-  {{- if eq .Values.license.type "saas" }}
+spec:
+{{ toYaml .Values.storageCluster.spec | indent 2 }}
+{{- if eq .Values.license.type "saas" }}
   env:
   - name: "SAAS_ACCOUNT_KEY_STRING"
     valueFrom:
       secretKeyRef:
         name: px-saas-key
         key: account-key
-  {{- end }}
+{{- end }}
