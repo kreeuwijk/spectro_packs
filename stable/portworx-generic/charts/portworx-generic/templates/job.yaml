@@ -1,127 +1,56 @@
 {{- if and (eq .Values.license.type "enterprise") .Values.license.enterprise.activateLicense }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: px-activate-license
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: px-activate-license-role
+  namespace: kube-system
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: px-activate-license-rolebinding
+  namespace: kube-system
+subjects:
+  - kind: ServiceAccount
+    name: px-activate-license
+roleRef:
+  kind: Role
+  name: px-activate-license-role
+  apiGroup: rbac.authorization.k8s.io     
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: px-enterprise-license
+  name: px-activate-license
   namespace: kube-system
 spec:
   template:
+    metadata:
+      name: px-activate-license
     spec:
+      serviceAccountName: px-activate-license
       containers:
-      - name: px-license
-        image: portworx/oci-monitor:2.10.2
-        env:
-        - name: PX_TEMPLATE_VERSION
-          value: v4
-        - name: CSI_ENDPOINT
-          value: unix:///var/lib/kubelet/plugins/pxd.portworx.com/csi.sock
-        - name: PX_NAMESPACE
-          value: kube-system
-        - name: PX_SECRETS_NAMESPACE
-          value: kube-system
-        - name: NODE_NAME
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: spec.nodeName
-        command:
-        - "bash"
-        - "-c"
-        - {{ template "portworx-generic.setPxEnterpriseLicense" . }}
-        securityContext:
-          privileged: true
-        volumeMounts:
-        - mountPath: /var/run/docker.sock
-          name: dockersock
-        - mountPath: /run/containerd
-          name: containerddir
-        - mountPath: /var/run/crio
-          name: criosock
-        - mountPath: /etc/crictl.yaml
-          name: crioconf
-        - mountPath: /opt/pwx
-          name: optpwx
-        - mountPath: /host_proc
-          name: procmount
-        - mountPath: /etc/systemd/system
-          name: sysdmount
-        - mountPath: /var/run/dbus
-          name: dbusmount
-        - mountPath: /var/lib/osd
-          mountPropagation: Bidirectional
-          name: varlibosd
-        - mountPath: /var/cores
-          name: diagsdump
-        - mountPath: /etc/pwx
-          name: etcpwx
-        - mountPath: /var/run/log
-          name: journalmount1
-          readOnly: true
-        - mountPath: /var/log
-          name: journalmount2
-          readOnly: true
-      hostNetwork: true
+        - name: kubectl-pod
+          image: bitnami/kubectl:{{ .Capabilities.KubeVersion.Major }}.{{ .Capabilities.KubeVersion.Minor }}
+          args:
+            - "-n"
+            - "kube-system"
+            - "exec"
+            - "$(kubectl get pods -l name=portworx -n kube-system -o jsonpath='{.items[0].metadata.name}')"
+            - "--"
+            - "bash -c {{ template "portworx-generic.setPxEnterpriseLicense" . }}"
       restartPolicy: Never
-      serviceAccountName: portworx
-      volumes:
-      - hostPath:
-          path: /var/run/docker.sock
-          type: ""
-        name: dockersock
-      - hostPath:
-          path: /run/containerd
-          type: ""
-        name: containerddir
-      - hostPath:
-          path: /var/run/crio
-          type: ""
-        name: criosock
-      - hostPath:
-          path: /etc/crictl.yaml
-          type: FileOrCreate
-        name: crioconf
-      - hostPath:
-          path: /opt/pwx
-          type: ""
-        name: optpwx
-      - hostPath:
-          path: /proc
-          type: ""
-        name: procmount
-      - hostPath:
-          path: /etc/systemd/system
-          type: ""
-        name: sysdmount
-      - hostPath:
-          path: /var/run/dbus
-          type: ""
-        name: dbusmount
-      - hostPath:
-          path: /var/lib/osd
-          type: ""
-        name: varlibosd
-      - hostPath:
-          path: /var/cores
-          type: ""
-        name: diagsdump
-      - hostPath:
-          path: /etc/pwx
-          type: ""
-        name: etcpwx
-      - hostPath:
-          path: /var/run/log
-          type: ""
-        name: journalmount1
-      - hostPath:
-          path: /var/log
-          type: ""
-        name: journalmount2
-      - hostPath:
-          path: /var/lib/kubelet/plugins_registry
-          type: DirectoryOrCreate
-        name: registration-dir
-      - hostPath:
-          path: /var/lib/kubelet/plugins/pxd.portworx.com
-          type: DirectoryOrCreate
-        name: csi-driver-path
 {{- end }}
