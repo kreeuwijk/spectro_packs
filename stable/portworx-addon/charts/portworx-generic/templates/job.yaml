@@ -45,7 +45,7 @@ spec:
       initContainers:
         - name: init-px-activate-license
           image: bitnami/kubectl:{{ .Capabilities.KubeVersion.Major }}.{{ .Capabilities.KubeVersion.Minor }}
-          command: ['sh', '-c', "until kubectl get pods -l name=portworx -n kube-system -o custom-columns=STATUS:.status.phase --no-headers | grep Running; do echo Waiting for portworx; sleep 120; done"]
+          command: ['sh', '-c', "until kubectl get pods -l name=portworx -n kube-system -o custom-columns=STATUS:.status.containerStatuses.'*'.ready | grep true,true; do echo Waiting for portworx; sleep 120; done"]
       containers:
         - name: kubectl-pod
           image: bitnami/kubectl:{{ .Capabilities.KubeVersion.Major }}.{{ .Capabilities.KubeVersion.Minor }}
