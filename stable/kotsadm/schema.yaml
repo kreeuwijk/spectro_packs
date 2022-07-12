@@ -1,0 +1,2 @@
+charts.kotsadm.kotsadm.kotsadmPassword:
+  schema: '{{ format "${password}" | hints "Use this to specify the password for the Kotsadm console, leave blank for a password to be randomly generated" }}'
