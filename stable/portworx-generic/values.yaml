@@ -34,7 +34,7 @@ charts:
       name: "px-{{.spectro.system.cluster.name}}"
       spec:
         # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-        image: portworx/oci-monitor:2.10.3
+        image: portworx/oci-monitor:2.11.0
         imagePullPolicy: Always
         kvdb:
           internal: true
