@@ -13,7 +13,7 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: ["pods"]
-    verbs: ["get"]
+    verbs: ["get","list"]
   - apiGroups: [""]
     resources: ["pods/exec"]
     verbs: ["create"]
@@ -45,12 +45,9 @@ spec:
       containers:
         - name: kubectl-pod
           image: bitnami/kubectl:{{ .Capabilities.KubeVersion.Major }}.{{ .Capabilities.KubeVersion.Minor }}
-          args:
-            - "-n"
-            - "kube-system"
-            - "exec"
-            - "$(kubectl get pods -l name=portworx -n kube-system -o jsonpath='{.items[0].metadata.name}')"
-            - "--"
-            - "bash -c {{ template "portworx-generic.setPxEnterpriseLicense" . }}"
+          command:
+            - "bash"
+            - "-c"
+            - {{ template "portworx-generic.setPxEnterpriseLicense" . }}
       restartPolicy: Never
 {{- end }}
