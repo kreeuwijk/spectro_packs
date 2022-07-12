@@ -8,7 +8,7 @@
   ],
   "displayName": "Portworx /w Operator",
   "charts": [
-    "charts/portworx-generic-1.0.6.tgz"
+    "charts/portworx-generic-1.0.7.tgz"
   ],
   "layer": "csi",
   "name": "csi-portworx-generic",

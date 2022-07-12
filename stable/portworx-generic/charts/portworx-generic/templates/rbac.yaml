@@ -1,4 +1,4 @@
-{{- if (default .Values.lighthouse.enabled true) }}
+{{- if .Values.lighthouse.enabled }}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:

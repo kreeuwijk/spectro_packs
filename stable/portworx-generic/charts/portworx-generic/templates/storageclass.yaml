@@ -2,7 +2,7 @@ kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
   name: {{ .Values.storageClass.name | default "spectro-storage-class" | quote }}
-  {{- if (default .Values.storageClass.isDefaultStorageClass true) }}
+  {{- if .Values.storageClass.isDefaultStorageClass }}
   annotations:
     storageclass.kubernetes.io/is-default-class: {{ .Values.storageClass.isDefaultStorageClass | quote }}
   {{- end}}

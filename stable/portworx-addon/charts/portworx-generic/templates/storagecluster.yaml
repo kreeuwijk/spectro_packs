@@ -1,7 +1,7 @@
 kind: StorageCluster
 apiVersion: core.libopenstorage.org/v1
 metadata:
-  {{- if (default .Values.storageCluster.autoGenerateName true) }}
+  {{- if .Values.storageCluster.autoGenerateName }}
   name: "px-cluster-{{ uuidv4 }}"
   {{- else }}
   name: {{ .Values.storageCluster.name | default "px-cluster-1234abcd-12ab-12ab-12ab-123456abcdef" | quote }}
