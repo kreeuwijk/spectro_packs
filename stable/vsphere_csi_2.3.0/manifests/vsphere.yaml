@@ -1,0 +1,26 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: "spectro-storage-class"
+  annotations:
+    {{- if .Values.isDefaultClass }}
+    storageclass.kubernetes.io/is-default-class: {{ .Values.isDefaultClass | quote }}
+    {{- end}}
+provisioner: "csi.vsphere.vmware.com"
+parameters:
+  fstype: {{ .Values.fstype | quote }}
+{{- if .Values.datastoreURL }}
+  datastoreURL: {{ .Values.datastoreURL }}
+{{- end }}
+{{- if .Values.storagePolicyName }}
+  storagePolicyName: {{ .Values.storagePolicyName }}
+{{- end }}
+{{- if .Values.reclaimPolicy }}
+reclaimPolicy: {{ .Values.reclaimPolicy | quote }}
+{{- end}}
+{{- if .Values.volumeBindingMode }}
+volumeBindingMode: {{ .Values.volumeBindingMode | quote }}
+{{- end}}
+{{- if .Values.allowVolumeExpansion }}
+allowVolumeExpansion: {{ .Values.allowVolumeExpansion }}
+{{- end}}

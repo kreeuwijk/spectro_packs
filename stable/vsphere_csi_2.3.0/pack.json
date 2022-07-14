@@ -1,0 +1,18 @@
+{
+  "cloudTypes": [
+    "vsphere"
+  ],
+  "annotations": {
+    "docsURL": "https://docs.spectrocloud.com/integrations/csi",
+    "description": "External CSI driver, supported on vSphere version 6.7.3+"
+  },
+  "displayName": "vSphere CSI",
+  "kubeManifests": [
+    "manifests/vsphere-cloud-controller-manager.yaml",
+    "manifests/vsphere-csi-driver.yaml",
+    "manifests/vsphere.yaml"
+  ],
+  "layer": "csi",
+  "name": "csi-vsphere-csi",
+  "version": "2.3.0"
+}

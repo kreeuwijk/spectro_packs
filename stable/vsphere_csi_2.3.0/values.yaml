@@ -1,0 +1,43 @@
+manifests:
+  #Storage class config
+  vsphere:
+
+    #Toggle for Default class
+    isDefaultClass: "true"
+
+    #Specifies file system type
+    fstype: "ext4"
+
+    #Allowed reclaim policies are Delete, Retain
+    reclaimPolicy: "Delete"
+
+    #Specifies the URL of the datastore on which the container volume needs to be provisioned.
+    datastoreURL: ""
+
+    #Specifies the storage policy for datastores on which the container volume needs to be provisioned.
+    storagePolicyName: ""
+
+    volumeBindingMode: "WaitForFirstConsumer"
+
+    #Set this flag to true to enable volume expansion
+    allowVolumeExpansion: true
+
+  vsphere-cloud-controller-manager:
+    k8sVersion: "{{ .spectro.system.kubernetes.version }}"
+
+  vsphere-csi-driver:
+    extraArgs:
+      csiAttacher:
+        #- --extraArgs
+      csiResizer:
+        #- --extraArgs
+      csiController:
+        #- --extraArgs
+      csiSyncer:
+        #- --extraArgs
+      csiProvisioner:
+        - "--timeout=300s"
+        #- --extraArgs
+
+
+
