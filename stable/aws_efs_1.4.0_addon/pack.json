@@ -13,6 +13,6 @@
       "charts/aws-efs-csi-driver-2.2.7.tgz"
   ],
   "layer": "addon",
-  "name": "csi-aws-efs",
+  "name": "csi-aws-efs-add-on",
   "version": "1.4.0"
 }

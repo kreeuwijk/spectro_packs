@@ -13,6 +13,24 @@ charts:
       tag: "v1.4.0"
       pullPolicy: IfNotPresent
 
+    storageClasses:
+    - name: spectro-storage-class
+      annotations:
+        # Use that annotation if you want this to your default storageclass
+        storageclass.kubernetes.io/is-default-class: "true"
+      mountOptions:
+      - tls
+      parameters:
+        # Enter your pre-created EFS filesystem ID, e.g. "fs-0f660ce96fb33ff3a"
+        fileSystemId: ""
+        provisioningMode: efs-ap
+        directoryPerms: "700"
+        gidRangeStart: "1000"
+        gidRangeEnd: "2000"
+        basePath: "/dynamic_provisioning"
+      reclaimPolicy: Delete
+      volumeBindingMode: Immediate
+
     sidecars:
       livenessProbe:
         image:
@@ -121,21 +139,3 @@ charts:
         ## Enable if EKS IAM for SA is used
         #  eks.amazonaws.com/role-arn: arn:aws:iam::111122223333:role/efs-csi-role
       healthPort: 9809
-
-    storageClasses:
-    - name: spectro-storage-class
-      annotations:
-        # Use that annotation if you want this to your default storageclass
-        storageclass.kubernetes.io/is-default-class: "true"
-      mountOptions:
-      - tls
-      parameters:
-        # provide your pre-created EFS filesystem ID, e.g. "fs-0f660ce96fb33ff3a"
-        fileSystemId: ""
-        provisioningMode: efs-ap
-        directoryPerms: "700"
-        gidRangeStart: "1000"
-        gidRangeEnd: "2000"
-        basePath: "/dynamic_provisioning"
-      reclaimPolicy: Delete
-      volumeBindingMode: Immediate

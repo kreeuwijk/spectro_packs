@@ -1,2 +1,2 @@
-charts.aws-efs-csi-driver.storageClasses[*].parameters.fileSystemId:
+charts.aws-efs-csi-driver.storageClasses.$[].parameters.fileSystemId:
   schema: '{{ required | format "${string}" | hints "Enter the pre-created EFS filesystem ID"}}'
