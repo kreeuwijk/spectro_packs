@@ -1,0 +1,17 @@
+{
+  "cloudTypes": [
+    "eks",
+    "aws"
+  ],
+  "annotations": {
+    "docsURL": "https://docs.spectrocloud.com/integrations/aws-efs",
+    "description": "Amazon Elastic File System (EFS) CSI driver"
+  },
+  "displayName": "Amazon EFS CSI",
+  "charts": [
+      "charts/aws-efs-csi-driver-2.2.7.tgz"
+  ],
+  "layer": "csi",
+  "name": "csi-aws-efs",
+  "version": "1.4.0"
+}
