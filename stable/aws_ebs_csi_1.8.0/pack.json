@@ -1,0 +1,17 @@
+{
+  "cloudTypes": [
+    "eks",
+    "aws"
+  ],
+  "annotations": {
+    "docsURL": "https://docs.spectrocloud.com/integrations/csi",
+    "description": "Amazon Elastic Block Store (EBS) CSI driver"
+  },
+  "displayName": "Amazon EBS CSI",
+  "charts": [
+      "charts/aws-ebs-csi-driver-2.8.0.tgz"
+  ],
+  "layer": "csi",
+  "name": "csi-aws-ebs",
+  "version": "1.8.0"
+}
