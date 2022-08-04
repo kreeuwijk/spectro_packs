@@ -1,3 +1,6 @@
+pack:
+  namespace: kube-system
+
 charts:
   aws-efs-csi-driver:
     # Default values for aws-efs-csi-driver.
@@ -16,8 +19,10 @@ charts:
     storageClasses:
     - name: spectro-storage-class
       annotations:
-        # Use that annotation if you want this to your default storageclass
+        # Use "true" if you want this to be your default storageclass
         storageclass.kubernetes.io/is-default-class: "true"
+      # When upgrading in-place from the 1.3.6 version of the aws_efs pack,
+      # the mountOptions section needs to be commented out, or the upgrade fails.
       mountOptions:
       - tls
       parameters:
@@ -28,6 +33,9 @@ charts:
         gidRangeStart: "1000"
         gidRangeEnd: "2000"
         basePath: "/dynamic_provisioning"
+        # When upgrading in-place from the 1.3.6 version of the aws_efs pack, ensure that all
+        # parameters match your existing EFS storageclass parameters, or the upgrade fails.
+        # The default setting for basePath is "/base_efs" in v1.3.6 of the pack.
       reclaimPolicy: Delete
       volumeBindingMode: Immediate
 
