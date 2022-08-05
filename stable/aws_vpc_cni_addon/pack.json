@@ -1,0 +1,14 @@
+{
+  "annotations": {},
+  "addonType":"system app",
+  "cloudTypes": [
+    "eks"
+  ],
+  "displayName": "AWS VPC CNI (Configurable)",
+  "charts": [
+    "charts/aws-vpc-cni-1.1.17.tgz"
+  ],
+  "layer": "addon",
+  "name": "cni-aws-vpc-addon",
+  "version": "1.0.0"
+}
