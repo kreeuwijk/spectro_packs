@@ -1,0 +1,13 @@
+{
+  "annotations": {},
+  "cloudTypes": [
+    "eks"
+  ],
+  "displayName": "AWS VPC CNI (Configurable)",
+  "charts": [
+    "charts/aws-vpc-cni-1.1.17.tgz"
+  ],
+  "layer": "cni",
+  "name": "cni-aws-vpc-custom",
+  "version": "1.0"
+}
