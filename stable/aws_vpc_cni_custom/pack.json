@@ -9,5 +9,5 @@
   ],
   "layer": "cni",
   "name": "cni-aws-vpc-custom",
-  "version": "1.0"
+  "version": "1.0.0"
 }
