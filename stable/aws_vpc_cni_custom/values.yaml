@@ -1,3 +1,6 @@
+pack:
+  namespace: kube-system
+
 charts:
   aws-vpc-cni:
     # Default values for aws-vpc-cni.
@@ -11,7 +14,7 @@ charts:
     init:
       image:
         tag: v1.11.2
-        region: us-west-2
+        region: "{{.spectro.system.cloud.region}}"
         account: "602401143452"   
         pullPolicy: Always
         domain: "amazonaws.com"  
@@ -24,7 +27,7 @@ charts:
         privileged: true
 
     image:
-      region: us-west-2
+      region: "{{.spectro.system.cloud.region}}"
       tag: v1.11.2
       account: "602401143452"   
       domain: "amazonaws.com"  
@@ -59,7 +62,7 @@ charts:
 
     # this flag enables you to use the match label that was present in the original daemonset deployed by EKS
     # You can then annotate and label the original aws-node resources and 'adopt' them into a helm release
-    originalMatchLabels: false
+    originalMatchLabels: true
 
     cniConfig:
       enabled: false
@@ -83,7 +86,7 @@ charts:
         - "NET_ADMIN"
 
     crd:
-      create: true
+      create: false
 
     serviceAccount:
       # Specifies whether a service account should be created
@@ -92,7 +95,8 @@ charts:
       # If not set and create is true, a name is generated using the fullname template
       name:
       annotations: {}
-        # To set annotations - serviceAccount.annotations."eks\.amazonaws\.com/role-arn"=arn:aws:iam::<AWS_ACCOUNT_ID>:<IAM_ROLE_NAME>
+        # Uncomment the line below when using ISRA (and remove curly braces in the line above)
+        # eks.amazonaws.com/role-arn: "{{.spectro.system.cluster.isra_role_arn}}"
 
     livenessProbe:
       exec:
@@ -151,22 +155,22 @@ charts:
     eniConfig:
       # Specifies whether ENIConfigs should be created
       create: false
-      region: us-west-2
+      region: "{{.spectro.system.cloud.region}}"
       subnets:
         # Key identifies the AZ
         # Value contains the subnet ID and security group IDs within that AZ
-        # a:
+        # "{{.spectro.system.cloud.region}}a":
         #   id: subnet-123
         #   securityGroups:
-        #   - sg-123
-        # b:
+        #   - {{.spectro.system.cluster.eks_security_group}}
+        # "{{.spectro.system.cloud.region}}b":
         #   id: subnet-456
         #   securityGroups:
-        #   - sg-456
-        # c:
+        #   - {{.spectro.system.cluster.eks_security_group}}
+        # "{{.spectro.system.cloud.region}}c":
         #   id: subnet-789
         #   securityGroups:
-        #   - sg-789
+        #   - {{.spectro.system.cluster.eks_security_group}}
 
     cri:
       hostPath:
