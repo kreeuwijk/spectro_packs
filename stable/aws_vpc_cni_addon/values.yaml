@@ -96,7 +96,7 @@ charts:
       name:
       annotations: {}
         # Uncomment the line below when using ISRA (and remove curly braces in the line above)
-        # eks.amazonaws.com/role-arn: "{{.spectro.system.cluster.isra_role_arn}}"
+        # eks.amazonaws.com/role-arn: "{{.spectro.system.cluster.irsa_role_arn}}"
 
     livenessProbe:
       exec:
