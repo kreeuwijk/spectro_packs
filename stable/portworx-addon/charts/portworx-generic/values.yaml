@@ -29,8 +29,10 @@ license:
 storageCluster:
   autoGenerateName: true
   # name: px-cluster-1234abcd-12ab-12ab-12ab-123456abcdef
+  # annotations:
+  #   If you need additional annotations, specify them here
   spec:
-    image: portworx/oci-monitor:2.11.0
+    image: portworx/oci-monitor:2.11.1
     imagePullPolicy: Always
     kvdb:
       internal: true
@@ -44,16 +46,18 @@ storageCluster:
         webhook-controller: "true"
     autopilot:
       enabled: true
+    csi:
+      enabled: true
     monitoring:
       prometheus:
         enabled: false
         exportMetrics: false
-    featureGates:
-      CSI: "true"
 
 storageClass:
   name: spectro-storage-class
   isDefaultStorageClass: true
+  # annotations:
+  #   If you need additional annotations, specify them here
   allowVolumeExpansion: true
   # Delete or Retain
   reclaimPolicy: Delete

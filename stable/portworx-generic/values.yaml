@@ -32,6 +32,8 @@ charts:
       # When autoGenerateName is true, a name of type "px-cluster-1234abcd-12ab-12ab-12ab-123456abcdef" is generated and the "name" field is ignored
       autoGenerateName: false
       name: "px-{{.spectro.system.cluster.name}}"
+      # annotations:
+      #   If you need additional annotations, specify them here
       spec:
         # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
         image: portworx/oci-monitor:2.11.0
@@ -51,16 +53,18 @@ charts:
             webhook-controller: "true"
         autopilot:
           enabled: true
+        csi:
+          enabled: true
         monitoring:
           prometheus:
             enabled: false
             exportMetrics: false
-        featureGates:
-          CSI: "true"
 
     storageClass:
       name: spectro-storage-class
       isDefaultStorageClass: true
+      # annotations:
+      #   If you need additional annotations, specify them here
       allowVolumeExpansion: true
       # Delete or Retain
       reclaimPolicy: Delete
