@@ -1,0 +1,31 @@
+{
+    "addonType":"monitoring",
+    "annotations": {
+      "ingressSupported": "true",
+      "docsURL": "https://docs.spectrocloud.com/integrations/kubernetes-dashboard"
+    },
+    "cloudTypes": [
+      "all"
+    ],
+    "displayName": "Kubernetes Dashboard",
+    "eol": "",
+    "group": "",
+    "kubeManifests": [
+      "manifests/k8s-dashboard.yaml"
+    ],
+    "layer": "addon",
+    "name": "k8s-dashboard",
+    "version": "2.6.0",
+    "constraints": {
+      "resources": [
+        {
+          "type": "cpu",
+          "minLimit": 100
+        },
+        {
+          "type": "memory",
+          "minLimit": 100
+        }
+      ]
+    }
+  }

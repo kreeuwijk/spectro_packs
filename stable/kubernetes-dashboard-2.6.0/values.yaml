@@ -1,0 +1,45 @@
+# spectrocloud.com/enabled-presets: Service Type:k8s-dashboard-service-clusterip,Ingress support:k8s-dashboard-ingress-disabled
+manifests:
+  k8s-dashboard:
+
+    # Additional annotations to be applied to Kubernetes Dashboard deployment, pod & service
+    annotations:
+    # kubernetes.io/cluster-name: "cluster123"
+    # kubernetes.io/version: "2.6.0"
+
+    # Additional labels to be applied to Kubernetes Dashboard deployment, pod & service
+    labels:
+    # app.kubernetes.io/name: "kubernetes-dashboard"
+    # app.kubernetes.io/version: "2.6.0"
+
+    #Namespace to install kubernetes-dashboard
+    namespace: "kubernetes-dashboard"
+
+    #The ClusterRole to assign for kubernetes-dashboard. By default, a ready-only cluster role is provisioned
+    clusterRole: "k8s-dashboard-readonly"
+
+    #Self-Signed Certificate duration in hours
+    certDuration: 8760h   #365d
+
+    #Self-Signed Certificate renewal in hours
+    certRenewal: 720h     #30d
+
+    #The service type for dashboard. Supported values are ClusterIP / LoadBalancer / NodePort
+    serviceType: ClusterIP
+
+    #Flag to enable skip login option on the dashboard login page
+    skipLogin: false
+
+    #Flag to enable insecure login (non-ssl).
+    #Note : Sign-in to dashboard will always be restricted to HTTP(S) + localhost or HTTPS and external domains
+    enableInsecureLogin: false
+
+    #Additional flags to be passed to k8s-dashboard
+    extraArgs:
+    #- --system-banner="Welcome to Kubernetes"
+
+    #Ingress config
+    ingress:
+      enabled: false
+
+    k8sVersion: '{{.spectro.system.kubernetes.version}}'

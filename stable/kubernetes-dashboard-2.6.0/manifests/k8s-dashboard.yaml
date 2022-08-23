@@ -1,0 +1,538 @@
+# Copyright 2017 The Kubernetes Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.namespace | quote }}
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard
+  namespace: {{ .Values.namespace | quote }}
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+    {{- range $key, $val := .Values.labels }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end }}
+  annotations:
+    {{- range $key, $val := .Values.annotations }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end }}
+  name: kubernetes-dashboard
+  namespace: {{ .Values.namespace | quote }}
+spec:
+  type: {{ default "ClusterIP" .Values.serviceType }}
+  ports:
+    {{- if .Values.enableInsecureLogin }}
+    - port: 80
+      targetPort: http
+      name: http
+    {{- else }}
+    - port: 443
+      targetPort: https
+      name: https
+    {{- end }}
+  selector:
+    k8s-app: kubernetes-dashboard
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard-certs
+  namespace: {{ .Values.namespace | quote }}
+type: Opaque
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard-csrf
+  namespace: {{ .Values.namespace | quote }}
+type: Opaque
+data:
+  csrf: ""
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard-key-holder
+  namespace: {{ .Values.namespace | quote }}
+type: Opaque
+
+---
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard-settings
+  namespace: {{ .Values.namespace | quote }}
+
+---
+
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard
+  namespace: {{ .Values.namespace | quote }}
+rules:
+  # Allow Dashboard to get, update and delete Dashboard exclusive secrets.
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["kubernetes-dashboard-key-holder", "kubernetes-dashboard-certs", "kubernetes-dashboard-csrf"]
+    verbs: ["get", "update", "delete"]
+    # Allow Dashboard to get and update 'kubernetes-dashboard-settings' config map.
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["kubernetes-dashboard-settings"]
+    verbs: ["get", "update"]
+    # Allow Dashboard to get metrics.
+  - apiGroups: [""]
+    resources: ["services"]
+    resourceNames: ["heapster", "dashboard-metrics-scraper"]
+    verbs: ["proxy"]
+  - apiGroups: [""]
+    resources: ["services/proxy"]
+    resourceNames: ["heapster", "http:heapster:", "https:heapster:", "dashboard-metrics-scraper", "http:dashboard-metrics-scraper"]
+    verbs: ["get"]
+
+---
+
+{{- if eq .Values.clusterRole "k8s-dashboard-readonly" }}
+
+# Default ClusterRole is set to have Read-Only permissions
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: "k8s-dashboard-readonly"
+rules:
+  - apiGroups: [""]
+    resources:
+      - namespaces
+      - configmaps
+      - secrets
+      - endpoints
+      - persistentvolumeclaims
+      - pods
+      - replicationcontrollers
+      - replicationcontrollers/scale
+      - serviceaccounts
+      - services
+      - nodes
+      - persistentvolumeclaims
+      - persistentvolumes
+      - bindings
+      - events
+      - limitranges
+      - namespaces/status
+      - pods/log
+      - pods/status
+      - replicationcontrollers/status
+      - resourcequotas
+      - resourcequotas/status
+    verbs: ["get", "list", "watch"]
+  - apiGroups:
+      - apps
+    resources:
+      - daemonsets
+      - deployments
+      - deployments/scale
+      - replicasets
+      - replicasets/scale
+      - statefulsets
+    verbs: ["get", "list", "watch"]
+  - apiGroups:
+      - autoscaling
+    resources:
+      - horizontalpodautoscalers
+    verbs: ["get", "list", "watch"]
+  - apiGroups:
+      - batch
+    resources:
+      - cronjobs
+      - jobs
+    verbs: ["get", "list", "watch"]
+  - apiGroups:
+      - extensions
+    resources:
+      - daemonsets
+      - deployments
+      - deployments/scale
+      - ingresses
+      - networkpolicies
+      - replicasets
+      - replicasets/scale
+      - replicationcontrollers/scale
+    verbs: ["get", "list", "watch"]
+  - apiGroups:
+      - policy
+    resources:
+      - poddisruptionbudgets
+    verbs: ["get", "list", "watch"]
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - networkpolicies
+    verbs: ["get", "list", "watch"]
+  - apiGroups:
+      - storage.k8s.io
+    resources:
+      - storageclasses
+      - volumeattachments
+    verbs: ["get", "list", "watch"]
+  - apiGroups:
+      - rbac.authorization.k8s.io
+    resources:
+      - clusterrolebindings
+      - clusterroles
+      - roles
+      - rolebindings
+    verbs: ["get", "list", "watch"]
+  # Allow Metrics Scraper to get metrics from the Metrics server
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods", "nodes"]
+    verbs: ["get", "list", "watch"]
+
+{{- end}}
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard
+  namespace: {{ .Values.namespace | quote }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kubernetes-dashboard
+subjects:
+  - kind: ServiceAccount
+    name: kubernetes-dashboard
+    namespace: {{ .Values.namespace | quote }}
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kubernetes-dashboard
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ .Values.clusterRole | quote }}
+subjects:
+  - kind: ServiceAccount
+    name: kubernetes-dashboard
+    namespace: {{ .Values.namespace | quote }}
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+    {{- range $key, $val := .Values.labels }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end }}
+  annotations:
+    {{- range $key, $val := .Values.annotations }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end }}
+  name: kubernetes-dashboard
+  namespace: {{ .Values.namespace | quote }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      k8s-app: kubernetes-dashboard
+  template:
+    metadata:
+      labels:
+        k8s-app: kubernetes-dashboard
+        {{- range $key, $val := .Values.labels }}
+        {{ $key }}: {{ $val | quote }}
+        {{- end }}
+      annotations:
+        {{- range $key, $val := .Values.annotations }}
+        {{ $key }}: {{ $val | quote }}
+        {{- end }}
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: kubernetes-dashboard
+          image: gcr.io/spectro-images-public/kubernetesui/dashboard:v2.6.0
+          imagePullPolicy: Always
+          ports:
+            {{- if .Values.enableInsecureLogin }}
+            - name: http
+              containerPort: 9090
+              protocol: TCP
+            {{- else }}
+            - name: https
+              containerPort: 8443
+              protocol: TCP
+            {{- end}}
+          args:
+            - --namespace={{ .Values.namespace }}
+            {{- if .Values.enableInsecureLogin }}
+            - --enable-insecure-login
+            {{- else }}
+            - --tls-key-file=tls.key
+            - --tls-cert-file=tls.crt
+            {{- end}}
+            {{- if .Values.skipLogin }}
+            - --enable-skip-login
+            {{- end}}
+            {{- if .Values.extraArgs }}
+            {{- range .Values.extraArgs }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            # Uncomment the following line to manually specify Kubernetes API server Host
+            # If not specified, Dashboard will attempt to auto discover the API server and connect
+            # to it. Uncomment only if the default does not work.
+            # - --apiserver-host=http://my-address:port
+          volumeMounts:
+            - name: kubernetes-dashboard-certs
+              mountPath: /certs
+              # Create on-disk volume to store exec logs
+            - mountPath: /tmp
+              name: tmp-volume
+          livenessProbe:
+            httpGet:
+              {{- if .Values.enableInsecureLogin }}
+              scheme: HTTP
+              path: /
+              port: 9090
+              {{- else}}
+              scheme: HTTPS
+              path: /
+              port: 8443
+              {{- end}}
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsUser: 1001
+            runAsGroup: 2001
+      volumes:
+        - name: kubernetes-dashboard-certs
+          secret:
+            secretName: kubernetes-dashboard-certs
+        - name: tmp-volume
+          emptyDir: {}
+      serviceAccountName: kubernetes-dashboard
+      nodeSelector:
+        "kubernetes.io/os": linux
+      # Comment the following tolerations if Dashboard must not be deployed on master
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    k8s-app: dashboard-metrics-scraper
+    {{- range $key, $val := .Values.labels }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end }}
+  annotations:
+    {{- range $key, $val := .Values.annotations }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end }}
+  name: dashboard-metrics-scraper
+  namespace: {{ .Values.namespace | quote }}
+spec:
+  ports:
+    - port: 8000
+      targetPort: 8000
+  selector:
+    k8s-app: dashboard-metrics-scraper
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  labels:
+    k8s-app: dashboard-metrics-scraper
+    {{- range $key, $val := .Values.labels }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end }}
+  annotations:
+    {{- range $key, $val := .Values.annotations }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end }}
+  name: dashboard-metrics-scraper
+  namespace: {{ .Values.namespace | quote }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      k8s-app: dashboard-metrics-scraper
+  template:
+    metadata:
+      labels:
+        k8s-app: dashboard-metrics-scraper
+        {{- range $key, $val := .Values.labels }}
+        {{ $key }}: {{ $val | quote }}
+        {{- end }}
+      annotations:
+        seccomp.security.alpha.kubernetes.io/pod: 'runtime/default'
+        {{- range $key, $val := .Values.annotations }}
+        {{ $key }}: {{ $val | quote }}
+        {{- end }}
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: dashboard-metrics-scraper
+          image: gcr.io/spectro-images-public/kubernetesui/metrics-scraper:v1.0.8
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /
+              port: 8000
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp-volume
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsUser: 1001
+            runAsGroup: 2001
+      serviceAccountName: kubernetes-dashboard
+      nodeSelector:
+        "kubernetes.io/os": linux
+      # Comment the following tolerations if Dashboard must not be deployed on master
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}
+
+---
+{{- if not .Values.enableInsecureLogin }}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: k8s-dashboard-selfsigned-issuer
+  namespace: {{ .Values.namespace | quote }}
+spec:
+  selfSigned: {}
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kubernetes-dashboard-certs
+  namespace: {{ .Values.namespace | quote }}
+spec:
+  secretName: kubernetes-dashboard-certs
+  duration: {{ .Values.certDuration }}
+  renewBefore: {{ .Values.certRenewal }}
+  dnsNames:
+    - "*.{{ .Values.namespace }}.svc.cluster.local"
+    - "*.{{ .Values.namespace }}"
+  issuerRef:
+    name: k8s-dashboard-selfsigned-issuer
+    kind: Issuer
+---
+{{- end }}
+
+{{- if .Values.ingress.enabled }}
+{{- $ingressPath := .Values.ingress.path }}
+{{- $ingressPathType := .Values.ingress.pathType }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubernetes-dashboard-ingress
+  namespace: {{ .Values.namespace | quote }}
+  annotations:
+    {{- range $key, $value := .Values.ingress.annotations }}
+      {{ $key }}: {{ $value | quote }}
+      {{- end }}
+spec:
+  {{- if .Values.ingress.tls }}
+  tls:
+  {{- range .Values.ingress.tls }}
+  - hosts:
+    {{- range .hosts }}
+    - {{ . | quote }}
+    {{- end }}
+    secretName: {{ .secretName }}
+  {{- end }}
+  {{- end }}
+  rules:
+  {{- range .Values.ingress.hosts }}
+  - host: {{ . | quote }}
+    http:
+      paths:
+        - path: {{ $ingressPath | quote }}
+          pathType: {{ $ingressPathType | quote }}
+          backend:
+            service:
+              name: kubernetes-dashboard
+              port: 
+                number: 443
+  {{- end }}
+  {{- end }}
+
+---

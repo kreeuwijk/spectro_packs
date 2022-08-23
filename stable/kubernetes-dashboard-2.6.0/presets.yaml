@@ -1,0 +1,67 @@
+presets:
+  - name: "k8s-dashboard-service-clusterip"
+    displayName: "ClusterIP"
+    group: "Service Type"
+    remove: []
+    add: |
+      manifests:
+        k8s-dashboard:
+          #The service type for dashboard
+          serviceType: ClusterIP
+  - name: "k8s-dashboard-service-loadbalancer"
+    displayName: "LoadBalancer"
+    group: "Service Type"
+    remove: []
+    add: |
+      manifests:
+        k8s-dashboard:
+          #The service type for dashboard
+          serviceType: LoadBalancer
+  - name: "k8s-dashboard-service-nodeport"
+    displayName: "NodePort"
+    group: "Service Type"
+    remove: []
+    add: |
+      manifests:
+        k8s-dashboard:
+          #The service type for dashboard
+          serviceType: NodePort
+  - name: "k8s-dashboard-ingress-enabled"
+    displayName: "Enabled"
+    group: "Ingress support"
+    remove: []
+    add: |
+      manifests:
+        k8s-dashboard:
+          #Ingress config
+          ingress:
+            enabled: true
+            #Ingress host
+            hosts:
+              - kubernetes-dashboard.example.com
+              - dashboard.example.com
+            #Ingress path
+            path: "/"
+            #Ingress path type Prefix | Exact | ImplementationSpecific
+            pathType: "Prefix"            
+            #Ingress annotations
+            annotations:
+              nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+            tls: []
+            #  - secretName: k8s-dashboard-tls
+            #    hosts:
+            #      - kubernetes-dashboard.example.com
+  - name: "k8s-dashboard-ingress-disabled"
+    displayName: "Disabled"
+    group: "Ingress support"
+    add: |
+      manifests:
+        k8s-dashboard:
+          #Ingress config
+          ingress:
+            enabled: false
+    remove:
+      - manifests.k8s-dashboard.ingress.hosts
+      - manifests.k8s-dashboard.ingress.path
+      - manifests.k8s-dashboard.ingress.annotations
+      - manifests.k8s-dashboard.ingress.tls
