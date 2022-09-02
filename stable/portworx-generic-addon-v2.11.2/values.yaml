@@ -62,8 +62,8 @@ charts:
 
     # To automatically create the px-vsphere-secret for VMware, uncomment this section
     # vsphereSecret:
-    #  user:
-    #  password: 
+    #  user: ""
+    #  password: ""
 
     storageClass:
       name: spectro-storage-class
