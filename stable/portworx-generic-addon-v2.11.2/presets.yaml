@@ -64,6 +64,7 @@ presets:
     group: "Storagecluster Specs"
     remove:
     - "charts.portworx-addon.storageCluster.annotations"
+    - "charts.portworx-addon.storageCluster.spec"
     add: |
       charts:
         portworx-addon:
@@ -97,7 +98,9 @@ presets:
   - name: "px-spec-aws"
     displayName: "AWS Cloud Storage for EKS"
     group: "Storagecluster Specs"
-    remove: []
+    remove:
+    - "charts.portworx-addon.storageCluster.annotations"
+    - "charts.portworx-addon.storageCluster.spec"
     add: |
       charts:
         portworx-addon:
@@ -134,7 +137,9 @@ presets:
   - name: "px-spec-azure"
     displayName: "Azure Cloud Storage for AKS"
     group: "Storagecluster Specs"
-    remove: []
+    remove:
+    - "charts.portworx-addon.storageCluster.annotations"
+    - "charts.portworx-addon.storageCluster.spec"
     add: |
       charts:
         portworx-addon:
@@ -191,7 +196,9 @@ presets:
   - name: "px-spec-google"
     displayName: "Google Cloud Storage for GKE"
     group: "Storagecluster Specs"
-    remove: []
+    remove:
+    - "charts.portworx-addon.storageCluster.annotations"
+    - "charts.portworx-addon.storageCluster.spec"
     add: |
       charts:
         portworx-addon:
@@ -230,6 +237,7 @@ presets:
     group: "Storagecluster Specs"
     remove:
     - "charts.portworx-addon.storageCluster.annotations"
+    - "charts.portworx-addon.storageCluster.spec"
     add: |
       charts:
         portworx-addon:
@@ -290,6 +298,7 @@ presets:
     group: "Storagecluster Specs"
     remove:
     - "charts.portworx-addon.storageCluster.annotations"
+    - "charts.portworx-addon.storageCluster.spec"
     add: |
       charts:
         portworx-addon:
