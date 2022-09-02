@@ -194,9 +194,9 @@ presets:
                     name: px-azure
                     key: AZURE_TENANT_ID
           azureSecret:
-            tenantId: your_azure_tenant_id
-            clientId: your_azure_client_id
-            clientSecret: your_azure_client_secret
+            tenantId: "your_azure_tenant_id"
+            clientId: "your_azure_client_id"
+            clientSecret: "your_client_secret"
 
   - name: "px-spec-google"
     displayName: "Google Cloud Storage for GKE"
