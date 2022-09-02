@@ -1,0 +1,75 @@
+manifests:
+  #Storage class config
+  vsphere:
+
+    #Toggle for Default class
+    isDefaultClass: "true"
+
+    #Specifies file system type
+    fstype: "ext4"
+
+    #Allowed reclaim policies are Delete, Retain
+    reclaimPolicy: "Delete"
+
+    #Specifies the URL of the datastore on which the container volume needs to be provisioned.
+    datastoreURL: ""
+
+    #Specifies the storage policy for datastores on which the container volume needs to be provisioned.
+    storagePolicyName: ""
+
+    volumeBindingMode: "WaitForFirstConsumer"
+
+    #Set this flag to true to enable volume expansion
+    allowVolumeExpansion: true
+
+  vsphere-cloud-controller-manager:
+    k8sVersion: "{{ .spectro.system.kubernetes.version }}"
+
+  vsphere-csi-driver:
+    extraArgs:
+      csiAttacher:
+        - "--v=4"
+        - "--timeout=300s"
+        - "--csi-address=$(ADDRESS)"
+        - "--leader-election"
+        - "--kube-api-qps=100"
+        - "--kube-api-burst=100"
+      csiResizer:
+        - "--v=4"
+        - "--timeout=300s"
+        - "--handle-volume-inuse-error=false"
+        - "--csi-address=$(ADDRESS)"
+        - "--kube-api-qps=100"
+        - "--kube-api-burst=100"
+        - "--leader-election"    
+      csiController:
+        - "--fss-name=internal-feature-states.csi.vsphere.vmware.com"
+        - "--fss-namespace=$(CSI_NAMESPACE)"
+      csiLivenessProbe:
+        - "--v=4"
+        - "--csi-address=/csi/csi.sock"      
+      csiSyncer:
+        - "--leader-election"
+        - "--fss-name=internal-feature-states.csi.vsphere.vmware.com"
+        - "--fss-namespace=$(CSI_NAMESPACE)"
+      csiProvisioner:
+        - "--v=4"
+        - "--timeout=300s"
+        - "--csi-address=$(ADDRESS)"
+        - "--kube-api-qps=100"
+        - "--kube-api-burst=100"
+        - "--leader-election"
+        - "--default-fstype=ext4"
+        # needed only for topology aware setup
+        - "--feature-gates=Topology=true"
+        - "--strict-topology"
+      csiSnapshotter:
+        - "--v=4"
+        - "--kube-api-qps=100"
+        - "--kube-api-burst=100"
+        - "--timeout=300s"
+        - "--csi-address=$(ADDRESS)"
+        - "--leader-election"
+
+
+

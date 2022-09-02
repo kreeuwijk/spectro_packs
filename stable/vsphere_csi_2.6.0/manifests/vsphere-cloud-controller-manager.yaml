@@ -1,0 +1,210 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cloud-controller-manager
+  labels:
+    vsphere-cpi-infra: service-account
+    component: cloud-controller-manager
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: servicecatalog.k8s.io:apiserver-authentication-reader
+  labels:
+    vsphere-cpi-infra: role-binding
+    component: cloud-controller-manager
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: extension-apiserver-authentication-reader
+subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    name: cloud-controller-manager
+    namespace: kube-system
+  - apiGroup: ""
+    kind: User
+    name: cloud-controller-manager
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: system:cloud-controller-manager
+  labels:
+    vsphere-cpi-infra: cluster-role-binding
+    component: cloud-controller-manager
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:cloud-controller-manager
+subjects:
+  - kind: ServiceAccount
+    name: cloud-controller-manager
+    namespace: kube-system
+  - kind: User
+    name: cloud-controller-manager
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: system:cloud-controller-manager
+  labels:
+    vsphere-cpi-infra: role
+    component: cloud-controller-manager
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+    verbs:
+      - "*"
+  - apiGroups:
+      - ""
+    resources:
+      - nodes/status
+    verbs:
+      - patch
+  - apiGroups:
+      - ""
+    resources:
+      - services
+    verbs:
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - services/status
+    verbs:
+      - patch
+  - apiGroups:
+      - ""
+    resources:
+      - serviceaccounts
+    verbs:
+      - create
+      - get
+      - list
+      - watch
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - persistentvolumes
+    verbs:
+      - get
+      - list
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - endpoints
+    verbs:
+      - create
+      - get
+      - list
+      - watch
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - "coordination.k8s.io"
+    resources:
+      - leases
+    verbs:
+      - create
+      - get
+      - list
+      - watch
+      - update
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: vsphere-cloud-controller-manager
+  labels:
+    component: cloud-controller-manager
+    tier: control-plane
+  namespace: kube-system
+  annotations:
+    scheduler.alpha.kubernetes.io/critical-pod: ""
+spec:
+  selector:
+    matchLabels:
+      k8s-app: vsphere-cloud-controller-manager
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        k8s-app: vsphere-cloud-controller-manager
+        component: cloud-controller-manager
+        tier: control-plane
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/master: ""
+      tolerations:
+        - key: node.cloudprovider.kubernetes.io/uninitialized
+          value: "true"
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+          operator: Exists
+        - key: node.kubernetes.io/not-ready
+          effect: NoSchedule
+          operator: Exists
+      securityContext:
+        runAsUser: 1001
+      serviceAccountName: cloud-controller-manager
+      containers:
+        - name: vsphere-cloud-controller-manager
+          {{- if semverCompare "~1.19.0" .Values.k8sVersion }}
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.19.0
+          {{- else if semverCompare "~1.20.0" .Values.k8sVersion }}
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.20.0
+          {{- else if semverCompare "~1.21.0" .Values.k8sVersion }}
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.21.1
+          {{- else if semverCompare "~1.22.0" .Values.k8sVersion }}
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.22.3 
+          {{- else if semverCompare "~1.23.0" .Values.k8sVersion }}
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.23.1         
+          {{- else }}
+          # Default to the 1.24 CPI
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.24.0
+          {{- end }}
+          args:
+            - --cloud-provider=vsphere
+            - --v=2
+            - --cloud-config=/etc/cloud/vsphere.conf
+          volumeMounts:
+            - mountPath: /etc/cloud
+              name: vsphere-config-volume
+              readOnly: true
+          resources:
+            requests:
+              cpu: 200m
+      hostNetwork: true
+      volumes:
+        - name: vsphere-config-volume
+          configMap:
+            name: vsphere-cloud-config

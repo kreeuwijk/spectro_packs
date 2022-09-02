@@ -26,32 +26,22 @@ license:
     #   - feature1
     #   - feature2
 
+# To automatically create the px-vsphere-secret for VMware, uncomment this section
+# vsphereSecret:
+#  userName:
+#  password: 
+
 storageCluster:
   autoGenerateName: true
   # name: px-cluster-1234abcd-12ab-12ab-12ab-123456abcdef
   # annotations:
   #   If you need additional annotations, specify them here
-  spec:
-    image: portworx/oci-monitor:2.11.1
-    imagePullPolicy: Always
-    kvdb:
-      internal: true
-    storage:
-      useAll: true
-      journalDevice: auto
-    secretsProvider: k8s
-    stork:
-      enabled: true
-      args:
-        webhook-controller: "true"
-    autopilot:
-      enabled: true
-    csi:
-      enabled: true
-    monitoring:
-      prometheus:
-        enabled: false
-        exportMetrics: false
+  spec: {}
+
+# To automatically create the px-vsphere-secret for VMware, uncomment this section
+# vsphereSecret:
+#  user:
+#  password: 
 
 storageClass:
   name: spectro-storage-class
@@ -63,9 +53,9 @@ storageClass:
   reclaimPolicy: Delete
   # WaitForFirstConsumer or Immediate
   volumeBindingMode: WaitForFirstConsumer
-  parameters:
-    repl: "3"
-    priority_io: "high"
+  parameters: {}
+    # repl: "3"
+    # priority_io: "high"
     # sharedv4: true
     # Add additional parameters as needed (https://docs.portworx.com/portworx-install-with-kubernetes/storage-operations/create-pvcs/dynamic-provisioning/)
 

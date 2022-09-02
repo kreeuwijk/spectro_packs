@@ -3,11 +3,11 @@ presets:
     displayName: "PX Essentials"
     group: "License Models"
     remove:
-    - "charts.portworx-generic.license.saas"
-    - "charts.portworx-generic.license.enterprise"
+    - "charts.portworx-addon.license.saas"
+    - "charts.portworx-addon.license.enterprise"
     add: |
       charts:
-        portworx-generic:
+        portworx-addon:
           license:
             # Valid options for "type" are: essentials, saas, enterprise
             type: essentials
@@ -23,11 +23,11 @@ presets:
     displayName: "PX Enterprise SaaS PAYG"
     group: "License Models"
     remove:
-    - "charts.portworx-generic.license.essentials"
-    - "charts.portworx-generic.license.enterprise"
+    - "charts.portworx-addon.license.essentials"
+    - "charts.portworx-addon.license.enterprise"
     add: |
       charts:
-        portworx-generic:
+        portworx-addon:
           license:
             # Valid options for "type" are: essentials, saas, enterprise
             type: saas
@@ -38,11 +38,11 @@ presets:
     displayName: "PX Enterprise"
     group: "License Models"
     remove:
-    - "charts.portworx-generic.license.essentials"
-    - "charts.portworx-generic.license.saas"
+    - "charts.portworx-addon.license.essentials"
+    - "charts.portworx-addon.license.saas"
     add: |
       charts:
-        portworx-generic:
+        portworx-addon:
           license:
             # Valid options for "type" are: essentials, saas, enterprise
             # If you want to deploy the PX Enterprise Trial version, or need manual offline activation,
@@ -63,12 +63,12 @@ presets:
     displayName: "Use internal Kvdb"
     group: "Kvdb and Etcd"
     remove:
-      - charts.portworx-generic.externalKvdb
-      - charts.portworx-generic.storageCluster.spec.kvdb.endpoints
-      - charts.portworx-generic.storageCluster.spec.kvdb.authSecret
+      - charts.portworx-addon.externalKvdb
+      - charts.portworx-addon.storageCluster.spec.kvdb.endpoints
+      - charts.portworx-addon.storageCluster.spec.kvdb.authSecret
     add: |
       charts:
-        portworx-generic:
+        portworx-addon:
           storageCluster:
             spec:
               kvdb:
@@ -78,13 +78,13 @@ presets:
     displayName: "Use external Kvdb over HTTP"
     group: "Kvdb and Etcd"
     remove:
-    - charts.portworx-generic.storageCluster.spec.kvdb.internal
-    - charts.portworx-generic.externalKvdb.cacert
-    - charts.portworx-generic.externalKvdb.key
-    - charts.portworx-generic.externalKvdb.cert
+    - charts.portworx-addon.storageCluster.spec.kvdb.internal
+    - charts.portworx-addon.externalKvdb.cacert
+    - charts.portworx-addon.externalKvdb.key
+    - charts.portworx-addon.externalKvdb.cert
     add: |
       charts:
-        portworx-generic:
+        portworx-addon:
           storageCluster:
             spec:
               kvdb:
@@ -97,10 +97,10 @@ presets:
     displayName: "Use external Kvdb over SSL"
     group: "Kvdb and Etcd"
     remove:
-    - charts.portworx-generic.storageCluster.spec.kvdb.internal
+    - charts.portworx-addon.storageCluster.spec.kvdb.internal
     add: |
       charts:
-        portworx-generic:
+        portworx-addon:
           storageCluster:
             spec:
               kvdb:

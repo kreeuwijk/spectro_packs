@@ -1,4 +1,6 @@
----
+{{- if hasKey .Values.storageCluster.spec "env" }}
+  {{- range .Values.storageCluster.spec.env | uniq -}}
+    {{- if eq .name "VSPHERE_VCENTER" -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -178,16 +180,7 @@ spec:
       serviceAccountName: cloud-controller-manager
       containers:
         - name: vsphere-cloud-controller-manager
-          {{- if semverCompare "~1.19.0" .Values.k8sVersion }}
-          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.19.0
-          {{- else if semverCompare "~1.20.0" .Values.k8sVersion }}
-          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.20.0
-          {{- else if semverCompare "~1.21.0" .Values.k8sVersion }}
-          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.21.1
-          {{- else }}
-          # Default to the 1.22 CPI
-          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.22.3
-          {{- end }}
+          {{- template "portworx-generic.CPIversion" $ }}
           args:
             - --cloud-provider=vsphere
             - --v=2
@@ -204,3 +197,6 @@ spec:
         - name: vsphere-config-volume
           configMap:
             name: vsphere-cloud-config
+    {{- end }}
+  {{- end }}
+{{- end }}

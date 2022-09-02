@@ -36,7 +36,7 @@ charts:
       #   If you need additional annotations, specify them here
       spec:
         # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-        image: portworx/oci-monitor:2.11.1
+        image: portworx/oci-monitor:2.11.2
         imagePullPolicy: Always
         kvdb:
           internal: true
@@ -59,6 +59,11 @@ charts:
           prometheus:
             enabled: false
             exportMetrics: false
+
+    # To automatically create the px-vsphere-secret for VMware, uncomment this section
+    # vsphereSecret:
+    #  userName:
+    #  password: 
 
     storageClass:
       name: spectro-storage-class

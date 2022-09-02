@@ -1,5 +1,4 @@
 {
-  "addonType":"system app",
   "annotations": {
     "docsURL": "https://docs.spectrocloud.com/integrations/portworx",
     "prerequisitesRequired": "true"
@@ -9,9 +8,9 @@
   ],
   "displayName": "Portworx /w Operator",
   "charts": [
-    "charts/portworx-generic-1.0.8.tgz"
+    "charts/portworx-generic-1.0.10.tgz"
   ],
-  "layer": "addon",
-  "name": "portworx-add-on",
-  "version": "2.11.1"
+  "layer": "csi",
+  "name": "csi-portworx-generic",
+  "version": "2.11.2"
 }
