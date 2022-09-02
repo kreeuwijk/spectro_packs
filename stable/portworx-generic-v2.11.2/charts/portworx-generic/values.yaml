@@ -35,8 +35,14 @@ storageCluster:
 
 # To automatically create the px-vsphere-secret for VMware, uncomment this section
 # vsphereSecret:
-#  user:
-#  password: 
+#   user:
+#   password: 
+
+# To automatically create the px-azure secret for Azure, uncomment this section
+# azureSecret:
+#   tenantId:
+#   clientId:
+#   clientSecret: 
 
 storageClass:
   name: spectro-storage-class

@@ -28,8 +28,14 @@ license:
 
 # To automatically create the px-vsphere-secret for VMware, uncomment this section
 # vsphereSecret:
-#  userName:
-#  password: 
+#   userName:
+#   password: 
+
+# To automatically create the px-azure secret for Azure, uncomment this section
+# azureSecret:
+#   tenantId:
+#   clientId:
+#   clientSecret: 
 
 storageCluster:
   autoGenerateName: true
