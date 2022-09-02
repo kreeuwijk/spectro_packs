@@ -299,7 +299,7 @@ presets:
                 value: "shared"
           vsphereSecret:
             user: "username_for_vCenter_here"
-            password: ""
+            password: "your_password"
 
   - name: "px-spec-flasharray"
     displayName: "Pure Storage Flash Array"
