@@ -34,31 +34,32 @@ charts:
       name: "px-{{.spectro.system.cluster.name}}"
       # annotations:
       #   If you need additional annotations, specify them here
-      spec:
+      spec: {}
         # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-        image: portworx/oci-monitor:2.11.2
-        imagePullPolicy: Always
-        kvdb:
-          internal: true
-          # endpoints:
-          # - etcd:https://etcd.company.domain:2379
-          # authSecret: px-kvdb-auth
-        storage:
-          useAll: true
-          journalDevice: auto
-        secretsProvider: k8s
-        stork:
-          enabled: true
-          args:
-            webhook-controller: "true"
-        autopilot:
-          enabled: true
-        csi:
-          enabled: true
-        monitoring:
-          prometheus:
-            enabled: false
-            exportMetrics: false
+        # ### Example spec
+        # image: portworx/oci-monitor:2.11.2
+        # imagePullPolicy: Always
+        # kvdb:
+        #   internal: true
+        #   # endpoints:
+        #   # - etcd:https://etcd.company.domain:2379
+        #   # authSecret: px-kvdb-auth
+        # storage:
+        #   useAll: true
+        #   journalDevice: auto
+        # secretsProvider: k8s
+        # stork:
+        #   enabled: true
+        #   args:
+        #     webhook-controller: "true"
+        # autopilot:
+        #   enabled: true
+        # csi:
+        #   enabled: true
+        # monitoring:
+        #   prometheus:
+        #     enabled: false
+        #     exportMetrics: false
 
     # To automatically create the px-vsphere-secret for VMware, uncomment this section
     # vsphereSecret:
