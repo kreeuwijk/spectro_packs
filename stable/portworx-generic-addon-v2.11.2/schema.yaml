@@ -1,0 +1,2 @@
+charts.portworx-addon.vsphereSecret.password:
+  schema: '{{ format "${password}" | hints "Use this to specify the password for the px-vsphere-secret" }}'

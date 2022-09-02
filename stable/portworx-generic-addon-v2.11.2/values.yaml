@@ -62,7 +62,7 @@ charts:
 
     # To automatically create the px-vsphere-secret for VMware, uncomment this section
     # vsphereSecret:
-    #  userName:
+    #  user:
     #  password: 
 
     storageClass:
