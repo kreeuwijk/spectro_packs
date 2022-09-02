@@ -65,6 +65,8 @@ presets:
     remove:
     - "charts.portworx-addon.storageCluster.annotations"
     - "charts.portworx-addon.storageCluster.spec"
+    - "charts.portworx-addon.azureSecret"
+    - "charts.portworx-addon.vsphereSecret"
     add: |
       charts:
         portworx-addon:
@@ -101,6 +103,8 @@ presets:
     remove:
     - "charts.portworx-addon.storageCluster.annotations"
     - "charts.portworx-addon.storageCluster.spec"
+    - "charts.portworx-addon.azureSecret"
+    - "charts.portworx-addon.vsphereSecret"
     add: |
       charts:
         portworx-addon:
@@ -140,6 +144,7 @@ presets:
     remove:
     - "charts.portworx-addon.storageCluster.annotations"
     - "charts.portworx-addon.storageCluster.spec"
+    - "charts.portworx-addon.vsphereSecret"
     add: |
       charts:
         portworx-addon:
@@ -199,6 +204,8 @@ presets:
     remove:
     - "charts.portworx-addon.storageCluster.annotations"
     - "charts.portworx-addon.storageCluster.spec"
+    - "charts.portworx-addon.azureSecret"
+    - "charts.portworx-addon.vsphereSecret"
     add: |
       charts:
         portworx-addon:
@@ -238,6 +245,7 @@ presets:
     remove:
     - "charts.portworx-addon.storageCluster.annotations"
     - "charts.portworx-addon.storageCluster.spec"
+    - "charts.portworx-addon.azureSecret"
     add: |
       charts:
         portworx-addon:
@@ -299,6 +307,8 @@ presets:
     remove:
     - "charts.portworx-addon.storageCluster.annotations"
     - "charts.portworx-addon.storageCluster.spec"
+    - "charts.portworx-addon.azureSecret"
+    - "charts.portworx-addon.vsphereSecret"
     add: |
       charts:
         portworx-addon:
