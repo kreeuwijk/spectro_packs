@@ -1,0 +1,16 @@
+{
+  "annotations": {
+    "docsURL": "https://docs.spectrocloud.com/integrations/csi",
+    "description": "Kubernetes in-tree no-provisioner"
+  },
+  "cloudTypes": [
+    "all"
+  ],
+  "displayName": "Storage No-Provisioner",
+  "kubeManifests": [
+    "manifests/no_provisioner.yaml"
+  ],
+  "layer": "csi",
+  "name": "csi-no-provisioner",
+  "version": "1.0.0"
+}

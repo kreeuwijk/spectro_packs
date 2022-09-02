@@ -1,0 +1,8 @@
+manifests:
+  no_provisioner:
+
+    #Toggle for Default class
+    isDefaultClass: "false"
+
+    #Supported binding modes are Immediate, WaitForFirstConsumer
+    volumeBindingMode: "WaitForFirstConsumer"

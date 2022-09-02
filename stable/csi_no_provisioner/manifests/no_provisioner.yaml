@@ -1,0 +1,12 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: "spectro-storage-class"
+  annotations:
+    {{- if .Values.isDefaultClass }}
+    storageclass.kubernetes.io/is-default-class: {{ .Values.isDefaultClass | quote }}
+    {{- end}}
+provisioner: "kubernetes.io/no-provisioner"
+{{- if .Values.volumeBindingMode }}
+volumeBindingMode: {{ .Values.volumeBindingMode | quote }}
+{{- end}}
