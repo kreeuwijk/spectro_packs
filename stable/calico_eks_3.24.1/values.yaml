@@ -1,11 +1,13 @@
-manifests:
-  calico:
-
-    # IPAM type to use. Supported types are calico-ipam, host-local
-    ipamType: "calico-ipam"
-
-    # Should be one of CALICO_IPV4POOL_IPIP or CALICO_IPV4POOL_VXLAN  
-    encapsulationType: "CALICO_IPV4POOL_IPIP"
-
-    # Should be one of Always, CrossSubnet, Never
-    encapsulationMode: "Always"
+# No configuration values can be set for this pack.
+# The pack will install the following Calico configuration:
+#
+# kind: Installation
+# apiVersion: operator.tigera.io/v1
+# metadata:
+#   name: default
+# spec:
+#   kubernetesProvider: EKS
+#   cni:
+#     type: Calico
+#   calicoNetwork:
+#     bgp: Disabled
