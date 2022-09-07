@@ -1,0 +1,18 @@
+{
+    "annotations": {},
+    "ansibleRoles": [],
+    "cloudTypes": [
+      "eks"
+    ],
+    "displayName": "Calico",
+    "eol": "",
+    "group": "",
+    "kubeManifests": [
+      "manifests/crds.yaml",
+      "manifests/operator.yaml",
+      "manifests/calico.yaml"
+    ],
+    "layer": "cni",
+    "name": "cni-calico-eks",
+    "version": "3.24.1"
+  }
