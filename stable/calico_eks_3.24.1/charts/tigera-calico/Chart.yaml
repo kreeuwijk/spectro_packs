@@ -1,5 +1,5 @@
 apiVersion: v2
-name: tigera_calico
+name: tigera-calico
 description: A Helm chart for installing Calico using the Tigera Operator
 
 # A chart can be either an 'application' or a 'library' chart.

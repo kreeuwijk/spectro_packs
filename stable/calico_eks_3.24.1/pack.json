@@ -4,7 +4,7 @@
     ],
     "displayName": "Calico /w Operator",
     "charts": [
-      "charts/tigera_calico-1.0.0.tgz"
+      "charts/tigera-calico-1.0.0.tgz"
     ],
     "layer": "cni",
     "name": "cni-calico-eks",
