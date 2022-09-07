@@ -1,16 +1,10 @@
 {
-    "annotations": {},
-    "ansibleRoles": [],
     "cloudTypes": [
       "eks"
     ],
-    "displayName": "Calico",
-    "eol": "",
-    "group": "",
-    "kubeManifests": [
-      "manifests/crds.yaml",
-      "manifests/operator.yaml",
-      "manifests/calico.yaml"
+    "displayName": "Calico /w Operator",
+    "charts": [
+      "charts/tigera_calico-1.0.0.tgz"
     ],
     "layer": "cni",
     "name": "cni-calico-eks",

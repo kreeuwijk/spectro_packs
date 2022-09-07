@@ -1,0 +1,13 @@
+# No configuration values can be set for this pack.
+# The pack will install the following Calico configuration:
+#
+# kind: Installation
+# apiVersion: operator.tigera.io/v1
+# metadata:
+#   name: default
+# spec:
+#   kubernetesProvider: EKS
+#   cni:
+#     type: Calico
+#   calicoNetwork:
+#     bgp: Disabled
