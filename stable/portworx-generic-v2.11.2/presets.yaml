@@ -417,3 +417,18 @@ presets:
               < .. >
               WsqUCBt5+DnOaDyvMkokP+T5tj/2LXemuIi4Q5nrOmw/WwVGGGs=
               -----END RSA PRIVATE KEY-----
+
+  - name: "px-enable-proxy"
+    displayName: "Use a Proxy server for HTTP(S)"
+    group: "HTTP(S) Proxy"
+    remove: []
+    add: |
+      charts:
+        portworx-generic:
+          storageCluster:
+            spec:
+              env:
+              - name: PX_HTTP_PROXY
+                value: "http://username:password@your-proxy-server:3128"
+              - name: PX_HTTPS_PROXY
+                value: "http://username:password@your-proxy-server:3128"
