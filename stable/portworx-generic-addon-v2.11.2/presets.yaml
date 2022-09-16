@@ -419,7 +419,7 @@ presets:
               -----END RSA PRIVATE KEY-----
 
   - name: "px-enable-proxy"
-    displayName: "Use a Proxy server for HTTP(S)"
+    displayName: "Use Proxy server for HTTP(S)"
     group: "HTTP(S) Proxy"
     remove: []
     add: |
