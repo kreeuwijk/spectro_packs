@@ -1,0 +1,17 @@
+{
+  "addonType":"system app",
+  "annotations": {
+    "docsURL": "https://docs.spectrocloud.com/integrations/portworx",
+    "prerequisitesRequired": "true"
+  },
+  "cloudTypes": [
+    "all"
+  ],
+  "displayName": "Portworx /w Operator",
+  "charts": [
+    "charts/portworx-addon-1.2.0.tgz"
+  ],
+  "layer": "addon",
+  "name": "portworx-add-on",
+  "version": "2.12.0"
+}

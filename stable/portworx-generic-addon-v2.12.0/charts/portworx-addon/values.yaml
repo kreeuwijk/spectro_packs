@@ -1,0 +1,83 @@
+license:
+  # Valid options for "type" are: essentials, saas, enterprise
+  # If you want to deploy the PX Enterprise Trial version, or need manual offline activation,
+  # select the "enterprise" type and set "activateLicense" to false.
+  type: essentials
+  # The next block only gets used if the type is set to "essentials"
+  essentials:
+    # Base64-decoded value of the px-essen-user-id value in the px-essential secret
+    # Find your Essential Entitlement ID at https://central.portworx.com/profile
+    userId: 1234abcd-12ab-12ab-12ab-123456abcdef
+    # Base64-decoded value of the px-osb-endpoint value in the px-essential secret
+    # Leave at the default value unless there are special circumstances
+    endpoint: https://pxessentials.portworx.com/osb/billing/v1/register
+  # The next block only gets used if the type is set to "saas"
+  saas:
+    key: <PAY-AS-YOU-GO-KEY>
+  # The next block only gets used if the type is set to "enterprise"
+  enterprise:
+    activateLicense: true
+    activationId: <Activation ID>
+    # customLicenseServer:
+    #   url: http://hostname:7070/fne/bin/capability
+    #   importUnknownCa: true
+    #   licenseBorrowInterval: 1w15m
+    #   addFeatures:
+    #   - feature1
+    #   - feature2
+
+storageCluster:
+  autoGenerateName: true
+  # name: px-cluster-1234abcd-12ab-12ab-12ab-123456abcdef
+  # annotations:
+  #   If you need additional annotations, specify them here
+  spec: {}
+
+# To automatically create the px-vsphere-secret for VMware, uncomment this section
+# vsphereSecret:
+#   user:
+#   password: 
+
+# To automatically create the px-azure secret for Azure, uncomment this section
+# azureSecret:
+#   tenantId:
+#   clientId:
+#   clientSecret: 
+
+storageClass:
+  name: spectro-storage-class
+  isDefaultStorageClass: true
+  # annotations:
+  #   If you need additional annotations, specify them here
+  allowVolumeExpansion: true
+  # Delete or Retain
+  reclaimPolicy: Delete
+  # WaitForFirstConsumer or Immediate
+  volumeBindingMode: WaitForFirstConsumer
+  parameters: {}
+    # repl: "3"
+    # priority_io: "high"
+    # sharedv4: true
+    # Add additional parameters as needed (https://docs.portworx.com/portworx-install-with-kubernetes/storage-operations/create-pvcs/dynamic-provisioning/)
+
+lighthouse:
+  enabled: true
+  service:
+    type: LoadBalancer
+    # loadBalancerIp: 1.2.3.4
+
+# External kvdb related config, only used if storageCluster.spec.kvdb.internal = false
+externalKvdb:
+  useCertsForSSL: false
+  # cacert: |
+  #   -----BEGIN CERTIFICATE-----
+  #   < KEY DATA >
+  #   -----END CERTIFICATE-----
+  # key: |
+  #   -----BEGIN RSA PRIVATE KEY-----
+  #   < KEY DATA >
+  #   -----END RSA PRIVATE KEY-----
+  # cert: |
+  #   -----BEGIN CERTIFICATE-----
+  #   < KEY DATA >
+  #   -----END CERTIFICATE-----
