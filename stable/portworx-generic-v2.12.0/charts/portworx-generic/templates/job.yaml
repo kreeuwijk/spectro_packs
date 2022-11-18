@@ -44,11 +44,11 @@ spec:
       serviceAccountName: px-activate-license
       initContainers:
         - name: init-px-activate-license
-          image: bitnami/kubectl:{{ .Capabilities.KubeVersion.Major }}.{{ .Capabilities.KubeVersion.Minor }}
+          image: bitnami/kubectl:{{ .Capabilities.KubeVersion.Major }}.{{ .Capabilities.KubeVersion.Minor | trimSuffix "+" }}
           command: ['sh', '-c', "until kubectl get pods -l name=portworx -n kube-system -o custom-columns=STATUS:.status.containerStatuses.'*'.ready | grep true,true; do echo Waiting for portworx; sleep 120; done"]
       containers:
         - name: kubectl-pod
-          image: bitnami/kubectl:{{ .Capabilities.KubeVersion.Major }}.{{ .Capabilities.KubeVersion.Minor }}
+          image: bitnami/kubectl:{{ .Capabilities.KubeVersion.Major }}.{{ .Capabilities.KubeVersion.Minor | trimSuffix "+" }}
           command:
             - "bash"
             - "-c"

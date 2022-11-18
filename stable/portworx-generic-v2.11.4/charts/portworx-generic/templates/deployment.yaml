@@ -1,0 +1,78 @@
+{{- if .Values.lighthouse.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: px-lighthouse
+  namespace: kube-system
+  labels:
+    tier: px-web-console
+spec:
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      tier: px-web-console
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        tier: px-web-console
+        spectrocloud.com/connection: proxy
+    spec:
+      initContainers:
+      - name: config-init
+        image: portworx/lh-config-sync:2.0.7
+        imagePullPolicy: Always
+        args:
+        - "init"
+        env:
+        - name: PX_SERVICE_TYPE
+          value: "NodePort"
+        volumeMounts:
+        - name: config
+          mountPath: /config/lh
+      containers:
+      - name: px-lighthouse
+        image: portworx/px-lighthouse:2.0.7
+        imagePullPolicy: Always
+        args: [ "-kubernetes", "true" ]
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        readinessProbe:
+          httpGet:
+            path: /login
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /login
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 20
+        volumeMounts:
+        - name: config
+          mountPath: /config/lh
+      - name: config-sync
+        image: portworx/lh-config-sync:2.0.7
+        imagePullPolicy: Always
+        args:
+        - "sync"
+        env:
+        - name: PX_SERVICE_TYPE
+          value: "NodePort"
+        volumeMounts:
+        - name: config
+          mountPath: /config/lh
+      - name: stork-connector
+        image: portworx/lh-stork-connector:2.0.7
+        imagePullPolicy: Always
+      serviceAccountName: px-lh-account
+      volumes:
+      - name: config
+        emptyDir: {}
+{{- end }}

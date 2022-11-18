@@ -9,7 +9,7 @@
   ],
   "displayName": "Portworx /w Operator",
   "charts": [
-    "charts/portworx-addon-1.2.0.tgz"
+    "charts/portworx-addon-1.2.1.tgz"
   ],
   "layer": "addon",
   "name": "portworx-add-on",

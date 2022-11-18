@@ -8,9 +8,9 @@
   ],
   "displayName": "Portworx /w Operator",
   "charts": [
-    "charts/portworx-generic-1.2.1.tgz"
+    "charts/portworx-generic-1.1.2.tgz"
   ],
   "layer": "csi",
   "name": "csi-portworx-generic",
-  "version": "2.12.0"
+  "version": "2.11.4"
 }
