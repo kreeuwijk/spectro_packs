@@ -1,4 +1,5 @@
 {
+  "addonType":"system app",
   "annotations": {},
   "cloudTypes": [
     "all"
@@ -10,7 +11,7 @@
   "kubeManifests": [
     "manifests/ns-label.yaml"
   ],
-  "layer": "csi",
+  "layer": "addon",
   "name": "csi-topolvm",
   "version": "11.0.0"
 }

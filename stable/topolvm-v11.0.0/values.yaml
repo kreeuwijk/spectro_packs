@@ -1,5 +1,6 @@
 pack:
   namespace: topolvm-system
+  spectrocloud.com/install-priority: "1"
 
 manifests:
   ns-label:
