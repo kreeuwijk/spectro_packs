@@ -1113,22 +1113,27 @@ charts:
     ipam:
       # -- Configure IP Address Management mode.
       # ref: https://docs.cilium.io/en/stable/concepts/networking/ipam/
-      mode: "cluster-pool"
-      operator:
-        # -- Deprecated in favor of ipam.operator.clusterPoolIPv4PodCIDRList.
-        # IPv4 CIDR range to delegate to individual nodes for IPAM.
-        clusterPoolIPv4PodCIDR: "10.0.0.0/8"
-        # -- IPv4 CIDR list range to delegate to individual nodes for IPAM.
-        clusterPoolIPv4PodCIDRList: []
-        # -- IPv4 CIDR mask size to delegate to individual nodes for IPAM.
-        clusterPoolIPv4MaskSize: 24
-        # -- Deprecated in favor of ipam.operator.clusterPoolIPv6PodCIDRList.
-        # IPv6 CIDR range to delegate to individual nodes for IPAM.
-        clusterPoolIPv6PodCIDR: "fd00::/104"
-        # -- IPv6 CIDR list range to delegate to individual nodes for IPAM.
-        clusterPoolIPv6PodCIDRList: []
-        # -- IPv6 CIDR mask size to delegate to individual nodes for IPAM.
-        clusterPoolIPv6MaskSize: 120
+      # For this pack, the default mode has been switched from "cluster-pool" to
+      # "kubernetes" so that Cilium respects the PodCIDR that is configured
+      # in the K8s pack.
+      mode: "kubernetes"
+      # The alternative below is the default for the Cilium helm chart
+      # mode: "cluster-pool"
+      # operator:
+      #   # -- Deprecated in favor of ipam.operator.clusterPoolIPv4PodCIDRList.
+      #   # IPv4 CIDR range to delegate to individual nodes for IPAM.
+      #   clusterPoolIPv4PodCIDR: "10.0.0.0/8"
+      #   # -- IPv4 CIDR list range to delegate to individual nodes for IPAM.
+      #   clusterPoolIPv4PodCIDRList: []
+      #   # -- IPv4 CIDR mask size to delegate to individual nodes for IPAM.
+      #   clusterPoolIPv4MaskSize: 24
+      #   # -- Deprecated in favor of ipam.operator.clusterPoolIPv6PodCIDRList.
+      #   # IPv6 CIDR range to delegate to individual nodes for IPAM.
+      #   clusterPoolIPv6PodCIDR: "fd00::/104"
+      #   # -- IPv6 CIDR list range to delegate to individual nodes for IPAM.
+      #   clusterPoolIPv6PodCIDRList: []
+      #   # -- IPv6 CIDR mask size to delegate to individual nodes for IPAM.
+      #   clusterPoolIPv6MaskSize: 120
 
     # -- Configure the eBPF-based ip-masq-agent
     ipMasqAgent:
