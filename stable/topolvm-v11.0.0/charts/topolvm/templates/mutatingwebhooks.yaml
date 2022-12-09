@@ -1,0 +1,42 @@
+{{- if .Values.webhook.podMutatingWebhook.enabled }}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: {{ template "topolvm.fullname" . }}-hook
+  annotations:
+    {{- if not .Values.webhook.caBundle }}
+    cert-manager.io/inject-ca-from: {{ .Release.Namespace }}/{{ template "topolvm.fullname" . }}-mutatingwebhook
+    {{- end }}
+  labels:
+    {{- include "topolvm.labels" . | nindent 4 }}
+webhooks:
+  {{- if .Values.webhook.podMutatingWebhook.enabled }}
+  - name: pod-hook.{{ include "topolvm.pluginName" . }}
+    admissionReviewVersions:
+      - "v1"
+      - "v1beta1"
+    namespaceSelector:
+      matchExpressions:
+        - key: {{ include "topolvm.pluginName" . }}/webhook
+          operator: NotIn
+          values: ["ignore"]
+    failurePolicy: Fail
+    matchPolicy: Equivalent
+    clientConfig:
+      {{- with .Values.webhook.caBundle }}
+      caBundle: {{ . }}
+      {{- end }}
+      service:
+        namespace: {{ .Release.Namespace }}
+        name: {{ template "topolvm.fullname" . }}-controller
+        path: /pod/mutate
+    rules:
+      - operations: ["CREATE"]
+        apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods"]
+    sideEffects: None
+  {{- end }}
+---
+{{- end }}

@@ -1,0 +1,16 @@
+{
+  "annotations": {},
+  "cloudTypes": [
+    "all"
+  ],
+  "displayName": "TopoLVM",
+  "charts": [
+    "charts/topolvm-11.0.0.tgz"
+  ],
+  "kubeManifests": [
+    "manifests/ns-label.yaml"
+  ],
+  "layer": "csi",
+  "name": "csi-topolvm",
+  "version": "11.0.0"
+}
