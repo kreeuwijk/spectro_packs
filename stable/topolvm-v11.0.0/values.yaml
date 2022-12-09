@@ -39,8 +39,9 @@ manifests:
 #           ignoredByScheduler: true
 #       EOF
 #   postKubeadmCommands:
-#     # add the following entry
+#     # add the following two entries
 #     - 'export KUBECONFIG=/etc/kubernetes/admin.conf && [ -f "$KUBECONFIG" ] && { echo " ====> Applying labels for TopoLVM" ; until $(kubectl label namespace kube-system topolvm.io/webhook=ignore > /dev/null ); do echo "Failed to apply labels for TopoLVM, will retry in 5s" ; sleep 5 ; done ; } || echo "Skipping TopoLVM labels for worker nodes"'
+#     - 'export KUBECONFIG=/etc/kubernetes/admin.conf && [ ! -f "$KUBECONFIG" ] && { echo " ====> Creating LVM VG for TopoLVM" ; vgcreate myvg1 /dev/sdb ; } || echo "Skipping LVM VG creation for master nodes"'
 
 charts:
   topolvm:
