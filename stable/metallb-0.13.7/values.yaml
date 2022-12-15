@@ -379,3 +379,6 @@ charts:
 
         frrMetrics:
           resources: {}
+
+      crds:
+        validationFailurePolicy: Fail

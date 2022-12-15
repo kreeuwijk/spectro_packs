@@ -335,3 +335,6 @@ metallb:
 
     frrMetrics:
       resources: {}
+
+  crds:
+    validationFailurePolicy: Fail

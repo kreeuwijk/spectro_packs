@@ -326,3 +326,6 @@ speaker:
 
   frrMetrics:
     resources: {}
+
+crds:
+  validationFailurePolicy: Fail
