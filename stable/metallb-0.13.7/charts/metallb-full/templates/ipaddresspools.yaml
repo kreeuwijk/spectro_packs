@@ -1,0 +1,11 @@
+{{- $nsname := .Release.Namespace -}}
+{{- range $key, $value := .Values.configuration.ipaddresspools }}
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: {{ $key }}
+  namespace: {{ $nsname }}
+spec:
+{{ .spec | toYaml | indent 2 }}
+---
+{{- end }}
