@@ -1,5 +1,6 @@
 pack:
   namespace: metallb-system
+  # Do not change this namespace, since CRDs expect the namespace to be metallb-system
 
 charts:
   metallb-full:
