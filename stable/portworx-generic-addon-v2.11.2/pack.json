@@ -5,7 +5,15 @@
     "prerequisitesRequired": "true"
   },
   "cloudTypes": [
-    "all"
+    "aws",
+    "azure",
+    "aks",
+    "vsphere",
+    "edge",
+    "maas",
+    "openstack",
+    "eks",
+    "tke"
   ],
   "displayName": "Portworx /w Operator",
   "charts": [
