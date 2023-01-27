@@ -8,7 +8,8 @@
     "openstack",
     "maas",
     "edge",
-    "libvirt"
+    "libvirt",
+    "native"
   ],
   "displayName": "MetalLB (Helm)",
   "layer":"addon",
