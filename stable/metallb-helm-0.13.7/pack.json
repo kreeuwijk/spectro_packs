@@ -9,7 +9,7 @@
     "maas",
     "edge",
     "libvirt",
-    "native"
+    "edge-native"
   ],
   "displayName": "MetalLB (Helm)",
   "layer":"addon",

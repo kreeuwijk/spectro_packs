@@ -8,8 +8,7 @@
     "openstack",
     "maas",
     "edge",
-    "libvirt",
-    "native"
+    "libvirt"
   ],
   "displayName": "MetalLB",
   "layer":"addon",
