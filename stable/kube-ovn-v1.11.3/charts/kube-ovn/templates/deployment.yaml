@@ -209,7 +209,7 @@ spec:
             - --enable-lb={{ .Values.controller.enable_lb }}
             - --enable-np={{ .Values.controller.enable_np }}
             - --enable-eip-snat={{ .Values.controller.enable_eip_snat }}
-            - --enable-external-vpc={{ .Values.controller.enabl_external_vpc }}
+            - --enable-external-vpc={{ .Values.controller.enable_external_vpc }}
           env:
             - name: ENABLE_SSL
               value: "false"
