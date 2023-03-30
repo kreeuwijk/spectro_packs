@@ -1,0 +1,31 @@
+nameOverride: ""
+fullnameOverride: ""
+
+controller:
+  default_cidr: "10.16.0.0/16"
+  default_gateway: "10.16.0.1"
+  default_gateway_check: "true"
+  default_logical_gateway: "false"
+  default_exclude_ips: ""
+  node_switch_cidr: "100.64.0.0/16"
+  service_cluster_ip_range: "10.96.0.0/12"
+  network_type: "geneve"
+  default_interface_name: ""
+  default_vlan_id: "1"
+  pod_nic_type: "veth_pair"
+  enable_lb: "true"
+  enable_np: "true"
+  enable_eip_snat: "true"
+  enable_external_vpc: "true"
+
+daemon:
+  enable_mirror: "false"
+  encap_checksum: "true"
+  service_cluster_ip_range: "10.96.0.0/12"
+  iface: ""
+  network_type: "geneve"
+  default_interface_name: ""
+
+pinger:
+  external_address: "1.1.1.1"
+  external_dns: "google.com"

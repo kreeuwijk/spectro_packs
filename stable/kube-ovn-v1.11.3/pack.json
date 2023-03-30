@@ -1,0 +1,18 @@
+{
+  "cloudTypes": [
+    "aws",
+    "azure",
+    "gcp",
+    "vsphere",
+    "edge",
+    "maas",
+    "openstack"
+  ],
+  "displayName": "Kube-OVN",
+  "charts": [
+    "charts/kube-ovn-1.11.3.tgz"
+  ],
+  "layer": "cni",
+  "name": "cni-kube-ovn",
+  "version": "1.11.3"
+}

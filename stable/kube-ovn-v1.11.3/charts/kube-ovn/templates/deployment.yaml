@@ -1,0 +1,398 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: ovn-central
+  namespace:  kube-system
+  annotations:
+    kubernetes.io/description: |
+      OVN components: northd, nb and sb.
+  labels:
+    {{- include "kube-ovn.labels" . | nindent 4 }}
+spec:
+  replicas: {{ include "kube-ovn.controlPlaneSize" . }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: ovn-central
+  template:
+    metadata:
+      labels:
+        app: ovn-central
+        component: network
+        type: infra
+    spec:
+      tolerations:
+        - effect: NoSchedule
+          operator: Exists
+        - effect: NoExecute
+          operator: Exists
+        - key: CriticalAddonsOnly
+          operator: Exists
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: ovn-central
+              topologyKey: kubernetes.io/hostname
+      priorityClassName: system-cluster-critical
+      serviceAccountName: ovn
+      hostNetwork: true
+      containers:
+        - name: ovn-central
+          image: "kubeovn/kube-ovn:v1.11.3"
+          imagePullPolicy: IfNotPresent
+          command: ["/kube-ovn/start-db.sh"]
+          securityContext:
+            capabilities:
+              add: ["SYS_NICE"]
+          env:
+            - name: ENABLE_SSL
+              value: "false"
+            - name: NODE_IPS
+              value: {{ include "kube-ovn.controlPlaneIPs" . }}
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_IPS
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIPs
+          resources:
+            requests:
+              cpu: 500m
+              memory: 200Mi
+            limits:
+              cpu: 3
+              memory: 4Gi
+          volumeMounts:
+            - mountPath: /var/run/openvswitch
+              name: host-run-ovs
+            - mountPath: /var/run/ovn
+              name: host-run-ovn
+            - mountPath: /sys
+              name: host-sys
+              readOnly: true
+            - mountPath: /etc/openvswitch
+              name: host-config-openvswitch
+            - mountPath: /etc/ovn
+              name: host-config-ovn
+            - mountPath: /var/log/openvswitch
+              name: host-log-ovs
+            - mountPath: /var/log/ovn
+              name: host-log-ovn
+            - mountPath: /etc/localtime
+              name: localtime
+            - mountPath: /var/run/tls
+              name: kube-ovn-tls
+          readinessProbe:
+            exec:
+              command:
+                - bash
+                - /kube-ovn/ovn-healthcheck.sh
+            periodSeconds: 15
+            timeoutSeconds: 45
+          livenessProbe:
+            exec:
+              command:
+                - bash
+                - /kube-ovn/ovn-healthcheck.sh
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            failureThreshold: 5
+            timeoutSeconds: 45
+      nodeSelector:
+        kubernetes.io/os: "linux"
+        node-role.kubernetes.io/control-plane: ""
+      volumes:
+        - name: host-run-ovs
+          hostPath:
+            path: /run/openvswitch
+        - name: host-run-ovn
+          hostPath:
+            path: /run/ovn
+        - name: host-sys
+          hostPath:
+            path: /sys
+        - name: host-config-openvswitch
+          hostPath:
+            path: /etc/origin/openvswitch
+        - name: host-config-ovn
+          hostPath:
+            path: /etc/origin/ovn
+        - name: host-log-ovs
+          hostPath:
+            path: /var/log/openvswitch
+        - name: host-log-ovn
+          hostPath:
+            path: /var/log/ovn
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+        - name: kube-ovn-tls
+          secret:
+            optional: true
+            secretName: kube-ovn-tls
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: kube-ovn-controller
+  namespace: kube-system
+  annotations:
+    kubernetes.io/description: |
+      kube-ovn controller
+  labels:
+    {{- include "kube-ovn.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kube-ovn-controller
+  strategy:
+    rollingUpdate:
+      maxSurge: 0%
+      maxUnavailable: 100%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: kube-ovn-controller
+        component: network
+        type: infra
+    spec:
+      tolerations:
+        - effect: NoSchedule
+          operator: Exists
+        - key: CriticalAddonsOnly
+          operator: Exists
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: kube-ovn-controller
+              topologyKey: kubernetes.io/hostname
+      priorityClassName: system-node-critical
+      serviceAccountName: ovn
+      hostNetwork: true
+      containers:
+        - name: kube-ovn-controller
+          image: "kubeovn/kube-ovn:v1.11.3"
+          imagePullPolicy: IfNotPresent
+          args:
+            - /kube-ovn/start-controller.sh
+            - --default-cidr={{ .Values.controller.default_cidr }}
+            - --default-gateway={{ .Values.controller.default_gateway }}
+            - --default-gateway-check={{ .Values.controller.default_gateway_check }}
+            - --default-logical-gateway={{ .Values.controller.default_logical_gateway }}
+            - --default-exclude-ips={{ .Values.controller.default_exclude_ips }}
+            - --node-switch-cidr={{ .Values.controller.node_switch_cidr }}
+            - --service-cluster-ip-range={{ .Values.controller.service_cluster_ip_range }}
+            - --network-type={{ .Values.controller.network_type }}
+            - --default-interface-name={{ .Values.controller.default_interface_name }}
+            - --default-vlan-id={{ .Values.controller.default_vlan_id }}
+            - --pod-nic-type={{ .Values.controller.pod_nic_type }}
+            - --enable-lb={{ .Values.controller.enable_lb }}
+            - --enable-np={{ .Values.controller.enable_np }}
+            - --enable-eip-snat={{ .Values.controller.enable_eip_snat }}
+            - --enable-external-vpc={{ .Values.controller.enabl_external_vpc }}
+          env:
+            - name: ENABLE_SSL
+              value: "false"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: KUBE_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_IPS
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIPs
+          volumeMounts:
+            - mountPath: /etc/localtime
+              name: localtime
+            - mountPath: /var/run/tls
+              name: kube-ovn-tls
+          readinessProbe:
+            exec:
+              command:
+                - /kube-ovn/kube-ovn-controller-healthcheck
+            periodSeconds: 3
+            timeoutSeconds: 45
+          livenessProbe:
+            exec:
+              command:
+                - /kube-ovn/kube-ovn-controller-healthcheck
+            initialDelaySeconds: 300
+            periodSeconds: 7
+            failureThreshold: 5
+            timeoutSeconds: 45
+          resources:
+            requests:
+              cpu: 200m
+              memory: 200Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+      nodeSelector:
+        kubernetes.io/os: "linux"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+        - name: kube-ovn-tls
+          secret:
+            optional: true
+            secretName: kube-ovn-tls
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: kube-ovn-monitor
+  namespace: kube-system
+  annotations:
+    kubernetes.io/description: |
+      Metrics for OVN components: northd, nb and sb.
+  labels:
+    {{- include "kube-ovn.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: kube-ovn-monitor
+  template:
+    metadata:
+      labels:
+        app: kube-ovn-monitor
+        component: network
+        type: infra
+    spec:
+      tolerations:
+        - effect: NoSchedule
+          operator: Exists
+        - key: CriticalAddonsOnly
+          operator: Exists
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: kube-ovn-monitor
+              topologyKey: kubernetes.io/hostname
+      priorityClassName: system-cluster-critical
+      serviceAccountName: ovn
+      hostNetwork: true
+      containers:
+        - name: kube-ovn-monitor
+          image: "kubeovn/kube-ovn:v1.11.3"
+          imagePullPolicy: IfNotPresent
+          command: ["/kube-ovn/start-ovn-monitor.sh"]
+          securityContext:
+            runAsUser: 0
+            privileged: false
+          env:
+            - name: ENABLE_SSL
+              value: "false"
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_IPS
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIPs
+          resources:
+            requests:
+              cpu: 200m
+              memory: 200Mi
+            limits:
+              cpu: 200m
+              memory: 200Mi
+          volumeMounts:
+            - mountPath: /var/run/openvswitch
+              name: host-run-ovs
+            - mountPath: /var/run/ovn
+              name: host-run-ovn
+            - mountPath: /etc/openvswitch
+              name: host-config-openvswitch
+            - mountPath: /etc/ovn
+              name: host-config-ovn
+            - mountPath: /var/log/openvswitch
+              name: host-log-ovs
+            - mountPath: /var/log/ovn
+              name: host-log-ovn
+            - mountPath: /etc/localtime
+              name: localtime
+            - mountPath: /var/run/tls
+              name: kube-ovn-tls
+          readinessProbe:
+            exec:
+              command:
+                - cat
+                - /var/run/ovn/ovn-controller.pid
+            periodSeconds: 10
+            timeoutSeconds: 45
+          livenessProbe:
+            exec:
+              command:
+                - cat
+                - /var/run/ovn/ovn-controller.pid
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 5
+            timeoutSeconds: 45
+      nodeSelector:
+        kubernetes.io/os: "linux"
+        node-role.kubernetes.io/control-plane: ""
+      volumes:
+        - name: host-run-ovs
+          hostPath:
+            path: /run/openvswitch
+        - name: host-run-ovn
+          hostPath:
+            path: /run/ovn
+        - name: host-config-openvswitch
+          hostPath:
+            path: /etc/origin/openvswitch
+        - name: host-config-ovn
+          hostPath:
+            path: /etc/origin/ovn
+        - name: host-log-ovs
+          hostPath:
+            path: /var/log/openvswitch
+        - name: host-log-ovn
+          hostPath:
+            path: /var/log/ovn
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+        - name: kube-ovn-tls
+          secret:
+            optional: true
+            secretName: kube-ovn-tls

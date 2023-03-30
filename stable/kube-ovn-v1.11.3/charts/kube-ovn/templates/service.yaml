@@ -1,0 +1,118 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: ovn-nb
+  namespace:  kube-system
+  labels:
+    {{- include "kube-ovn.labels" . | nindent 4 }}
+spec:
+  ports:
+    - name: ovn-nb
+      protocol: TCP
+      port: 6641
+      targetPort: 6641
+  type: ClusterIP
+  selector:
+    app: ovn-central
+    ovn-nb-leader: "true"
+  sessionAffinity: None
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: ovn-sb
+  namespace:  kube-system
+  labels:
+    {{- include "kube-ovn.labels" . | nindent 4 }}
+spec:
+  ports:
+    - name: ovn-sb
+      protocol: TCP
+      port: 6642
+      targetPort: 6642
+  type: ClusterIP
+  selector:
+    app: ovn-central
+    ovn-sb-leader: "true"
+  sessionAffinity: None
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: ovn-northd
+  namespace: kube-system
+  labels:
+    {{- include "kube-ovn.labels" . | nindent 4 }}
+spec:
+  ports:
+    - name: ovn-northd
+      protocol: TCP
+      port: 6643
+      targetPort: 6643
+  type: ClusterIP
+  selector:
+    app: ovn-central
+    ovn-northd-leader: "true"
+  sessionAffinity: None
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: kube-ovn-monitor
+  namespace: kube-system
+  labels:
+    app: kube-ovn-monitor
+    {{- include "kube-ovn.labels" . | nindent 4 }}
+spec:
+  ports:
+    - name: metrics
+      port: 10661
+  type: ClusterIP
+  selector:
+    app: kube-ovn-monitor
+  sessionAffinity: None
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: kube-ovn-pinger
+  namespace: kube-system
+  labels:
+    app: kube-ovn-pinger
+    {{- include "kube-ovn.labels" . | nindent 4 }}
+spec:
+  selector:
+    app: kube-ovn-pinger
+  ports:
+    - port: 8080
+      name: metrics
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: kube-ovn-controller
+  namespace: kube-system
+  labels:
+    app: kube-ovn-controller
+    {{- include "kube-ovn.labels" . | nindent 4 }}
+spec:
+  selector:
+    app: kube-ovn-controller
+  ports:
+    - port: 10660
+      name: metrics
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: kube-ovn-cni
+  namespace: kube-system
+  labels:
+    app: kube-ovn-cni
+    {{- include "kube-ovn.labels" . | nindent 4 }}
+spec:
+  selector:
+    app: kube-ovn-cni
+  ports:
+    - port: 10665
+      name: metrics
