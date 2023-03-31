@@ -6,6 +6,19 @@ manifests:
   ns-label:
     namespace: topolvm-system
 
+# TopoLVM does not conform with the baseline level Pod Security Standard, which Palette configures
+# to be enforced by default across all namespaces except kube-system on Kubernetes 1.25+.
+# In order to allow TopoLVM to function on Kubernetes 1.25+, you need to exempt the topolvm-system
+# namespace in /etc/kubernetes/pod-security-standard.yaml
+# You can adjust this in the Kubernetes pack in Palette:
+#             exemptions:
+#               # Array of authenticated usernames to exempt.
+#               usernames: []
+#               # Array of runtime class names to exempt.
+#               runtimeClasses: []
+#               # Array of namespaces to exempt.
+#               namespaces: [kube-system, topolvm-system]
+
 # To use the topolvm-scheduler, extend the configuration of the Kubernetes pack in Palette as follows:
 # kubeadmconfig:
 #   scheduler:
