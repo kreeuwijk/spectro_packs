@@ -239,8 +239,6 @@ spec:
                 fieldPath: status.podIPs
           - name: ENABLE_BIND_LOCAL_IP
             value: "true"
-          - name: DBUS_SYSTEM_BUS_ADDRESS
-            value: "unix:path=/host/var/run/dbus/system_bus_socket"
         volumeMounts:
           - name: host-modules
             mountPath: /lib/modules
