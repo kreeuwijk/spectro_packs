@@ -1,0 +1,13 @@
+{
+  "annotations": {},
+  "cloudTypes": [
+    "all"
+  ],
+  "displayName": "Cilium",
+  "charts": [
+    "charts/cilium-1.13.1.tgz"
+  ],
+  "layer": "cni",
+  "name": "cni-cilium",
+  "version": "1.13.1"
+}
