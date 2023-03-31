@@ -593,7 +593,7 @@ charts:
     podSecurityPolicy:
       # podSecurityPolicy.create -- Enable pod security policy.
       ## ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
-      create: true
+      create: false
 
     # Cert-manager is already included with Palette and should not be installed by this pack
     cert-manager:
