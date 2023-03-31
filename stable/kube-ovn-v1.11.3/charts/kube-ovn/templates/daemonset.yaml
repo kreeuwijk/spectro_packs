@@ -239,6 +239,8 @@ spec:
                 fieldPath: status.podIPs
           - name: ENABLE_BIND_LOCAL_IP
             value: "true"
+          - name: DBUS_SYSTEM_BUS_ADDRESS
+            value: "unix:path=/host/var/run/dbus/system_bus_socket"
         volumeMounts:
           - name: host-modules
             mountPath: /lib/modules
@@ -313,10 +315,10 @@ spec:
             path: /run/ovn
         - name: cni-conf
           hostPath:
-            path: $CNI_CONF_DIR
+            path: /etc/cni/net.d
         - name: cni-bin
           hostPath:
-            path: $CNI_BIN_DIR
+            path: /opt/cni/bin
         - name: host-ns
           hostPath:
             path: /var/run/netns
