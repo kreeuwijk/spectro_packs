@@ -1,0 +1,17 @@
+{
+  "addonType":"system app",
+  "annotations": {},
+  "cloudTypes": [
+    "all"
+  ],
+  "displayName": "TopoLVM",
+  "charts": [
+    "charts/topolvm-11.1.1.tgz"
+  ],
+  "kubeManifests": [
+    "manifests/ns-label.yaml"
+  ],
+  "layer": "addon",
+  "name": "csi-topolvm",
+  "version": "11.1.1"
+}
