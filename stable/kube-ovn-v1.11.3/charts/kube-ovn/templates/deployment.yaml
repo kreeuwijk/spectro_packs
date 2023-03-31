@@ -71,9 +71,11 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIPs
+            - name: ENABLE_BIND_LOCAL_IP
+              value: "true"
           resources:
             requests:
-              cpu: 500m
+              cpu: 300m
               memory: 200Mi
             limits:
               cpu: 3
@@ -158,7 +160,7 @@ metadata:
   labels:
     {{- include "kube-ovn.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.controller.replicas }}
   selector:
     matchLabels:
       app: kube-ovn-controller
@@ -194,22 +196,34 @@ spec:
           image: "kubeovn/kube-ovn:v1.11.3"
           imagePullPolicy: IfNotPresent
           args:
-            - /kube-ovn/start-controller.sh
-            - --default-cidr={{ .Values.controller.default_cidr }}
-            - --default-gateway={{ .Values.controller.default_gateway }}
-            - --default-gateway-check={{ .Values.controller.default_gateway_check }}
-            - --default-logical-gateway={{ .Values.controller.default_logical_gateway }}
-            - --default-exclude-ips={{ .Values.controller.default_exclude_ips }}
-            - --node-switch-cidr={{ .Values.controller.node_switch_cidr }}
-            - --service-cluster-ip-range={{ .Values.controller.service_cluster_ip_range }}
-            - --network-type={{ .Values.controller.network_type }}
-            - --default-interface-name={{ .Values.controller.default_interface_name }}
-            - --default-vlan-id={{ .Values.controller.default_vlan_id }}
-            - --pod-nic-type={{ .Values.controller.pod_nic_type }}
-            - --enable-lb={{ .Values.controller.enable_lb }}
-            - --enable-np={{ .Values.controller.enable_np }}
-            - --enable-eip-snat={{ .Values.controller.enable_eip_snat }}
-            - --enable-external-vpc={{ .Values.controller.enable_external_vpc }}
+          - /kube-ovn/start-controller.sh
+          - --default-cidr={{ .Values.controller.default_cidr }}
+          - --default-gateway={{ .Values.controller.default_gateway }}
+          - --default-gateway-check={{ .Values.controller.default_gateway_check }}
+          - --default-logical-gateway={{ .Values.controller.default_logical_gateway }}
+          - --default-u2o-interconnection={{ .Values.controller.u2o_interconnection }}
+          - --default-exclude-ips={{ .Values.controller.default_exclude_ips }}
+          - --node-switch-cidr={{ .Values.controller.node_switch_cidr }}
+          - --service-cluster-ip-range={{ .Values.controller.service_cluster_ip_range }}
+          - --network-type={{ .Values.controller.network_type }}
+          - --default-interface-name={{ .Values.controller.default_interface_name }}
+          - --default-exchange-link-name={{ .Values.controller.default_exchange_link_name }}
+          - --default-vlan-id={{ .Values.controller.default_vlan_id }}
+          - --ls-dnat-mod-dl-dst={{ .Values.controller.ls_dnat_mod_dl_dst }}
+          - --pod-nic-type={{ .Values.controller.pod_nic_type }}
+          - --enable-lb={{ .Values.controller.enable_lb }}
+          - --enable-np={{ .Values.controller.enable_np }}
+          - --enable-eip-snat={{ .Values.controller.enable_eip_snat }}
+          - --enable-external-vpc={{ .Values.controller.enable_external_vpc }}
+          - --logtostderr={{ .Values.controller.logtostderr }}
+          - --alsologtostderr={{ .Values.controller.alsologtostderr }}
+          - --gc-interval={{ .Values.controller.gc_interval }}
+          - --inspect-interval={{ .Values.controller.inspect_interval }}
+          - --log_file={{ .Values.controller.log_file }}
+          - --log_file_max_size={{ .Values.controller.log_file_max_size }}
+          - --enable-lb-svc={{ .Values.controller.enable_lb_svc }}
+          - --keep-vm-ip={{ .Values.controller.keep_vm_ip }}
+          - --pod-default-fip-type={{ .Values.controller.pod_default_fip_type }}
           env:
             - name: ENABLE_SSL
               value: "false"
@@ -229,9 +243,13 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIPs
+            - name: ENABLE_BIND_LOCAL_IP
+              value: "true"
           volumeMounts:
             - mountPath: /etc/localtime
               name: localtime
+            - mountPath: /var/log/kube-ovn
+              name: kube-ovn-log
             - mountPath: /var/run/tls
               name: kube-ovn-tls
           readinessProbe:
@@ -261,6 +279,9 @@ spec:
         - name: localtime
           hostPath:
             path: /etc/localtime
+        - name: kube-ovn-log
+          hostPath:
+            path: /var/log/kube-ovn
         - name: kube-ovn-tls
           secret:
             optional: true
@@ -327,6 +348,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIPs
+            - name: ENABLE_BIND_LOCAL_IP
+              value: "true"
           resources:
             requests:
               cpu: 200m

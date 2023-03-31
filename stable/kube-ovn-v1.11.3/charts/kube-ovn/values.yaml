@@ -1,31 +1,57 @@
 nameOverride: ""
 fullnameOverride: ""
 
+config:
+  dual_stack: false
+
 controller:
-  default_cidr: "10.16.0.0/16"
-  default_gateway: "10.16.0.1"
+  replicas: 1
+  default_cidr: "10.16.0.0/16"               # IPv4 CIDR | IPv6 CIDR | IPv4 CIDR,IPv6 CIDR
+  default_gateway: "10.16.0.1"               # IPv4 address | IPv6 address | IPv4 address,IPv6 address
   default_gateway_check: "true"
   default_logical_gateway: "false"
+  u2o_interconnection: "false"
   default_exclude_ips: ""
-  node_switch_cidr: "100.64.0.0/16"
-  service_cluster_ip_range: "10.96.0.0/12"
-  network_type: "geneve"
+  node_switch_cidr: "100.64.0.0/16"          # IPv4 CIDR | IPv6 CIDR | IPv4 CIDR,IPv6 CIDR
+  service_cluster_ip_range: "10.96.0.0/12"   # IPv4 CIDR | IPv6 CIDR | IPv4 CIDR,IPv6 CIDR
+  network_type: "geneve"                     # geneve | vlan
   default_interface_name: ""
+  default_exchange_link_name: "false"
   default_vlan_id: "1"
+  ls_dnat_mod_dl_dst: "true"
   pod_nic_type: "veth_pair"
   enable_lb: "true"
   enable_np: "true"
   enable_eip_snat: "true"
   enable_external_vpc: "true"
+  logtostderr: "false"
+  alsologtostderr: "true"
+  gc_interval: "360"
+  inspect_interval: "20"
+  log_file: "/var/log/kube-ovn/kube-ovn-controller.log"
+  log_file_max_size: "0"
+  enable_lb_svc: "false"
+  keep_vm_ip: "true"
+  pod_default_fip_type: ""
 
 daemon:
   enable_mirror: "false"
   encap_checksum: "true"
-  service_cluster_ip_range: "10.96.0.0/12"
+  service_cluster_ip_range: "10.96.0.0/12"   # IPv4 CIDR | IPv6 CIDR | IPv4 CIDR,IPv6 CIDR
   iface: ""
-  network_type: "geneve"
+  tunnel_type: "geneve"                      # geneve | vxlan | stt
   default_interface_name: ""
+  hardware_offload: "false"
+  cni_config_priority: "01"
+  logtostderr: "false"
+  alsologtostderr: "true"
+  log_file: "/var/log/kube-ovn/kube-ovn-cni.log"
+  log_file_max_size: "0"
 
 pinger:
-  external_address: "1.1.1.1"
+  external_address: "1.1.1.1"                # IPv4 address | IPv6 address | IPv4 address,IPv6 address
   external_dns: "google.com"
+  logtostderr: "false"
+  alsologtostderr: "true"
+  log_file: "/var/log/kube-ovn/kube-ovn-pinger.log"
+  log_file_max_size: "0"

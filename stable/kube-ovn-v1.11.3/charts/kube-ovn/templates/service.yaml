@@ -12,6 +12,9 @@ spec:
       port: 6641
       targetPort: 6641
   type: ClusterIP
+  {{- if .Values.config.dual_stack }}
+  ipFamilyPolicy: "PreferDualStack"
+  {{- end }}
   selector:
     app: ovn-central
     ovn-nb-leader: "true"
@@ -31,6 +34,9 @@ spec:
       port: 6642
       targetPort: 6642
   type: ClusterIP
+  {{- if .Values.config.dual_stack }}
+  ipFamilyPolicy: "PreferDualStack"
+  {{- end }}
   selector:
     app: ovn-central
     ovn-sb-leader: "true"
@@ -50,6 +56,9 @@ spec:
       port: 6643
       targetPort: 6643
   type: ClusterIP
+  {{- if .Values.config.dual_stack }}
+  ipFamilyPolicy: "PreferDualStack"
+  {{- end }}
   selector:
     app: ovn-central
     ovn-northd-leader: "true"
@@ -68,6 +77,9 @@ spec:
     - name: metrics
       port: 10661
   type: ClusterIP
+  {{- if .Values.config.dual_stack }}
+  ipFamilyPolicy: "PreferDualStack"
+  {{- end }}
   selector:
     app: kube-ovn-monitor
   sessionAffinity: None
@@ -81,6 +93,9 @@ metadata:
     app: kube-ovn-pinger
     {{- include "kube-ovn.labels" . | nindent 4 }}
 spec:
+  {{- if .Values.config.dual_stack }}
+  ipFamilyPolicy: "PreferDualStack"
+  {{- end }}
   selector:
     app: kube-ovn-pinger
   ports:
@@ -96,6 +111,9 @@ metadata:
     app: kube-ovn-controller
     {{- include "kube-ovn.labels" . | nindent 4 }}
 spec:
+  {{- if .Values.config.dual_stack }}
+  ipFamilyPolicy: "PreferDualStack"
+  {{- end }}
   selector:
     app: kube-ovn-controller
   ports:
@@ -111,6 +129,9 @@ metadata:
     app: kube-ovn-cni
     {{- include "kube-ovn.labels" . | nindent 4 }}
 spec:
+  {{- if .Values.config.dual_stack }}
+  ipFamilyPolicy: "PreferDualStack"
+  {{- end }}
   selector:
     app: kube-ovn-cni
   ports:
