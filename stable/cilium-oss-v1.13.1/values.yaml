@@ -1,4 +1,23 @@
 pack:
+  content:
+    images:
+      - image: quay.io/cilium/certgen:v0.1.8@sha256:4a456552a5f192992a6edcec2febb1c54870d665173a33dc7d876129b199ddbd
+      - image: quay.io/cilium/cilium:v1.13.1
+      - image: quay.io/cilium/cilium-etcd-operator:v2.0.7@sha256:04b8327f7f992693c2cb483b999041ed8f92efc8e14f2a5f3ab95574a65ea2dc
+      - image: quay.io/cilium/clustermesh-apiserver:v1.13.1
+      - image: quay.io/cilium/hubble-relay:v1.13.1
+      - image: quay.io/cilium/hubble-ui:v0.10.0@sha256:118ad2fcfd07fabcae4dde35ec88d33564c9ca7abe520aa45b1eb13ba36c6e0a
+      - image: quay.io/cilium/hubble-ui-backend:v0.10.0@sha256:cc5e2730b3be6f117b22176e25875f2308834ced7c3aa34fb598aa87a2c0a6a4
+      - image: quay.io/cilium/operator:v1.13.1
+      - image: quay.io/cilium/startup-script:d69851597ea019af980891a4628fb36b7880ec26
+      - image: quay.io/coreos/etcd:v3.5.4@sha256:795d8660c48c439a7c3764c2330ed9222ab5db5bb524d8d0607cac76f7ba82a3
+
+    charts:
+      - repo: https://github.com/cilium/cilium/archive/refs/tags/v1.13.1.tar.gz
+        name: cilium
+        version: 1.13.1
+  #The namespace (on the target cluster) to install this chart
+  #When not found, a new namespace will be created
   namespace: kube-system
 
 charts:
