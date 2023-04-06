@@ -1,6 +1,15 @@
 pack:
+  content:
+    images:
+      - image: ghcr.io/topolvm/topolvm-with-sidecar:0.18.1
+
+    charts:
+      - repo: https://github.com/topolvm/topolvm/tree/main/charts
+        name: topolvm
+        version: 11.1.1
+  #The namespace (on the target cluster) to install this chart
+  #When not found, a new namespace will be created
   namespace: topolvm-system
-  spectrocloud.com/install-priority: "1"
 
 manifests:
   ns-label:
