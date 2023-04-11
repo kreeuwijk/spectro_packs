@@ -1,6 +1,6 @@
 dependencies:
 - name: px-operator
   repository: ""
-  version: 1.1.0
-digest: sha256:d5ebc6885b722a441ba0c927cb6f90d3aa14ad6ae1d1be5bb9922513eaf35b44
-generated: "2022-11-15T11:00:02.264994+01:00"
+  version: 1.1.1
+digest: sha256:e914221863fec459c6e579b2d5201e92e3175bfc0a6b6abb99f6d1047aecab58
+generated: "2023-04-11T12:17:49.701815+02:00"
