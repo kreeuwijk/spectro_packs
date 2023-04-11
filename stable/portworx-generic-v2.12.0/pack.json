@@ -15,6 +15,7 @@
   ],
   "displayName": "Portworx /w Operator",
   "charts": [
+    "charts/px-operator-1.1.1.tgz",
     "charts/portworx-generic-1.2.2.tgz"
   ],
   "layer": "csi",
