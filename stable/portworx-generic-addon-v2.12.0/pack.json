@@ -17,7 +17,8 @@
   ],
   "displayName": "Portworx /w Operator",
   "charts": [
-    "charts/portworx-addon-1.2.1.tgz"
+    "charts/px-operator-1.1.1.tgz",
+    "charts/portworx-addon-1.2.2.tgz"
   ],
   "layer": "addon",
   "name": "portworx-add-on",
