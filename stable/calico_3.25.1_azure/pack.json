@@ -40,5 +40,5 @@
     ],
     "layer": "cni",
     "name": "cni-calico-azure",
-    "version": "3.25.0"
+    "version": "3.25.1"
   }

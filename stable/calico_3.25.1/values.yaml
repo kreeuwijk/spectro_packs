@@ -1,15 +1,19 @@
 pack:
   content:
     images:
-      - image: gcr.io/spectro-images-public/calico/cni:v3.25.0
-      - image: gcr.io/spectro-images-public/calico/node:v3.25.0
-      - image: gcr.io/spectro-images-public/calico/kube-controllers:v3.25.0
+      - image: gcr.io/spectro-images-public/calico/cni:v3.25.1
+      - image: gcr.io/spectro-images-public/calico/node:v3.25.1
+      - image: gcr.io/spectro-images-public/calico/kube-controllers:v3.25.1
 
 manifests:
   calico:
 
     # IPAM type to use. Supported types are calico-ipam, host-local
     ipamType: "calico-ipam"
+
+    calico_ipam:
+      assign_ipv4: true
+      assign_ipv6: false
 
     # Should be one of CALICO_IPV4POOL_IPIP or CALICO_IPV4POOL_VXLAN  
     encapsulationType: "CALICO_IPV4POOL_IPIP"
@@ -20,6 +24,9 @@ manifests:
     env:
       # Additional env variables for calico-node
       calicoNode:
+        #IPV6: "autodetect"
+        #FELIX_IPV6SUPPORT: "true"
+        #CALICO_IPV6POOL_NAT_OUTGOING: "true"
         #CALICO_IPV4POOL_CIDR: "192.168.0.0/16"
         #IP_AUTODETECTION_METHOD: "first-found"
 

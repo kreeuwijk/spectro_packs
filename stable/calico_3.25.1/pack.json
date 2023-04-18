@@ -1,7 +1,6 @@
 {
     "annotations": {},
     "ansibleRoles": [],
-    "commit_msg" : "Add Calico CNI for EKS cloud type",
     "cloudTypes": [
       "aws",
       "eks",
@@ -50,5 +49,5 @@
     ],
     "layer": "cni",
     "name": "cni-calico",
-    "version": "3.25.0"
+    "version": "3.25.1"
   }
