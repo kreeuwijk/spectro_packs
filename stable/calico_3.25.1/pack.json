@@ -1,0 +1,54 @@
+{
+    "annotations": {},
+    "ansibleRoles": [],
+    "commit_msg" : "Add Calico CNI for EKS cloud type",
+    "cloudTypes": [
+      "aws",
+      "eks",
+      "vsphere",
+      "gcp",
+      "maas",
+      "openstack",
+      "edge",
+      "edge-native",
+      "libvirt",
+      "coxedge"
+    ],
+    "constraints": {
+      "dependencies": [
+        {
+          "packName": "kubernetes",
+          "layer": "k8s",
+          "minVersion": "1.21.0",
+          "type": "optional"
+        },
+        {
+          "packName": "kubernetes-eksd",
+          "layer": "k8s",
+          "minVersion": "1.21.2-eks-1-21-6",
+          "type": "optional"
+        },
+        {
+          "packName": "kubernetes-tke",
+          "layer": "k8s",
+          "minVersion": "1.21.0",
+          "type": "optional"
+        },
+        {
+          "packName": "kubernetes-konvoy",
+          "layer": "k8s",
+          "minVersion": "1.21.0",
+          "type": "optional"
+        }
+      ]
+    },
+    "displayName": "Calico",
+    "eol": "",
+    "group": "",
+    "kubeManifests": [
+      "manifests/calico.yaml"
+    ],
+    "layer": "cni",
+    "name": "cni-calico",
+    "version": "3.25.0"
+  }

@@ -1,0 +1,29 @@
+pack:
+  content:
+    images:
+      - image: gcr.io/spectro-images-public/calico/cni:v3.25.0
+      - image: gcr.io/spectro-images-public/calico/node:v3.25.0
+      - image: gcr.io/spectro-images-public/calico/kube-controllers:v3.25.0
+
+manifests:
+  calico:
+
+    # IPAM type to use. Supported types are calico-ipam, host-local
+    ipamType: "calico-ipam"
+
+    # Should be one of CALICO_IPV4POOL_IPIP or CALICO_IPV4POOL_VXLAN  
+    encapsulationType: "CALICO_IPV4POOL_IPIP"
+
+    # Should be one of Always, CrossSubnet, Never
+    encapsulationMode: "Always"
+
+    env:
+      # Additional env variables for calico-node
+      calicoNode:
+        #CALICO_IPV4POOL_CIDR: "192.168.0.0/16"
+        #IP_AUTODETECTION_METHOD: "first-found"
+
+      # Additional env variables for calico-kube-controller deployment
+      calicoKubeControllers:
+        #LOG_LEVEL: "info"
+        #SYNC_NODE_LABELS: "true"

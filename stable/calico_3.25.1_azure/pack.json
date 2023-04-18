@@ -1,0 +1,44 @@
+{
+    "annotations": {},
+    "ansibleRoles": [],
+    "cloudTypes": [
+      "azure"
+    ],
+    "constraints": {
+      "dependencies": [
+        {
+          "packName": "kubernetes",
+          "layer": "k8s",
+          "minVersion": "1.21.0",
+          "type": "optional"
+        },
+        {
+          "packName": "kubernetes-eksd",
+          "layer": "k8s",
+          "minVersion": "1.21.2-eks-1-21-6",
+          "type": "optional"
+        },
+        {
+          "packName": "kubernetes-tke",
+          "layer": "k8s",
+          "minVersion": "1.21.0",
+          "type": "optional"
+        },
+        {
+          "packName": "kubernetes-konvoy",
+          "layer": "k8s",
+          "minVersion": "1.21.0",
+          "type": "optional"
+        }
+      ]
+    },
+    "displayName": "Calico",
+    "eol": "",
+    "group": "",
+    "kubeManifests": [
+      "manifests/calico.yaml"
+    ],
+    "layer": "cni",
+    "name": "cni-calico-azure",
+    "version": "3.25.0"
+  }
