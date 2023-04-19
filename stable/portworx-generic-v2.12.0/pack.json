@@ -7,7 +7,7 @@
     "aws",
     "azure",
     "vsphere",
-    "edge",
+    "edge-native",
     "maas",
     "openstack",
     "eks",
