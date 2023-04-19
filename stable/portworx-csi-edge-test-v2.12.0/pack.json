@@ -4,21 +4,14 @@
     "prerequisitesRequired": "true"
   },
   "cloudTypes": [
-    "aws",
-    "azure",
-    "vsphere",
-    "edge-native",
-    "maas",
-    "openstack",
-    "eks",
-    "tke"
+    "edge-native"
   ],
-  "displayName": "Portworx2",
+  "displayName": "Portworx CSI Edge Native",
   "charts": [
     "charts/px-operator-1.1.1.tgz",
     "charts/portworx-generic-1.2.2.tgz"
   ],
   "layer": "csi",
-  "name": "csi-portworx2-generic",
+  "name": "csi-portworx-generic-edge-test",
   "version": "2.12.0"
 }
