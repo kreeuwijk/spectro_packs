@@ -7,18 +7,18 @@
     "aws",
     "azure",
     "vsphere",
-    "edge",
+    "edge-native",
     "maas",
     "openstack",
     "eks",
     "tke"
   ],
-  "displayName": "Portworx /w Operator",
+  "displayName": "Portworx2",
   "charts": [
     "charts/px-operator-1.1.1.tgz",
     "charts/portworx-generic-1.2.2.tgz"
   ],
   "layer": "csi",
-  "name": "csi-portworx-generic",
+  "name": "csi-portworx2-generic",
   "version": "2.12.0"
 }
