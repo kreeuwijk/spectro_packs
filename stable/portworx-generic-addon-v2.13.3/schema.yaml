@@ -1,0 +1,5 @@
+charts.portworx-addon.vsphereSecret.password:
+  schema: '{{ format "${password}" | hints "Use this to specify the password for the px-vsphere-secret" }}'
+
+charts.portworx-addon.azureSecret.clientSecret:
+  schema: '{{ format "${password}" | hints "Use this to specify the Azure client secret for the px-azure secret" }}'

@@ -1,0 +1,27 @@
+{
+  "addonType":"system app",
+  "annotations": {
+    "docsURL": "https://docs.spectrocloud.com/integrations/portworx",
+    "prerequisitesRequired": "true"
+  },
+  "cloudTypes": [
+    "aws",
+    "azure",
+    "aks",
+    "vsphere",
+    "edge",
+    "edge-native",
+    "maas",
+    "openstack",
+    "eks",
+    "tke"
+  ],
+  "displayName": "Portworx /w Operator",
+  "charts": [
+    "charts/px-operator-1.1.2.tgz",
+    "charts/portworx-addon-1.2.3.tgz"
+  ],
+  "layer": "addon",
+  "name": "portworx-add-on",
+  "version": "2.13.3"
+}
