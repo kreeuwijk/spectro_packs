@@ -50,11 +50,21 @@
   {{- $defaultKubeProxyReplacement = "disabled" -}}
 {{- end -}}
 
+{{- /* Default values when 1.14 was initially deployed */ -}}
+{{- if semverCompare ">=1.14" (default "1.14" .Values.upgradeCompatibility) -}}
+  {{- /* KPR default for 1.14 needed to override earlier version defaults set above when upgradeCompatibility is not specified */ -}}
+  {{- $defaultKubeProxyReplacement = "false" -}}
+{{- end -}}
+
 {{- $ipam := (coalesce .Values.ipam.mode $defaultIPAM) -}}
 {{- $bpfCtTcpMax := (coalesce .Values.bpf.ctTcpMax $defaultBpfCtTcpMax) -}}
 {{- $bpfCtAnyMax := (coalesce .Values.bpf.ctAnyMax $defaultBpfCtAnyMax) -}}
-{{- $kubeProxyReplacement := (coalesce .Values.kubeProxyReplacement $defaultKubeProxyReplacement) -}}
-{{- if and (ne (toString $kubeProxyReplacement) "disabled") (ne (toString $kubeProxyReplacement) "partial") (ne (toString $kubeProxyReplacement) "strict") (ne (toString $kubeProxyReplacement) "true") (ne (toString $kubeProxyReplacement) "false") }}
+{{- $stringValueKPR := (toString .Values.kubeProxyReplacement) -}}
+{{- if (eq $stringValueKPR "<nil>") }}
+  {{- $stringValueKPR = "" -}}
+{{- end}}
+{{- $kubeProxyReplacement := (coalesce $stringValueKPR $defaultKubeProxyReplacement) -}}
+{{- if and (ne $kubeProxyReplacement "disabled") (ne $kubeProxyReplacement "partial") (ne $kubeProxyReplacement "strict") (ne $kubeProxyReplacement "true") (ne $kubeProxyReplacement "false") }}
   {{ fail "kubeProxyReplacement must be explicitly set to a valid value (true, false, disabled (deprecated), partial (deprecated), or strict (deprecated)) to continue." }}
 {{- end }}
 {{- $azureUsePrimaryAddress = (coalesce .Values.azure.usePrimaryAddress $azureUsePrimaryAddress) -}}
@@ -432,6 +442,10 @@ data:
 {{- else if eq .Values.tunnel "geneve" }}
   routing-mode: "tunnel"
   tunnel-protocol: "geneve"
+{{- else if not (or .Values.gke.enabled .Values.aksbyocni.enabled) }}
+  # Default case
+  routing-mode: "tunnel"
+  tunnel-protocol: "vxlan"
 {{- end }}
 
 {{- if .Values.routingMode }}
@@ -639,7 +653,7 @@ data:
 
   kube-proxy-replacement: {{ $kubeProxyReplacement | quote }}
 
-{{- if ne (toString $kubeProxyReplacement) "disabled" }}
+{{- if ne $kubeProxyReplacement "disabled" }}
   kube-proxy-replacement-healthz-bind-address: {{ default "" .Values.kubeProxyReplacementHealthzBindAddr | quote}}
 {{- end }}
 
@@ -653,17 +667,17 @@ data:
 {{- end }}
 
 {{- if hasKey .Values "hostPort" }}
-{{- if or (eq (toString $kubeProxyReplacement) "partial") (eq (toString $kubeProxyReplacement) "false") }}
+{{- if or (eq $kubeProxyReplacement "partial") (eq $kubeProxyReplacement "false") }}
   enable-host-port: {{ .Values.hostPort.enabled | quote }}
 {{- end }}
 {{- end }}
 {{- if hasKey .Values "externalIPs" }}
-{{- if or (eq (toString $kubeProxyReplacement) "partial") (eq (toString $kubeProxyReplacement) "false") }}
+{{- if or (eq $kubeProxyReplacement "partial") (eq $kubeProxyReplacement "false") }}
   enable-external-ips: {{ .Values.externalIPs.enabled | quote }}
 {{- end }}
 {{- end }}
 {{- if hasKey .Values "nodePort" }}
-{{- if or (eq (toString $kubeProxyReplacement) "partial") (eq (toString $kubeProxyReplacement) "false") }}
+{{- if or (eq $kubeProxyReplacement "partial") (eq $kubeProxyReplacement "false") }}
   enable-node-port: {{ .Values.nodePort.enabled | quote }}
 {{- end }}
 {{- if hasKey .Values.nodePort "range" }}
@@ -924,6 +938,9 @@ data:
 {{- if .Values.egressGateway.installRoutes }}
   install-egress-gateway-routes: "true"
 {{- end }}
+{{- if hasKey .Values.egressGateway "reconciliationTriggerInterval" }}
+  egress-gateway-reconciliation-trigger-interval: {{ .Values.egressGateway.reconciliationTriggerInterval | quote }}
+{{- end }}
 {{- if .Values.egressGateway.maxPolicyEntries }}
   egress-gateway-policy-map-max: {{ .Values.egressGateway.maxPolicyEntries }}
 {{- end }}
@@ -1045,6 +1062,11 @@ data:
   annotate-k8s-node: "true"
 {{- end }}
 
+{{- if hasKey .Values "k8sClientRateLimit" }}
+  k8s-client-qps: {{ .Values.k8sClientRateLimit.qps | quote }}
+  k8s-client-burst: {{ .Values.k8sClientRateLimit.burst | quote }}
+{{- end }}
+
 {{- if and .Values.operator.setNodeTaints (not .Values.operator.removeNodeTaints) -}}
   {{ fail "Cannot have operator.setNodeTaintsMaxNodes and not operator.removeNodeTaints = false" }}
 {{- end -}}
@@ -1108,7 +1130,7 @@ data:
   mesh-auth-enabled: {{ .Values.authentication.enabled | quote }}
   mesh-auth-queue-size: {{ .Values.authentication.queueSize | quote }}
   mesh-auth-rotated-identities-queue-size: {{ .Values.authentication.rotatedIdentitiesQueueSize | quote }}
-  mesh-auth-expired-gc-interval: {{ include "validateDuration" .Values.authentication.expiredGCInterval | quote }}
+  mesh-auth-gc-interval: {{ include "validateDuration" .Values.authentication.gcInterval | quote }}
 
 {{- if .Values.authentication.mutual.spire.enabled }}
   mesh-auth-mutual-enabled: "true"

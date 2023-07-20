@@ -8,6 +8,6 @@
     "charts/cilium-1.13.2.tgz"
   ],
   "layer": "cni",
-  "name": "cni-cilium",
+  "name": "cni-cilium-oss",
   "version": "1.13.2"
 }

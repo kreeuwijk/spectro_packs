@@ -2,20 +2,20 @@ pack:
   content:
     images:
       - image: quay.io/cilium/certgen:v0.1.8@sha256:4a456552a5f192992a6edcec2febb1c54870d665173a33dc7d876129b199ddbd
-      - image: quay.io/cilium/cilium:v1.14.0-rc.0
+      - image: quay.io/cilium/cilium:v1.14.0-rc.1
       - image: quay.io/cilium/cilium-etcd-operator:v2.0.7@sha256:04b8327f7f992693c2cb483b999041ed8f92efc8e14f2a5f3ab95574a65ea2dc
-      - image: quay.io/cilium/clustermesh-apiserver:v1.14.0-rc.0
-      - image: quay.io/cilium/hubble-relay:v1.14.0-rc.0
+      - image: quay.io/cilium/clustermesh-apiserver:v1.14.0-rc.1
+      - image: quay.io/cilium/hubble-relay:v1.14.0-rc.1
       - image: quay.io/cilium/hubble-ui:v0.11.0@sha256:bcb369c47cada2d4257d63d3749f7f87c91dde32e010b223597306de95d1ecc8
       - image: quay.io/cilium/hubble-ui-backend:v0.11.0@sha256:14c04d11f78da5c363f88592abae8d2ecee3cbe009f443ef11df6ac5f692d839
-      - image: quay.io/cilium/operator:v1.14.0-rc.0
+      - image: quay.io/cilium/operator:v1.14.0-rc.1
       - image: quay.io/cilium/startup-script:62093c5c233ea914bfa26a10ba41f8780d9b737f
       - image: quay.io/coreos/etcd:v3.5.4@sha256:795d8660c48c439a7c3764c2330ed9222ab5db5bb524d8d0607cac76f7ba82a3
 
     charts:
-      - repo: https://github.com/cilium/cilium/archive/refs/tags/v1.14.0-rc.0.tar.gz
+      - repo: https://github.com/cilium/cilium/archive/refs/tags/v1.14.0-rc.1.tar.gz
         name: cilium
-        version: v1.14.0-rc.0
+        version: v1.14.0-rc.1
   #The namespace (on the target cluster) to install this chart
   #When not found, a new namespace will be created
   namespace: kube-system
@@ -59,6 +59,18 @@ charts:
     k8sServiceHost: ""
     # -- (string) Kubernetes service port
     k8sServicePort: ""
+
+    # -- Configure the client side rate limit for the agent and operator
+    #
+    # If the amount of requests to the Kubernetes API server exceeds the configured
+    # rate limit, the agent and operator will start to throttle requests by delaying
+    # them until there is budget or the request times out.
+    k8sClientRateLimit:
+      # -- The sustained request rate in requests per second.
+      qps: 5
+      # -- The burst request rate in requests per second.
+      # The rate limiter will allow short bursts with a higher rate.
+      burst: 10
 
     cluster:
       # -- Name of the cluster. Only required for Cluster Mesh and mutual authentication with SPIRE.
@@ -151,7 +163,7 @@ charts:
     image:
       override: ~
       repository: "quay.io/cilium/cilium"
-      tag: "v1.14.0-rc.0"
+      tag: "v1.14.0-rc.1"
       pullPolicy: "IfNotPresent"
       # cilium-digest
       digest: ""
@@ -753,6 +765,9 @@ charts:
         loadBalancerClass: ~
         # -- Configure a specific loadBalancerIP on the shared LB service
         loadBalancerIP : ~
+        # -- Configure if node port allocation is required for LB service
+        # ref: https://kubernetes.io/docs/concepts/services-networking/service/#load-balancer-nodeport-allocation
+        allocateLoadBalancerNodePorts: ~
 
     gatewayAPI:
       # -- Enable support for Gateway API in cilium
@@ -1121,7 +1136,7 @@ charts:
         image:
           override: ~
           repository: "quay.io/cilium/hubble-relay"
-          tag: "v1.14.0-rc.0"
+          tag: "v1.14.0-rc.1"
           # hubble-relay-digest
           digest: ""
           useDigest: false
@@ -1230,6 +1245,10 @@ charts:
             # When set to true, enable TLS on for Hubble Relay server
             # (ie: for clients connecting to the Hubble Relay API).
             enabled: false
+            # When set to true enforces mutual TLS between Hubble Relay server and its clients.
+            # False allow non-mutual TLS connections.
+            # This option has no effect when TLS is disabled.
+            mtls: false
             # These values need to be set manually if hubble.tls.auto.enabled is false.
             cert: ""
             key: ""
@@ -1502,40 +1521,39 @@ charts:
       # "kubernetes" so that Cilium respects the PodCIDR that is configured
       # in the K8s pack.
       mode: "kubernetes"
-      # The alternative below is the default for the Cilium helm chart
-      # mode: "cluster-pool"
-      # # -- Maximum rate at which the CiliumNode custom resource is updated.
-      # ciliumNodeUpdateRate: "15s"
-      # operator:
-      #   # -- IPv4 CIDR list range to delegate to individual nodes for IPAM.
-      #   clusterPoolIPv4PodCIDRList: ["10.0.0.0/8"]
-      #   # -- IPv4 CIDR mask size to delegate to individual nodes for IPAM.
-      #   clusterPoolIPv4MaskSize: 24
-      #   # -- IPv6 CIDR list range to delegate to individual nodes for IPAM.
-      #   clusterPoolIPv6PodCIDRList: ["fd00::/104"]
-      #   # -- IPv6 CIDR mask size to delegate to individual nodes for IPAM.
-      #   clusterPoolIPv6MaskSize: 120
-      #   # -- IP pools to auto-create in multi-pool IPAM mode.
-      #   autoCreateCiliumPodIPPools: {}
-      #     # default:
-      #     #   ipv4:
-      #     #     cidrs:
-      #     #       - 10.10.0.0/8
-      #     #     maskSize: 24
-      #     # other:
-      #     #   ipv6:
-      #     #     cidrs:
-      #     #       - fd00:100::/80
-      #     #     maskSize: 96
-      #   # -- The maximum burst size when rate limiting access to external APIs.
-      #   # Also known as the token bucket capacity.
-      #   # @default -- `20`
-      #   externalAPILimitBurstSize: ~
-      #   # -- The maximum queries per second when rate limiting access to
-      #   # external APIs. Also known as the bucket refill rate, which is used to
-      #   # refill the bucket up to the burst size capacity.
-      #   # @default -- `4.0`
-      #   externalAPILimitQPS: ~
+      #mode: "cluster-pool"
+      ## -- Maximum rate at which the CiliumNode custom resource is updated.
+      #ciliumNodeUpdateRate: "15s"
+      #operator:
+      #  # -- IPv4 CIDR list range to delegate to individual nodes for IPAM.
+      #  clusterPoolIPv4PodCIDRList: ["10.0.0.0/8"]
+      #  # -- IPv4 CIDR mask size to delegate to individual nodes for IPAM.
+      #  clusterPoolIPv4MaskSize: 24
+      #  # -- IPv6 CIDR list range to delegate to individual nodes for IPAM.
+      #  clusterPoolIPv6PodCIDRList: ["fd00::/104"]
+      #  # -- IPv6 CIDR mask size to delegate to individual nodes for IPAM.
+      #  clusterPoolIPv6MaskSize: 120
+      #  # -- IP pools to auto-create in multi-pool IPAM mode.
+      #  autoCreateCiliumPodIPPools: {}
+      #    # default:
+      #    #   ipv4:
+      #    #     cidrs:
+      #    #       - 10.10.0.0/8
+      #    #     maskSize: 24
+      #    # other:
+      #    #   ipv6:
+      #    #     cidrs:
+      #    #       - fd00:100::/80
+      #    #     maskSize: 96
+      #  # -- The maximum burst size when rate limiting access to external APIs.
+      #  # Also known as the token bucket capacity.
+      #  # @default -- `20`
+      #  externalAPILimitBurstSize: ~
+      #  # -- The maximum queries per second when rate limiting access to
+      #  # external APIs. Also known as the bucket refill rate, which is used to
+      #  # refill the bucket up to the burst size capacity.
+      #  # @default -- `4.0`
+      #  externalAPILimitQPS: ~
 
     # -- Configure the eBPF-based ip-masq-agent
     ipMasqAgent:
@@ -1651,6 +1669,8 @@ charts:
       # -- Install egress gateway IP rules and routes in order to properly steer
       # egress gateway traffic to the correct ENI interface
       installRoutes: false
+      # -- Time between triggers of egress gateway state reconciliations
+      reconciliationTriggerInterval: 1s
       # -- Maximum number of entries in egress gateway policy map
       # maxPolicyEntries: 16384
 
@@ -2245,7 +2265,7 @@ charts:
       image:
         override: ~
         repository: "quay.io/cilium/operator"
-        tag: "v1.14.0-rc.0"
+        tag: "v1.14.0-rc.1"
         # operator-generic-digest
         genericDigest: ""
         # operator-azure-digest
@@ -2532,7 +2552,7 @@ charts:
       image:
         override: ~
         repository: "quay.io/cilium/cilium"
-        tag: "v1.14.0-rc.0"
+        tag: "v1.14.0-rc.1"
         # cilium-digest
         digest: ""
         useDigest: false
@@ -2682,7 +2702,7 @@ charts:
         image:
           override: ~
           repository: "quay.io/cilium/clustermesh-apiserver"
-          tag: "v1.14.0-rc.0"
+          tag: "v1.14.0-rc.1"
           # clustermesh-apiserver-digest
           digest: ""
           useDigest: false
@@ -2729,7 +2749,7 @@ charts:
           image:
             override: ~
             repository: "quay.io/cilium/kvstoremesh"
-            tag: "v1.14.0-rc.0"
+            tag: "v1.14.0-rc.1"
             # kvstoremesh-digest
             digest: ""
             useDigest: false
@@ -3099,8 +3119,8 @@ charts:
       queueSize: 1024
       # -- Buffer size of the channel Cilium uses to receive certificate expiration events from auth handlers.
       rotatedIdentitiesQueueSize: 1024
-        # -- Interval for garbage collection of expired auth map entries.
-      expiredGCInterval: "15m0s"
+        # -- Interval for garbage collection of auth map entries.
+      gcInterval: "5m0s"
       # Configuration for Cilium's service-to-service mutual authentication using TLS handshakes.
       # Note that this is not full mTLS support without also enabling encryption of some form.
       # Current encryption options are Wireguard or IPSec, configured in encryption block above.
@@ -3189,4 +3209,3 @@ charts:
           agentSocketPath: /run/spire/sockets/agent/agent.sock
           # -- SPIRE connection timeout
           connectionTimeout: 30s
-
