@@ -1521,39 +1521,40 @@ charts:
       # "kubernetes" so that Cilium respects the PodCIDR that is configured
       # in the K8s pack.
       mode: "kubernetes"
-      #mode: "cluster-pool"
-      ## -- Maximum rate at which the CiliumNode custom resource is updated.
-      #ciliumNodeUpdateRate: "15s"
-      #operator:
-      #  # -- IPv4 CIDR list range to delegate to individual nodes for IPAM.
-      #  clusterPoolIPv4PodCIDRList: ["10.0.0.0/8"]
-      #  # -- IPv4 CIDR mask size to delegate to individual nodes for IPAM.
-      #  clusterPoolIPv4MaskSize: 24
-      #  # -- IPv6 CIDR list range to delegate to individual nodes for IPAM.
-      #  clusterPoolIPv6PodCIDRList: ["fd00::/104"]
-      #  # -- IPv6 CIDR mask size to delegate to individual nodes for IPAM.
-      #  clusterPoolIPv6MaskSize: 120
-      #  # -- IP pools to auto-create in multi-pool IPAM mode.
-      #  autoCreateCiliumPodIPPools: {}
-      #    # default:
-      #    #   ipv4:
-      #    #     cidrs:
-      #    #       - 10.10.0.0/8
-      #    #     maskSize: 24
-      #    # other:
-      #    #   ipv6:
-      #    #     cidrs:
-      #    #       - fd00:100::/80
-      #    #     maskSize: 96
-      #  # -- The maximum burst size when rate limiting access to external APIs.
-      #  # Also known as the token bucket capacity.
-      #  # @default -- `20`
-      #  externalAPILimitBurstSize: ~
-      #  # -- The maximum queries per second when rate limiting access to
-      #  # external APIs. Also known as the bucket refill rate, which is used to
-      #  # refill the bucket up to the burst size capacity.
-      #  # @default -- `4.0`
-      #  externalAPILimitQPS: ~
+      # The alternative below is the default for the Cilium helm chart
+      # mode: "cluster-pool"
+      # # -- Maximum rate at which the CiliumNode custom resource is updated.
+      # ciliumNodeUpdateRate: "15s"
+      # operator:
+      #   # -- IPv4 CIDR list range to delegate to individual nodes for IPAM.
+      #   clusterPoolIPv4PodCIDRList: ["10.0.0.0/8"]
+      #   # -- IPv4 CIDR mask size to delegate to individual nodes for IPAM.
+      #   clusterPoolIPv4MaskSize: 24
+      #   # -- IPv6 CIDR list range to delegate to individual nodes for IPAM.
+      #   clusterPoolIPv6PodCIDRList: ["fd00::/104"]
+      #   # -- IPv6 CIDR mask size to delegate to individual nodes for IPAM.
+      #   clusterPoolIPv6MaskSize: 120
+      #   # -- IP pools to auto-create in multi-pool IPAM mode.
+      #   autoCreateCiliumPodIPPools: {}
+      #     # default:
+      #     #   ipv4:
+      #     #     cidrs:
+      #     #       - 10.10.0.0/8
+      #     #     maskSize: 24
+      #     # other:
+      #     #   ipv6:
+      #     #     cidrs:
+      #     #       - fd00:100::/80
+      #     #     maskSize: 96
+      #   # -- The maximum burst size when rate limiting access to external APIs.
+      #   # Also known as the token bucket capacity.
+      #   # @default -- `20`
+      #   externalAPILimitBurstSize: ~
+      #   # -- The maximum queries per second when rate limiting access to
+      #   # external APIs. Also known as the bucket refill rate, which is used to
+      #   # refill the bucket up to the burst size capacity.
+      #   # @default -- `4.0`
+      #   externalAPILimitQPS: ~
 
     # -- Configure the eBPF-based ip-masq-agent
     ipMasqAgent:
@@ -2537,12 +2538,12 @@ charts:
 
       # -- startup offers way to customize startup nodeinit script (pre and post position)
       startup:
-      preScript: ""
-      postScript: ""
+        preScript: ""
+        postScript: ""
       # -- prestop offers way to customize prestop nodeinit script (pre and post position)
       prestop:
-      preScript: ""
-      postScript: ""
+        preScript: ""
+        postScript: ""
 
     preflight:
       # -- Enable Cilium pre-flight resources (required for upgrade)
