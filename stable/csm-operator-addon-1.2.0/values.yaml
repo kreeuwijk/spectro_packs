@@ -19,6 +19,7 @@ pack:
             # fsGroupPolicy: Defines if the underlying volume supports changing ownership and permission of the volume before being mounted.
             # Allowed values: ReadWriteOnceWithFSType, File , None
             # Default value: ReadWriteOnceWithFSType
+            authSecret: vxflexos-config
             dnsPolicy: ClusterFirstWithHostNet
             fSGroupPolicy: "File"
             replicas: 2

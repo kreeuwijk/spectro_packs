@@ -12,6 +12,7 @@ spec:
       # Allowed values: ReadWriteOnceWithFSType, File , None
       # Default value: ReadWriteOnceWithFSType
       fSGroupPolicy: "{{ .Values.csm.config.driver.fSGroupPolicy }}"
+    authSecret: "{{ .Values.csm.config.driver.authSecret }}"
     configVersion: "{{ include "csm-operator.powerflexVersion" (dict "lookup" "driver-config" "version" .Values.csm.version) }}"
     replicas: {{ .Values.csm.config.driver.replicas }}
     dnsPolicy: {{ .Values.csm.config.driver.dnsPolicy }}
