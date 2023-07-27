@@ -19,10 +19,11 @@ pack:
             # fsGroupPolicy: Defines if the underlying volume supports changing ownership and permission of the volume before being mounted.
             # Allowed values: ReadWriteOnceWithFSType, File , None
             # Default value: ReadWriteOnceWithFSType
-            authSecret: vxflexos-config
             dnsPolicy: ClusterFirstWithHostNet
             fSGroupPolicy: "File"
             replicas: 2
+            # To specify a different credentials secret than the default, set the authSecret value.
+            # authSecret: name-of-secret
             envs:
               - name: X_CSI_VXFLEXOS_ENABLELISTVOLUMESNAPSHOT
                 value: "false"
@@ -283,16 +284,25 @@ pack:
                     value: "8083"
 
           secret:
-            encrypted: false # if set to true, provide a base64 encrypted value instead
+            encoded: false # if set to true, provide a base64 encoded value instead
+            # Default secret names:
+            # PowerFlex:  vxflexos-config
+            # PowerMax:   powermax-creds
+            # PowerScale: isilon-creds
             name: vxflexos-config
-            value: |
-              - username: "admin"
-                password: "Password123"
-                systemID: "2b11bb111111bb1b"
-                endpoint: "https://127.0.0.2"
-                skipCertificateValidation: true
-                mdm: "10.0.0.3,10.0.0.4"
-                AllSystemNames: "name1,name2"
+            value: ""
+            # Example value for encoded
+            # value: LSB1c2VybmFtZTogImFkbWluIgogIHBhc3N3b3JkOiAiUGFzc3dvcmQxMjMiCiAgc3lzdGVtSUQ6ICIyYjExYmIxM...
+
+            # Example value for non-encoded
+            # value: |
+            #   - username: "admin"
+            #     password: "Password123"
+            #     systemID: "2b11bb111111bb1b"
+            #     endpoint: "https://127.0.0.2"
+            #     skipCertificateValidation: true
+            #     mdm: "10.0.0.3,10.0.0.4"
+            #     AllSystemNames: "name1,name2"
 
             # username: "admin"
             # Username for accessing PowerFlex system.
