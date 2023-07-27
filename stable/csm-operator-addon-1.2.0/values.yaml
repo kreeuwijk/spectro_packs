@@ -290,7 +290,7 @@ pack:
             # PowerMax:   powermax-creds
             # PowerScale: isilon-creds
             name: vxflexos-config
-            value: ""
+            value:
             # Example value for encoded
             # value: LSB1c2VybmFtZTogImFkbWluIgogIHBhc3N3b3JkOiAiUGFzc3dvcmQxMjMiCiAgc3lzdGVtSUQ6ICIyYjExYmIxM...
 
