@@ -1,7 +1,10 @@
 {
   "annotations": {},
   "cloudTypes": [
-    "all"
+    "vsphere",
+    "maas",
+    "openstack",
+    "edge-native"
   ],
   "displayName": "Cilium",
   "charts": [
