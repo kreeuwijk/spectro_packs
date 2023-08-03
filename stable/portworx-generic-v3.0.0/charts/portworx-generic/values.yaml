@@ -62,12 +62,6 @@ storageClass:
     # stork.libopenstorage.org/preferRemoteNodeOnly: "false"
     # Add additional parameters as needed (https://docs.portworx.com/portworx-install-with-kubernetes/storage-operations/create-pvcs/dynamic-provisioning/)
 
-lighthouse:
-  enabled: true
-  service:
-    type: LoadBalancer
-    # loadBalancerIp: 1.2.3.4
-
 # External kvdb related config, only used if storageCluster.spec.kvdb.internal = false
 externalKvdb:
   useCertsForSSL: false
