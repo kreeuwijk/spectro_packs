@@ -84,11 +84,11 @@ presets:
                 # authSecret: px-kvdb-auth
               storage:
                 useAll: true
-                journalDevice: auto
                 # kvdbDevice: /dev/sdb
-              # network:
-              #   dataInterface: eth0
-              #   mgmtInterface: eth1
+                journalDevice: auto
+            # network:
+            #   dataInterface: eth0
+            #   mgmtInterface: eth1
               secretsProvider: k8s
               stork:
                 enabled: true
@@ -397,9 +397,9 @@ presets:
                 - size=150
                 kvdbDeviceSpec: size=32
                 journalDeviceSpec: auto
-              # network:
-              #  dataInterface: eth0
-              #  mgmtInterface: eth1
+            # network:
+            #  dataInterface: eth0
+            #  mgmtInterface: eth1
               secretsProvider: k8s
               stork:
                 enabled: true
