@@ -7,11 +7,9 @@ pack:
 
 charts:
   px-operator:
-    namespace: kube-system
+    namespace: portworx-operator
 
   portworx-generic:
-    namespace: kube-system
-
     license:
       # Valid options for "type" are: essentials, saas, enterprise
       # If you want to deploy the PX Enterprise Trial version, or need manual offline activation,
@@ -44,6 +42,7 @@ charts:
       # When autoGenerateName is true, a name of type "px-cluster-1234abcd-12ab-12ab-12ab-123456abcdef" is generated and the "name" field is ignored
       autoGenerateName: false
       name: "px-{{.spectro.system.cluster.name}}"
+      namespace: portworx
       # annotations:
       #   If you need additional annotations, specify them here
       spec: {}

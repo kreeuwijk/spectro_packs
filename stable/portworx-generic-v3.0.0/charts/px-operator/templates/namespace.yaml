@@ -1,3 +1,4 @@
+{{- if not (lookup "v1" "Namespace" "" .Values.namespace).kind }}
 {{- if not (has .Values.namespace (list "capi-webhook-system" "cert-manager" "default" "kube-node-lease" "kube-public" "kube-system")) }}
 apiVersion: v1
 kind: Namespace
@@ -9,4 +10,5 @@ metadata:
     pod-security.kubernetes.io/enforce-version: latest
     pod-security.kubernetes.io/warn: privileged
   name: {{ .Values.namespace }}
+{{- end }}
 {{- end }}
