@@ -1,0 +1,21 @@
+{{- if .Values.lighthouse.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: px-lighthouse
+  namespace: {{ .Release.Namespace }}
+  labels:
+    tier: px-web-console
+spec:
+  type: {{ .Values.lighthouse.service.type }}
+  {{- if .Values.lighthouse.service.loadBalancerIp }}
+  loadBalancerIP: {{ .Values.lighthouse.service.loadBalancerIp }}
+  {{- end }}
+  ports:
+    - name: http
+      port: 80
+    - name: https
+      port: 443
+  selector:
+    tier: px-web-console
+{{- end }}

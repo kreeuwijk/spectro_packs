@@ -1,0 +1,25 @@
+{
+  "annotations": {
+    "docsURL": "https://docs.spectrocloud.com/integrations/portworx",
+    "prerequisitesRequired": "true"
+  },
+  "cloudTypes": [
+    "aws",
+    "azure",
+    "vsphere",
+    "edge",
+    "edge-native",
+    "maas",
+    "openstack",
+    "eks",
+    "tke"
+  ],
+  "displayName": "Portworx /w Operator",
+  "charts": [
+    "charts/px-operator-1.2.0.tgz",
+    "charts/portworx-generic-1.3.0.tgz"
+  ],
+  "layer": "csi",
+  "name": "csi-portworx-generic",
+  "version": "3.0.0"
+}
