@@ -140,8 +140,8 @@ presets:
               cloudStorage:
                 maxStorageNodesPerZone: 0
                 deviceSpecs:
-                - type=gp2,size=150
-                kvdbDeviceSpec: type=gp2,size=150
+                - type=gp3,size=150
+                kvdbDeviceSpec: type=gp3,size=150
                 journalDeviceSpec: auto
               secretsProvider: k8s
               stork:
