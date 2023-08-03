@@ -6,7 +6,7 @@ metadata:
   {{- else }}
   name: {{ .Values.storageCluster.name | default "px-cluster-1234abcd-12ab-12ab-12ab-123456abcdef" | quote }}
   {{- end }}
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Values.storageCluster.namespace }}
   annotations:
     portworx.io/install-source: "https://install.portworx.com/?operator=true"
     {{- if eq .Values.license.type "essentials" }}
