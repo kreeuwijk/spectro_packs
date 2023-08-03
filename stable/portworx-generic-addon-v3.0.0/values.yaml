@@ -1,6 +1,5 @@
 # spectrocloud.com/enabled-presets: License Models:px-essentials
 pack:
-  namespace: kube-system
   content:
     images:
       - image: portworx/oci-monitor:3.0.0
