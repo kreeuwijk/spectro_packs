@@ -14,7 +14,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: portworx-operator
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Values.namespace }}
 roleRef:
   kind: ClusterRole
   name: portworx-operator

@@ -7,7 +7,12 @@ pack:
       - image: portworx/px-operator:23.5.1
 
 charts:
+  px-operator:
+    namespace: kube-system
+
   portworx-generic:
+    namespace: kube-system
+
     license:
       # Valid options for "type" are: essentials, saas, enterprise
       # If you want to deploy the PX Enterprise Trial version, or need manual offline activation,

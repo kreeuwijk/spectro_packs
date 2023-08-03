@@ -8,7 +8,7 @@ metadata:
   labels:
     vsphere-cpi-infra: service-account
     component: cloud-controller-manager
-  namespace: {{ .Release.Namespace }}
+  namespace: kube-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -17,7 +17,7 @@ metadata:
   labels:
     vsphere-cpi-infra: role-binding
     component: cloud-controller-manager
-  namespace: {{ .Release.Namespace }}
+  namespace: kube-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -26,7 +26,7 @@ subjects:
   - apiGroup: ""
     kind: ServiceAccount
     name: cloud-controller-manager
-    namespace: {{ .Release.Namespace }}
+    namespace: kube-system
   - apiGroup: ""
     kind: User
     name: cloud-controller-manager
@@ -45,7 +45,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: cloud-controller-manager
-    namespace: {{ .Release.Namespace }}
+    namespace: kube-system
   - kind: User
     name: cloud-controller-manager
 ---
@@ -147,7 +147,7 @@ metadata:
   labels:
     component: cloud-controller-manager
     tier: control-plane
-  namespace: {{ .Release.Namespace }}
+  namespace: kube-system
   annotations:
     scheduler.alpha.kubernetes.io/critical-pod: ""
 spec:

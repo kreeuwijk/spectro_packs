@@ -1,3 +1,5 @@
+namespace: kube-system
+
 license:
   # Valid options for "type" are: essentials, saas, enterprise
   # If you want to deploy the PX Enterprise Trial version, or need manual offline activation,
