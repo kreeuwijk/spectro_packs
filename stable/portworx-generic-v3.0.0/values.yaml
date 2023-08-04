@@ -5,6 +5,15 @@ pack:
       - image: portworx/oci-monitor:3.0.0
       - image: portworx/px-operator:23.5.1
 
+# Upgrade procedure from v2.x of the pack:
+# * Ensure you select a different namespace than kube-system for the operator
+# * Ensure you select the kube-system namespace for the storagecluster
+# * Before upgrading, scale down the portworx-operator in the kube-system namespace to 0
+# * After applying the upgrade, delete the portworx-operator clusterRole and clusterRoleBinding from the cluster.
+# * If you’re on K8S 1.24 or lower, also delete the px-operator PodSecurityPolicy.
+# * Once the new operator is running in the new namespace, delete the portworx-operator deployment and
+#   service account from the kube-system namespace.
+
 charts:
   px-operator:
     namespace: portworx-operator
