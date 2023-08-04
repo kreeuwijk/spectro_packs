@@ -48,15 +48,13 @@ storageCluster:
 storageClass:
   name: spectro-storage-class
   isDefaultStorageClass: true
-  # annotations:
+  annotations: {}
   #   If you need additional annotations, specify them here
-  allowVolumeExpansion: true
-  # Delete or Retain
-  reclaimPolicy: Delete
-  # WaitForFirstConsumer or Immediate
-  volumeBindingMode: WaitForFirstConsumer
-  parameters: {}
-    # repl: "2"
+  reclaimPolicy: Delete # Delete or Retain
+  volumeBindingMode: WaitForFirstConsumer # WaitForFirstConsumer or Immediate
+  # allowVolumeExpansion: true
+  parameters:
+    repl: "2"
     # priority_io: "high"
     # sharedv4: true
     # sharedv4_svc_type: "ClusterIP"
