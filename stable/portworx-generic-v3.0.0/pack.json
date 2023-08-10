@@ -13,8 +13,6 @@
     "maas",
     "openstack",
     "eks",
-    "aks",
-    "gke",
     "tke"
   ],
   "displayName": "Portworx /w Operator",
