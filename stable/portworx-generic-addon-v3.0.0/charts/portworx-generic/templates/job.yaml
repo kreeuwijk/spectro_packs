@@ -3,13 +3,13 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: px-activate-license
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Values.storageCluster.namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: px-activate-license-role
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Values.storageCluster.namespace }}
 rules:
   - apiGroups: [""]
     resources: ["pods"]
@@ -22,7 +22,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: px-activate-license-rolebinding
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Values.storageCluster.namespace }}
 subjects:
   - kind: ServiceAccount
     name: px-activate-license
@@ -35,7 +35,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: px-activate-license
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Values.storageCluster.namespace }}
 spec:
   template:
     metadata:
