@@ -12,7 +12,8 @@
     "maas",
     "openstack",
     "eks",
-    "tke"
+    "tke",
+    "gcp"
   ],
   "displayName": "Portworx /w Operator",
   "charts": [
