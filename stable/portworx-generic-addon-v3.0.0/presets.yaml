@@ -382,7 +382,7 @@ presets:
           storageCluster:
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: portworx/oci-monitor:2.13.3
+              image: portworx/oci-monitor:3.0.0
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
