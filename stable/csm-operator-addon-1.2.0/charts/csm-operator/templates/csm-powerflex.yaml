@@ -30,6 +30,14 @@ spec:
           value: "/var/lib/kubelet"
         - name: "CERT_SECRET_COUNT"
           value: "0"
+{{- if semverCompare ">=2.8.0" (substr 1 -1 .Values.csm.version) }}
+        - name: X_CSI_NFS_ACLS
+          value: "0777"
+        - name: X_CSI_POWERFLEX_EXTERNAL_ACCESS
+          value: ""
+        - name: X_CSI_QUOTA_ENABLED
+          value: "false"
+{{- end }}
 
     sideCars:
 {{ toYaml .Values.csm.config.driver.sideCars | indent 6 }}
@@ -65,7 +73,7 @@ spec:
 
     node:
       envs:
-        {{- if or (eq .Values.csm.version "v2.6.0") (eq .Values.csm.version "v2.7.0") }}
+        {{- if semverCompare ">=2.6.0" (substr 1 -1 .Values.csm.version) }}
 {{ toYaml .Values.csm.config.node.envs | indent 8 }}
         {{- end }}          
 
@@ -138,6 +146,16 @@ spec:
           envs:
 {{ toYaml .Values.csm.config.modules.observability.otelCollector.envs | indent 12 }}
 
+{{- if semverCompare ">=2.8.0" (substr 1 -1 .Values.csm.version) }}
+        # enabled: Enable/Disable cert-manager
+        # Allowed values:
+        #   true: enable deployment of cert-manager
+        #   false: disable deployment of cert-manager only if it's already deployed
+        # Default value: false
+        - name: cert-manager
+          enabled: false
+{{- end }}
+
         - name: metrics-powerflex
           # enabled: Enable/Disable PowerFlex metrics
           enabled: {{ .Values.csm.config.modules.observability.metricsPowerflex.enabled }}
@@ -146,7 +164,7 @@ spec:
           envs:
 {{ toYaml .Values.csm.config.modules.observability.metricsPowerflex.envs | indent 12 }}
 
-    {{- if or (eq .Values.csm.version "v2.6.0") (eq .Values.csm.version "v2.7.0") }}
+    {{- if semverCompare ">=2.6.0" (substr 1 -1 .Values.csm.version) }}
     # Replication: allows to configure replication
     # Replication CRDs must be installed before installing driver
     - name: replication
@@ -179,7 +197,7 @@ spec:
         image: "dellemc/dell-replication-init:{{ include "csm-operator.powerflexVersion" (dict "lookup" "repl-image-init" "version" .Values.csm.version) }}"
     {{- end }}
 
-    {{- if eq .Values.csm.version "v2.7.0" }}
+    {{- if semverCompare ">=2.7.0" (substr 1 -1 .Values.csm.version) }}
     - name: resiliency
       # enabled: Enable/Disable Resiliency feature
       # Allowed values:
@@ -187,10 +205,10 @@ spec:
       #   false: disable Resiliency feature(do not deploy podmon sidecar)
       # Default value: false
       enabled: {{ .Values.csm.config.modules.resiliency.enabled }}
-      configVersion: v1.6.0
+      configVersion: "{{ include "csm-operator.powerflexVersion" (dict "lookup" "resiliency-config" "version" .Values.csm.version) }}"
       components:
         - name: podmon-controller
-          image: dellemc/podmon:v1.6.0
+          image: "dellemc/podmon:{{ include "csm-operator.powerflexVersion" (dict "lookup" "resiliency-image-podmon" "version" .Values.csm.version) }}"
           imagePullPolicy: IfNotPresent
           args:
 {{ toYaml .Values.csm.config.modules.resiliency.podmonController.args | indent 12 }}
@@ -199,7 +217,7 @@ spec:
             - "--mode=controller"
             - "--driver-config-params=/vxflexos-config-params/driver-config-params.yaml"
         - name: podmon-node
-          image: dellemc/podmon:v1.6.0
+          image: "dellemc/podmon:{{ include "csm-operator.powerflexVersion" (dict "lookup" "resiliency-image-podmon" "version" .Values.csm.version) }}"
           imagePullPolicy: IfNotPresent
           envs:
 {{ toYaml .Values.csm.config.modules.resiliency.podmonNode.envs | indent 12 }}

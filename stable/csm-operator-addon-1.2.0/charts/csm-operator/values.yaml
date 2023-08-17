@@ -9,7 +9,7 @@ csm:
   namespace: vxflexos
 
   type: powerflex
-  version: v2.7.0
+  version: v2.8.0
 
   config:
     driver:
@@ -17,6 +17,7 @@ csm:
       # Allowed values: ReadWriteOnceWithFSType, File , None
       # Default value: ReadWriteOnceWithFSType
       authSecret: vxflexos-config
+      # To specify a different credentials secret than the default, adjust the authSecret value.
       dnsPolicy: ClusterFirstWithHostNet
       fSGroupPolicy: "File"
       replicas: 2
@@ -102,6 +103,13 @@ csm:
         # Examples: "rhel-sdc", "sdc-test"
         - name: X_CSI_RENAME_SDC_PREFIX
           value: ""
+
+        # X_CSI_MAX_VOLUMES_PER_NODE: Defines the maximum PowerFlex volumes that can be created per node
+        # Allowed values: Any value greater than or equal to 0
+        # Default value: "0"
+        # Introduced in: v2.8.0
+        - name: X_CSI_MAX_VOLUMES_PER_NODE
+          value: "0"
 
       # "node.nodeSelector" defines what nodes would be selected for pods of node daemonset
       # Leave as blank to use all nodes
