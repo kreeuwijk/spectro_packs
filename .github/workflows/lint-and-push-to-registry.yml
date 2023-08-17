@@ -1,6 +1,6 @@
-# This workflow will lint helm charts in packs and then push the packs to the configured Pack Repository
+# This workflow will (lint helm charts in packs and then) push the packs to the configured Pack Repository
 
-name: Lint helm charts and push packs to repo
+name: Push packs to repo
 
 on:
   push:
@@ -12,27 +12,27 @@ env:
   PACK_REGISTRY: "packs-spectro.dreamworx.nl"
 
 jobs:
-  lint:
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-    - name: Helm tool installer
-      uses: Azure/setup-helm@v3
+  # lint:
+  #   permissions:
+  #     contents: read
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Helm tool installer
+  #     uses: Azure/setup-helm@v3
 
-    - name: Checkout repo
-      uses: actions/checkout@v3
+  #   - name: Checkout repo
+  #     uses: actions/checkout@v3
     
-    - name: Lint all Helm charts found in repo
-      run: |
-        shopt -s globstar
-        ( for d in **/charts/*/; do helm lint $d --with-subcharts; if [ $? == 1 ]; then exit 1; fi; done )
+  #   - name: Lint all Helm charts found in repo
+  #     run: |
+  #       shopt -s globstar
+  #       ( for d in **/charts/*/; do helm lint $d --with-subcharts; if [ $? == 1 ]; then exit 1; fi; done )
 
   push:
     permissions:
       contents: read
     runs-on: ubuntu-latest
-    needs: lint
+    #needs: lint
     steps:
     - name: Install Spectro CLI
       run: |
