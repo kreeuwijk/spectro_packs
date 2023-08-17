@@ -1,0 +1,17 @@
+{
+  "annotations": {},
+  "cloudTypes": [
+    "aws",
+    "vsphere",
+    "maas",
+    "openstack",
+    "edge-native"
+  ],
+  "displayName": "Cilium",
+  "charts": [
+    "charts/cilium-1.14.1.tgz"
+  ],
+  "layer": "cni",
+  "name": "cni-cilium-oss",
+  "version": "1.14.1"
+}
