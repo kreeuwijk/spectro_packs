@@ -31,7 +31,7 @@ spec:
       # Allowed values:
       #   true: enable storage capacity tracking
       #   false: disable storage capacity tracking
-      storageCapacity: "{{ .Values.csm.config.driver.storageCapacity }}"
+      storageCapacity: {{ .Values.csm.config.driver.storageCapacity }}
     # Config version for CSI PowerMax driver
     configVersion: "{{ include "csm-operator.powermaxVersion" (dict "lookup" "driver-config" "version" .Values.csm.version) }}"
     # replica: Define the number of PowerMax controller nodes
