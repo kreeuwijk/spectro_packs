@@ -6,20 +6,23 @@ image:
   tag: "v1.2.0"
 
 csm:
+  # Select a preset to populate the default configuration for your platform
   namespace: vxflexos
 
   type: powerflex
-  version: v2.7.0
+  version: v2.8.0
 
   config:
     driver:
       # fsGroupPolicy: Defines if the underlying volume supports changing ownership and permission of the volume before being mounted.
       # Allowed values: ReadWriteOnceWithFSType, File , None
       # Default value: ReadWriteOnceWithFSType
-      authSecret: vxflexos-config
       dnsPolicy: ClusterFirstWithHostNet
       fSGroupPolicy: "File"
       replicas: 2
+      # To specify a different credentials secret than the default, set the authSecret value.
+      # authSecret: name-of-secret
+
       envs:
         - name: X_CSI_VXFLEXOS_ENABLELISTVOLUMESNAPSHOT
           value: "false"
@@ -102,6 +105,13 @@ csm:
         # Examples: "rhel-sdc", "sdc-test"
         - name: X_CSI_RENAME_SDC_PREFIX
           value: ""
+
+        # X_CSI_MAX_VOLUMES_PER_NODE: Defines the maximum PowerFlex volumes that can be created per node
+        # Allowed values: Any value greater than or equal to 0
+        # Default value: "0"
+        # Introduced in: v2.8.0
+        - name: X_CSI_MAX_VOLUMES_PER_NODE
+          value: "0"
 
       # "node.nodeSelector" defines what nodes would be selected for pods of node daemonset
       # Leave as blank to use all nodes
@@ -336,6 +346,74 @@ csm:
       # Previous names used in secret of PowerFlex system. Only needed if PowerFlex System Name has been changed by user 
       # and old resources are still based on the old name. 
 
+storageclass:
+  name: vxflexos
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+  provisioner: csi-vxflexos.dellemc.com
+  # reclaimPolicy: PVs that are dynamically created by a StorageClass will have the reclaim policy specified here
+  # Allowed values:
+  #   Reclaim: retain the PV after PVC deletion
+  #   Delete: delete the PV after PVC deletion
+  # Optional: true
+  # Default value: Delete
+  reclaimPolicy: Delete
+  # allowVolumeExpansion: allows the users to resize the volume by editing the corresponding PVC object
+  # Allowed values:
+  #   true: allow users to resize the PVC
+  #   false: does not allow users to resize the PVC
+  # Optional: true
+  # Default value: false
+  allowVolumeExpansion: true
+  parameters:
+    # Storage pool to use on system
+    # Optional: false
+    storagepool: <STORAGE_POOL> # Insert Storage pool
+    # Protection domain that storage pool above belongs to
+    # Needed if array has two storagepools that share the same name, but belong to different protection domains
+    # Optional: true
+    # Uncomment the line below if you want to use protectiondomain
+    # protectiondomain: # Insert Protection domain name
+    # System you would like this storage class to use
+    # Allowed values: one string for system ID
+    # Optional: false
+    systemID: <SYSTEM_ID> # Insert System ID
+    # format options to pass to mkfs
+    # Allowed values: A string dictating the fs options you want passed
+    # Optional: true
+    # Uncomment the line below if you want to use mkfsFormatOption
+    # mkfsFormatOption: "<mkfs_format_option>" # Insert file system format option
+    # Filesytem type for volumes created by storageclass
+    # Default value: None if defaultFsType is not mentioned in values.yaml
+    # Else defaultFsType value mentioned in values.yaml
+    # will be used as default value
+    csi.storage.k8s.io/fstype: ext4
+    # Limit the volume network bandwidth
+    # Value is a positive number in granularity of 1024 Kbps; 0 = unlimited
+    # Allowed values: one string for bandwidth limit in Kbps
+    # Optional: false
+    # Uncomment the line below if you want to use bandwidthLimitInKbps
+    # bandwidthLimitInKbps: <BANDWIDTH_LIMIT_IN_KBPS> # Insert bandwidth limit in Kbps
+    # Limit the volume IOPS
+    # The number of IOPS must be greater than 10; 0 = unlimited
+    # Allowed values: one string for iops limit
+    # Optional: false
+    # Uncomment the line below if you want to use iopsLimit
+    # iopsLimit: <IOPS_LIMIT> # Insert iops limit
+  # volumeBindingMode determines how volume binding and dynamic provisioning should occur
+  # Allowed values: 
+  #  Immediate: volume binding and dynamic provisioning occurs once PVC is created
+  #  WaitForFirstConsumer: delay the binding and provisioning of PV until a pod using the PVC is created.
+  #  Optional: false
+  # Default value: WaitForFirstConsumer (required for topology section below) 
+  volumeBindingMode: WaitForFirstConsumer
+  # allowedTopologies helps scheduling pods on worker nodes which match all of below expressions.
+  allowedTopologies:
+  - matchLabelExpressions:
+    - key: csi-vxflexos.dellemc.com/<SYSTEM_ID> # Insert System ID
+      values:
+      - csi-vxflexos.dellemc.com
+
 snapshot-controller:
   enabled: true
   replicas: 2
@@ -365,9 +443,9 @@ snapshot-controller:
 
   # create a default volume snapshot class
   volumeSnapshotClass:
-    create: false
-    name: "default-snapshot-class"
-    driver: "mydriver"
+    create: true
+    name: "vxflexos-snapshot-class"
+    driver: "csi-vxflexos.dellemc.com"
     # deletionPolicy determines whether a VolumeSnapshotContent created through
     # the VolumeSnapshotClass should be deleted when its bound VolumeSnapshot is deleted.
     # Supported values are "Retain" and "Delete".

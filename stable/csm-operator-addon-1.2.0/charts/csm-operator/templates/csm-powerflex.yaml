@@ -13,7 +13,7 @@ spec:
       # Default value: ReadWriteOnceWithFSType
       fSGroupPolicy: "{{ .Values.csm.config.driver.fSGroupPolicy }}"
     configVersion: "{{ include "csm-operator.powerflexVersion" (dict "lookup" "driver-config" "version" .Values.csm.version) }}"
-    authSecret: "{{ .Values.csm.config.driver.authSecret }}"
+    authSecret: {{ default .Values.csm.config.driver.authSecret "vxflexos-config" | quote }}
     replicas: {{ .Values.csm.config.driver.replicas }}
     dnsPolicy: {{ .Values.csm.config.driver.dnsPolicy }}
     forceUpdate: false
@@ -160,7 +160,7 @@ spec:
           # enabled: Enable/Disable PowerFlex metrics
           enabled: {{ .Values.csm.config.modules.observability.metricsPowerflex.enabled }}
           # image: Defines PowerFlex metrics image. This shouldn't be changed
-          image: "dellemc/csm-metrics-powerflex:{{ include "csm-operator.powerflexVersion" (dict "lookup" "metrics-image" "version" .Values.csm.version) }}"
+          image: "dellemc/csm-metrics-powerflex:{{ include "csm-operator.powerflexVersion" (dict "lookup" "module-metrics-image" "version" .Values.csm.version) }}"
           envs:
 {{ toYaml .Values.csm.config.modules.observability.metricsPowerflex.envs | indent 12 }}
 
@@ -174,27 +174,27 @@ spec:
       #   false: disable replication feature(do not install dell-csi-replicator sidecar)
       # Default value: false
       enabled: {{ .Values.csm.config.modules.replication.enabled }}
-      configVersion: "{{ include "csm-operator.powerflexVersion" (dict "lookup" "repl-config" "version" .Values.csm.version) }}"
+      configVersion: "{{ include "csm-operator.powerflexVersion" (dict "lookup" "module-repl-config" "version" .Values.csm.version) }}"
       components:
       - name: dell-csi-replicator
         # image: Image to use for dell-csi-replicator. This shouldn't be changed
         # Allowed values: string
         # Default value: None
-        image: "dellemc/dell-csi-replicator:{{ include "csm-operator.powerflexVersion" (dict "lookup" "repl-image-replicator" "version" .Values.csm.version) }}"
+        image: "dellemc/dell-csi-replicator:{{ include "csm-operator.powerflexVersion" (dict "lookup" "module-repl-image-replicator" "version" .Values.csm.version) }}"
         envs:
 {{ toYaml .Values.csm.config.modules.replication.dellCsiReplicator.envs | indent 10 }}
 
       - name: dell-replication-controller-manager
         # image: Defines controller image. This shouldn't be changed
         # Allowed values: string
-        image: "dellemc/dell-replication-controller:{{ include "csm-operator.powerflexVersion" (dict "lookup" "repl-image-controller" "version" .Values.csm.version) }}"
+        image: "dellemc/dell-replication-controller:{{ include "csm-operator.powerflexVersion" (dict "lookup" "module-repl-image-controller" "version" .Values.csm.version) }}"
         envs:
 {{ toYaml .Values.csm.config.modules.replication.dellReplicationControllerManager.envs | indent 10 }}
 
       - name: dell-replication-controller-init
         # image: Defines replication init container image. This shouldn't be changed
         # Allowed values: string
-        image: "dellemc/dell-replication-init:{{ include "csm-operator.powerflexVersion" (dict "lookup" "repl-image-init" "version" .Values.csm.version) }}"
+        image: "dellemc/dell-replication-init:{{ include "csm-operator.powerflexVersion" (dict "lookup" "module-repl-image-init" "version" .Values.csm.version) }}"
     {{- end }}
 
     {{- if semverCompare ">=2.7.0" (substr 1 -1 .Values.csm.version) }}
@@ -205,10 +205,10 @@ spec:
       #   false: disable Resiliency feature(do not deploy podmon sidecar)
       # Default value: false
       enabled: {{ .Values.csm.config.modules.resiliency.enabled }}
-      configVersion: "{{ include "csm-operator.powerflexVersion" (dict "lookup" "resiliency-config" "version" .Values.csm.version) }}"
+      configVersion: "{{ include "csm-operator.powerflexVersion" (dict "lookup" "module-resiliency-config" "version" .Values.csm.version) }}"
       components:
         - name: podmon-controller
-          image: "dellemc/podmon:{{ include "csm-operator.powerflexVersion" (dict "lookup" "resiliency-image-podmon" "version" .Values.csm.version) }}"
+          image: "dellemc/podmon:{{ include "csm-operator.powerflexVersion" (dict "lookup" "module-resiliency-image-podmon" "version" .Values.csm.version) }}"
           imagePullPolicy: IfNotPresent
           args:
 {{ toYaml .Values.csm.config.modules.resiliency.podmonController.args | indent 12 }}
@@ -217,7 +217,7 @@ spec:
             - "--mode=controller"
             - "--driver-config-params=/vxflexos-config-params/driver-config-params.yaml"
         - name: podmon-node
-          image: "dellemc/podmon:{{ include "csm-operator.powerflexVersion" (dict "lookup" "resiliency-image-podmon" "version" .Values.csm.version) }}"
+          image: "dellemc/podmon:{{ include "csm-operator.powerflexVersion" (dict "lookup" "module-resiliency-image-podmon" "version" .Values.csm.version) }}"
           imagePullPolicy: IfNotPresent
           envs:
 {{ toYaml .Values.csm.config.modules.resiliency.podmonNode.envs | indent 12 }}
