@@ -5,7 +5,7 @@ charts:
     image:
       repository: docker.io/dellemc/dell-csm-operator
       pullPolicy: IfNotPresent
-      tag: "v1.2.0"
+      tag: "v1.3.0"
 
     csm:
       # Select a preset to populate the default configuration for your platform
