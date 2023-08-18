@@ -30,14 +30,6 @@ spec:
           value: "/var/lib/kubelet"
         - name: "CERT_SECRET_COUNT"
           value: "0"
-{{- if semverCompare ">=2.8.0" (substr 1 -1 .Values.csm.version) }}
-        - name: X_CSI_NFS_ACLS
-          value: "0777"
-        - name: X_CSI_POWERFLEX_EXTERNAL_ACCESS
-          value: ""
-        - name: X_CSI_QUOTA_ENABLED
-          value: "false"
-{{- end }}
 
     sideCars:
 {{ toYaml .Values.csm.config.driver.sideCars | indent 6 }}
