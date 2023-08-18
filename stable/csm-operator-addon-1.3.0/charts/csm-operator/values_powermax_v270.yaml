@@ -276,34 +276,41 @@ csm:
       #   chapsecret: MjAyMy0wNi0yMlQ...
 
 reverseProxyConfig:
-  storageArrays:
-    - storageArrayId: "000000000001" # arrayID
-      primaryURL: https://primary-1.unisphe.re:8443 # primary unisphere for arrayID
-      backupURL: https://backup-1.unisphe.re:8443   # backup unisphere for arrayID
-      proxyCredentialSecrets:
-        - proxy-secret-11 # credential secret for primary unisphere, e.g., powermax-creds
-        - proxy-secret-12 # credential secret for backup unisphere, e.g., powermax-creds
-    - storageArrayId: "000000000002"
-      primaryURL: https://primary-2.unisphe.re:8443
-      backupURL: https://backup-2.unisphe.re:8443
-      proxyCredentialSecrets:
-        - proxy-secret-21
-        - proxy-secret-22
+  mode: StandAlone
+  port: 2222
+  logLevel: debug
+  logFormat: TEXT
+  standAloneConfig:
+    storageArrays:
+      - storageArrayId: "000000000001" # arrayID
+        primaryURL: https://primary-1.unisphe.re:8443 # primary unisphere for arrayID
+        backupURL: https://backup-1.unisphe.re:8443   # backup unisphere for arrayID
+        proxyCredentialSecrets:
+          - powermax-creds # credential secret for primary unisphere, e.g., powermax-creds
+          - powermax-creds # credential secret for backup unisphere, e.g., powermax-creds
+      - storageArrayId: "000000000002"
+        primaryURL: https://primary-2.unisphe.re:8443
+        backupURL: https://backup-2.unisphe.re:8443
+        proxyCredentialSecrets:
+          - powermax-creds
+          - powermax-creds
   managementServers:
     - url: https://primary-1.unisphe.re:8443 # primary unisphere endpoint
-      arrayCredentialSecret: primary-1-secret # primary credential secret e.g., powermax-creds
-      skipCertificateValidation: true
+      arrayCredentialSecret: powermax-creds  # primary credential secret e.g., powermax-creds
+      skipCertificateValidation: true # value false, to verify unisphere certificate and provide certSecret
+      #certSecret: primary-1-cert       # unisphere verification certificate
     - url: https://backup-1.unisphe.re:8443 # backup unisphere endpoint
-      arrayCredentialSecret: backup-1-secret # backup credential secret e.g., powermax-creds
-      skipCertificateValidation: false # value false, to verify unisphere certificate and provide certSecret
-      certSecret: primary-certs # unisphere verification certificate
-    - url: https://primary-2.unisphe.re:8443
-      arrayCredentialSecret: primary-2-secret
+      arrayCredentialSecret: powermax-creds # backup credential secret e.g., powermax-creds
       skipCertificateValidation: true
+      #certSecret: backup-1-cert
+    - url: https://primary-2.unisphe.re:8443
+      arrayCredentialSecret: powermax-creds
+      skipCertificateValidation: true
+      #certSecret: primary-2-cert
     - url: https://backup-2.unisphe.re:8443
-      arrayCredentialSecret: backup-2-secret
-      skipCertificateValidation: false
-      certSecret: primary-certs
+      arrayCredentialSecret: powermax-creds
+      skipCertificateValidation: true
+      #certSecret: backup-2-cert
 
 storageclass:
   name: powermax
