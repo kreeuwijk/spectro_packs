@@ -24,7 +24,7 @@ pack:
 
 charts:
   px-operator:
-    namespace: portworx-operator
+    namespace: portworx
 
   portworx-generic:
     license:
