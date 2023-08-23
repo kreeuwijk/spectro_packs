@@ -365,7 +365,7 @@ presets:
             storageClass:
               enabled: true
               name: ceph-block
-              isDefault: true
+              isDefault: false
               reclaimPolicy: Delete
               allowVolumeExpansion: true
               volumeBindingMode: "Immediate"
@@ -441,7 +441,7 @@ presets:
                   priorityClassName: system-cluster-critical
               storageClass:
                 enabled: true
-                isDefault: false
+                isDefault: true
                 name: ceph-filesystem
                 # (Optional) specify a data pool to use, must be the name of one of the data pools above, 'data0' by default
                 pool: data0
@@ -824,7 +824,7 @@ presets:
             storageClass:
               enabled: true
               name: ceph-block
-              isDefault: true
+              isDefault: false
               reclaimPolicy: Delete
               allowVolumeExpansion: true
               volumeBindingMode: "Immediate"
@@ -898,7 +898,7 @@ presets:
                   priorityClassName: system-cluster-critical
               storageClass:
                 enabled: true
-                isDefault: false
+                isDefault: true
                 name: ceph-filesystem
                 # (Optional) specify a data pool to use, must be the name of one of the data pools above, 'data0' by default
                 pool: data0

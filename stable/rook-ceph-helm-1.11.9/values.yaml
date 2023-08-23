@@ -21,7 +21,7 @@ pack:
 
   namespace: rook-ceph
   namespaceLabels:
-    "rook-ceph": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=v1.25"
+    "rook-ceph": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=v{{ .spectro.system.kubernetes.version | substr 0 4 }}"
 
 charts:
   rook-ceph:
@@ -1114,7 +1114,7 @@ charts:
         storageClass:
           enabled: true
           name: ceph-block
-          isDefault: true
+          isDefault: false
           reclaimPolicy: Delete
           allowVolumeExpansion: true
           volumeBindingMode: "Immediate"
@@ -1190,7 +1190,7 @@ charts:
             priorityClassName: system-cluster-critical
         storageClass:
           enabled: true
-          isDefault: false
+          isDefault: true
           name: ceph-filesystem
           # (Optional) specify a data pool to use, must be the name of one of the data pools above, 'data0' by default
           pool: data0
