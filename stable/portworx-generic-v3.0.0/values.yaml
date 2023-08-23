@@ -24,7 +24,7 @@ pack:
 
 charts:
   px-operator:
-    namespace: portworx
+    namespace: portworx-operator
 
   portworx-generic:
     license:
@@ -100,7 +100,7 @@ charts:
         #   enabled: true
         # monitoring:
         #   telemetry:
-        #       enabled: false
+        #       enabled: true
         #   prometheus:
         #     enabled: false
         #     exportMetrics: true
