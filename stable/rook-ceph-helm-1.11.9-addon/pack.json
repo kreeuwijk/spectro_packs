@@ -1,0 +1,20 @@
+{
+  "annotations": {
+    "docsURL": "https://docs.spectrocloud.com/integrations/csi",
+    "description": "Rook-Ceph in-cluster distributed storage"
+  },
+  "cloudTypes": [
+    "maas",
+    "vsphere",
+    "openstack"
+  ],
+  "displayName": "Rook-Ceph (Helm)",
+  "charts": [
+    "charts/rook-ceph-1.11.9.tgz",
+    "charts/rook-ceph-cluster-1.11.9.tgz"
+  ],
+  "layer": "addon",
+  "addonType":"system app",
+  "name": "csi-rook-ceph-helm-addon",
+  "version": "1.11.9"
+}
