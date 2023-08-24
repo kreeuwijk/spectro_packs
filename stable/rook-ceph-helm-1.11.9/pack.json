@@ -4,7 +4,6 @@
     "description": "Rook-Ceph in-cluster distributed storage"
   },
   "cloudTypes": [
-    "edge-native",
     "maas",
     "openstack"
   ],
