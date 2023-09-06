@@ -1,5 +1,7 @@
 {
-  "annotations": {},
+  "annotations": {
+    "source": "spectrocloud"
+  },
   "cloudTypes": [
     "aws",
     "vsphere",
