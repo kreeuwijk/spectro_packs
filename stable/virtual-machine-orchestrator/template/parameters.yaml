@@ -1,0 +1,29 @@
+parameters:
+  config:
+    serviceType:
+      default: "ClusterIP"
+      key: "charts.virtual-machine-orchestrator.service.type"
+  input:
+  - name: access
+    displayName: Access
+    description: ""
+    type: string
+    format: radio
+    value: private
+    options:
+      private:
+        label: "Proxied"
+        description: "Spectro Proxy is required"
+        dependencies:
+          - name: spectro-proxy
+            layer: "addon"
+            readOnly: true
+            presets:
+              manifests.spectro-proxy.vmDashboardIntegration.enabled: true
+        presets:
+          charts.virtual-machine-orchestrator.service.type : "ClusterIP"
+      public:
+        label: "Direct"
+        presets:
+          charts.virtual-machine-orchestrator.service.type : "LoadBalancer"
+    targetKey: "pack.palette.config.dashboard.access"

@@ -1,0 +1,75 @@
+{{- if .Values.sampleTemplates.ubuntu2204WithVol }}
+apiVersion: spectrocloud.com/v1
+kind: VmTemplate
+metadata:
+  name: ubuntu-2204-dv
+spec:
+  description: Ubuntu 22.04 with a dynamic IP address on the pod network (masquerade)
+  displayName: Ubuntu 22.04 (pod nw)
+  icon: https://s3.amazonaws.com/manifests.spectrocloud.com/logos/ubuntu.png
+  running: false
+  dataVolumeTemplates:
+    - metadata:
+        name: dv-u2204
+      spec:
+        pvc:
+          accessModes:
+            - ReadWriteMany
+          resources:
+            requests:
+              storage: 50Gi
+        source:
+          registry:
+            url: "docker://gcr.io/spectro-images-public/release/virtual-machine-orchestrator/os/ubuntu-container-disk:22.04"
+  liveUpdateFeatures:
+    cpu: { }
+  template:
+    metadata:
+      annotations:
+        descheduler.alpha.kubernetes.io/evict: "true"
+    spec:
+      domain:
+        cpu:
+          cores: 2
+          sockets: 1
+          threads: 1
+        devices:
+          disks:
+          - disk:
+              bus: virtio
+            name: datavolume-os
+          - disk:
+              bus: virtio
+            name: cloudinitdisk
+          interfaces:
+            - masquerade: { }
+              name: default
+              model: virtio
+              #macAddress: '00:5e:ab:cd:ef:01'
+        machine:
+          type: q35
+        resources:
+          limits:
+            memory: 2Gi
+          requests:
+            memory: 2Gi
+      networks:
+        - name: default
+          pod: { }
+      volumes:
+        - dataVolume:
+            name: dv-u2204
+          name: datavolume-os
+        - cloudInitNoCloud:
+            userData: |
+              #cloud-config
+              ssh_pwauth: True
+              chpasswd: { expire: False }
+              password: spectro
+              disable_root: false
+              runcmd:
+                - apt-get update
+                - apt-get install -y qemu-guest-agent
+                - systemctl start qemu-guest-agent
+          name: cloudinitdisk
+{{- end }}

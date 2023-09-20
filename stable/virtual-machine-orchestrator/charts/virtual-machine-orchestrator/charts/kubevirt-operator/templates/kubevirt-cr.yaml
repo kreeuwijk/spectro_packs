@@ -1,0 +1,56 @@
+apiVersion: kubevirt.io/v1
+kind: KubeVirt
+metadata:
+  name: {{ .Values.kubevirtResource.name }}
+  namespace: {{ .Values.namespace | default "kubevirt" }}
+  labels:
+    # below label is used for cleanup, if you update it then update the hook as well
+    spectrocloud.com/installed-by: spectrocloud
+spec:
+  {{- with .Values.kubevirtResource.certificateRotateStrategy }}
+  certificateRotateStrategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  configuration:
+    developerConfiguration:
+      useEmulation: {{ .Values.kubevirtResource.useEmulation }}
+      featureGates:
+      {{- range .Values.kubevirtResource.additionalFeatureGates }}
+      - {{ . }}
+      {{- end }}
+      {{- with .Values.kubevirtResource.config.additionalDevConfig }}
+      {{- toYaml . | nindent 6 }}  
+      {{- end }}
+    evictionStrategy: {{ .Values.kubevirtResource.config.evictionStrategy | default "LiveMigrate" }}
+    {{- with .Values.kubevirtResource.config.additionalConfig }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.kubevirtResource.customizeComponents }}
+  customizeComponents:
+    {{- toYaml . | nindent 4}}
+  {{- end }}
+  imagePullPolicy: {{ .Values.kubevirtResource.imagePullPolicy }}
+  {{- with .Values.kubevirtResource.infra }}
+  infra:
+    {{- toYaml . | nindent 4 }}  
+  {{- end }}
+  {{- with .Values.kubevirtResource.monitorAccount }}
+  monitorAccount: {{ . }}
+  {{- end }}
+  {{- with .Values.kubevirtResource.monitorNamespace }}
+  monitorNamespace: {{ . }}
+  {{- end }}
+  {{- with .Values.kubevirtResource.serviceMonitorNamespace }}
+  serviceMonitorNamespace: {{ . }}
+  {{- end }}
+  {{- with .Values.kubevirtResource.workloads }}
+  workloads:
+    {{- toYaml . | nindent 4 }}  
+  {{- end }}
+  {{- with .Values.kubevirtResource.workloadsUpdateStrategy }}
+  workloadUpdateStrategy:
+    {{- toYaml . | nindent 4 }}  
+  {{- end }}
+  {{- with .Values.kubevirtResource.uninstallStrategy }}
+  uninstallStrategy: {{ . }}
+  {{- end }}

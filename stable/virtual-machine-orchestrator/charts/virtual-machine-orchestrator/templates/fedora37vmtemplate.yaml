@@ -1,0 +1,62 @@
+{{- if .Values.sampleTemplates.fedora37 }}
+apiVersion: spectrocloud.com/v1
+kind: VmTemplate
+metadata:
+  labels:
+    app.kubernetes.io/name: fedora-37
+    app.kubernetes.io/instance: fedora-37-instance
+    app.kubernetes.io/part-of: vmtemplate
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: vmtemplate
+  name: fedora-37
+spec:
+  description: This is fedora 37 image
+  displayName: Fedora 37
+  icon: "https://s3.amazonaws.com/manifests.spectrocloud.com/logos/fedora.png"
+  liveUpdateFeatures:
+    cpu:
+      maxSockets: 4
+  running: false
+  template:
+    spec:
+      domain:
+        cpu:
+          cores: 1
+          threads: 1
+        devices:
+          disks:
+            - name: containerdisk
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              disk:
+                bus: virtio
+          interfaces:
+            - name: default
+              masquerade: {}
+        resources:
+          requests:
+            memory: 1Gi
+          limits:
+            memory: 2Gi
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - name: containerdisk
+          containerDisk:
+            image:  gcr.io/spectro-images-public/release/virtual-machine-orchestrator/os/fedora-container-disk:37
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            # user name is fedora
+            userData: |
+              #cloud-config
+              ssh_pwauth: True
+              chpasswd: { expire: False }
+              password: spectro
+              disable_root: false
+              packages:
+                qemu-guest-agent
+              runcmd:
+                - ["sudo", "systemctl", "enable", "--now", "qemu-guest-agent"]
+{{- end}}

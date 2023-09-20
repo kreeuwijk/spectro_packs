@@ -1,0 +1,496 @@
+# Default values for virtual-machine-orchestrator.
+replicaCount: 1
+
+image:
+  repository: gcr.io/spectro-images-public/daily/spectro-vm-dashboard
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 443
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: 
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+sampleTemplates:
+  fedora37: true
+  ubuntu2204: false
+  ubuntu2204WithVol: true
+  ubuntu2204staticIP: true
+  fedora37staticIP: true
+  # Create new manifests to add more VM templates
+
+grafana:
+  namespace: monitoring
+
+snapshot-controller:
+  enabled: true
+  replicas: 1
+  # controller image and policies
+  image:
+    repository: registry.k8s.io/sig-storage/snapshot-controller
+    pullPolicy: IfNotPresent
+    tag: "v6.2.1"
+
+  # A list/array of extra args that should be used 
+  # when running the controller. Default args include log verbose level 
+  # and leader election
+  extraArgs: []
+
+  # snapshot webhook config
+  webhook:
+    # enable or disable the snapshot webhook 
+    enabled: true
+    # all below values take effect only if webhook is enabled
+
+    # webhook controller image and policies
+    image:
+      # change the image if you wish to use your own custom validation server image
+      repository: registry.k8s.io/sig-storage/snapshot-validation-webhook 
+      pullPolicy: IfNotPresent
+      tag: "v6.2.1"  
+  
+  # create a default volume snapshot class
+  volumeSnapshotClass:
+    create: false
+    name: "default-snapshot-class"
+    driver: "mydriver"
+    # deletionPolicy determines whether a VolumeSnapshotContent created through
+    # the VolumeSnapshotClass should be deleted when its bound VolumeSnapshot is deleted.
+    # Supported values are "Retain" and "Delete".
+    deletionPolicy: ""
+    # params is a key-value map with storage driver specific parameters for creating snapshots.
+    params: {}
+
+    # key-value pair of extra labels to apply to the volumesnapshotclass
+    extraLabels: {}
+
+  # time for sleep hook in seconds
+  hooksleepTime: 12
+
+  # this install cert-manager latest version if not already installed
+  cert-manager:
+    enabled: false
+    installCRDs: true
+
+kubevirt: 
+  enabled: true
+  namespace: kubevirt
+  replicas: 1
+
+  service:
+    type: LoadBalancer
+    port: 443
+    targetPort: 8443
+
+  image:
+    repository: quay.io/kubevirt/virt-operator
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "v1.0.0"
+
+  ## The Kubevirt CR that gets created
+  kubevirtResource:
+    name: kubevirt
+    useEmulation: false
+    # below gates are required for virtual machine orchestrator pack, users can append additional gates
+    additionalFeatureGates:
+    - LiveMigration
+    - HotplugVolumes
+    - Snapshot
+    - VMExport
+    - ExpandDisks
+    - HotplugNICs
+    - VMLiveUpdateFeatures
+    
+    config:
+      evictionStrategy: "LiveMigrate"
+      
+      # additionalConfig lets you define any configuration other than developerConfiguration and evictionStrategy
+      additionalConfig: {}
+      # additionalDevConfig lets you define dev config other than emulation and feature gate
+      additionalDevConfig: {}
+    
+    certificateRotateStrategy: {}
+
+    customizeComponents: {}
+      # flags:
+      #   api:
+      #     v: 
+      #       "5"
+      #     port:
+      #       "8443"  
+
+    imagePullPolicy: IfNotPresent
+
+    infra: {}
+    # The name of the Prometheus service account that needs read-access to KubeVirt endpoints
+    monitorAccount: ""
+    # The namespace Prometheus is deployed in
+    monitorNamespace: ""
+    # The namespace the service monitor will be deployed. Either specify this or the monitorNamespace
+    serviceMonitorNamespace: ""
+
+    workloads: {}
+
+    workloadsUpdateStrategy: {}
+
+    # uninstallStrategy to use, options are RemoveWorkloads, BlockUninstallIfWorkloadsExist 
+    uninstallStrategy: ""
+
+  ingress:
+    enabled: false
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/issuer: kubevirt-selfsigned-issuer
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    labels: {}
+    hosts:
+      - host: virt-exportproxy.maas.sc
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    # tls:
+    #   - secretName: chart-example-tls
+    #     hosts:
+    #       - virt-exportproxy.maas.sc
+
+cdi:
+  enabled: true
+  replicas: 1
+
+  image:
+    repository: quay.io/kubevirt/cdi-operator
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "v1.56.0"
+
+  service:
+    type: LoadBalancer
+    port: 443
+    targetPort: 8443
+
+  ## The CDI CR that gets created
+  cdiResource:
+    additionalFeatureGates:
+    # - FeatureName
+    filesystemOverheadStorageClasses:
+      spectro-storage-class: "0.1"
+
+  ingress:
+    enabled: false
+    className: "nginx"
+    annotations:
+      cert-manager.io/issuer: cdi-selfsigned-issuer
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+      nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    hosts:
+      - host: cdi-uploadproxy.maas.sc
+        http:
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - cdi-uploadproxy.maas.sc
+
+multus:
+  enabled: true
+  image:
+    repository: ghcr.io/k8snetworkplumbingwg/multus-cni
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "snapshot-thick"
+
+  networkController:
+    criSocketPath: /host/run/containerd/containerd.sock
+
+  imagePullSecrets: []
+
+  podAnnotations: {}
+
+  nodeSelector: {}
+
+  affinity: {}
+  networkAttachDef:
+    create: false
+    # a json string to apply
+    config: '{
+        "cniVersion": "0.3.0",
+        "type": "macvlan",
+        "master": "ens5",
+        "mode": "bridge",
+        "ipam": {
+          "type": "host-local",
+          "subnet": "192.168.1.0/24",
+          "rangeStart": "192.168.1.200",
+          "rangeEnd": "192.168.1.216",
+          "routes": [
+            { "dst": "0.0.0.0/0" }
+          ],
+          "gateway": "192.168.1.1"
+        }
+      }'
+
+descheduler:
+  enabled: true
+  namespace: "kube-system"
+  # CronJob or Deployment
+  kind: CronJob
+
+  image:
+    repository: registry.k8s.io/descheduler/descheduler
+    # Overrides the image tag whose default is the chart version
+    tag: ""
+    pullPolicy: IfNotPresent
+
+  imagePullSecrets:
+  #   - name: container-registry-secret
+
+  resources:
+    requests:
+      cpu: 500m
+      memory: 256Mi
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    privileged: false
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+
+  nameOverride: ""
+  fullnameOverride: ""
+
+  # labels that'll be applied to all resources
+  commonLabels: {}
+
+  cronJobApiVersion: "batch/v1"
+  schedule: "*/2 * * * *"
+  suspend: false
+  # startingDeadlineSeconds: 200
+  # successfulJobsHistoryLimit: 3
+  # failedJobsHistoryLimit: 1
+  # ttlSecondsAfterFinished 600
+
+  # Required when running as a Deployment
+  deschedulingInterval: 5m
+
+  # Specifies the replica count for Deployment
+  # Set leaderElection if you want to use more than 1 replica
+  # Set affinity.podAntiAffinity rule if you want to schedule onto a node
+  # only if that node is in the same zone as at least one already-running descheduler
+  replicas: 1
+
+  # Specifies whether Leader Election resources should be created
+  # Required when running as a Deployment
+  # NOTE: Leader election can't be activated if DryRun enabled
+  leaderElection: {}
+  #  enabled: true
+  #  leaseDuration: 15s
+  #  renewDeadline: 10s
+  #  retryPeriod: 2s
+  #  resourceLock: "leases"
+  #  resourceName: "descheduler"
+  #  resourceNamescape: "kube-system"
+
+  cmdOptions:
+    v: 3
+
+  # Recommended to use the latest Policy API version supported by the Descheduler app version
+  deschedulerPolicyAPIVersion: "descheduler/v1alpha1"
+
+  deschedulerPolicy:
+    # nodeSelector: "key1=value1,key2=value2"
+    # maxNoOfPodsToEvictPerNode: 10
+    # maxNoOfPodsToEvictPerNamespace: 10
+    # ignorePvcPods: true
+    # evictLocalStoragePods: true
+    strategies:
+      RemoveDuplicates:
+        enabled: true
+      RemovePodsHavingTooManyRestarts:
+        enabled: true
+        params:
+          podsHavingTooManyRestarts:
+            podRestartThreshold: 100
+            includingInitContainers: true
+      RemovePodsViolatingNodeTaints:
+        enabled: true
+      RemovePodsViolatingNodeAffinity:
+        enabled: true
+        params:
+          nodeAffinityType:
+            - requiredDuringSchedulingIgnoredDuringExecution
+      RemovePodsViolatingInterPodAntiAffinity:
+        enabled: true
+      RemovePodsViolatingTopologySpreadConstraint:
+        enabled: true
+        params:
+          includeSoftConstraints: false
+      LowNodeUtilization:
+        enabled: true
+        params:
+          nodeResourceUtilizationThresholds:
+            thresholds:
+              cpu: 20
+              memory: 20
+              pods: 20
+            targetThresholds:
+              cpu: 50
+              memory: 50
+              pods: 50
+
+  priorityClassName: system-cluster-critical
+
+  nodeSelector: {}
+  #  foo: bar
+
+  affinity: {}
+  # nodeAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     nodeSelectorTerms:
+  #     - matchExpressions:
+  #       - key: kubernetes.io/e2e-az-name
+  #         operator: In
+  #         values:
+  #         - e2e-az1
+  #         - e2e-az2
+  #  podAntiAffinity:
+  #    requiredDuringSchedulingIgnoredDuringExecution:
+  #      - labelSelector:
+  #          matchExpressions:
+  #            - key: app.kubernetes.io/name
+  #              operator: In
+  #              values:
+  #                - descheduler
+  #        topologyKey: "kubernetes.io/hostname"
+  tolerations: []
+  # - key: 'management'
+  #   operator: 'Equal'
+  #   value: 'tool'
+  #   effect: 'NoSchedule'
+
+  rbac:
+    # Specifies whether RBAC resources should be created
+    create: true
+
+  serviceAccount:
+    # Specifies whether a ServiceAccount should be created
+    create: true
+    # The name of the ServiceAccount to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name:
+    # Specifies custom annotations for the serviceAccount
+    annotations: {}
+
+  podAnnotations: {}
+
+  podLabels: {}
+
+  livenessProbe:
+    failureThreshold: 3
+    httpGet:
+      path: /healthz
+      port: 10258
+      scheme: HTTPS
+    initialDelaySeconds: 3
+    periodSeconds: 10
+
+  service:
+    enabled: false
+
+  serviceMonitor:
+    enabled: false
+    # The namespace where Prometheus expects to find service monitors.
+    # namespace: ""
+    interval: ""
+    # honorLabels: true
+    insecureSkipVerify: true
+    serverName: null
+    metricRelabelings: []
+      # - action: keep
+    #   regex: 'descheduler_(build_info|pods_evicted)'
+    #   sourceLabels: [__name__]
+    relabelings: []
+      # - sourceLabels: [__meta_kubernetes_pod_node_name]
+      #   separator: ;
+      #   regex: ^(.*)$
+      #   targetLabel: nodename
+    #   replacement: $1
+    #   action: replace

@@ -1,0 +1,90 @@
+{{- if .Values.sampleTemplates.fedora37staticIP }}
+apiVersion: spectrocloud.com/v1
+kind: VmTemplate
+metadata:
+  name: fedora-37-static-ip
+spec:
+  description: Fedora 37 with static IP address
+  displayName: Fedora 37 (static IP)
+  icon: https://s3.amazonaws.com/manifests.spectrocloud.com/logos/fedora.png
+  running: false
+  dataVolumeTemplates:
+    - metadata:
+        name: dv-f37-sip
+      spec:
+        pvc:
+          accessModes:
+            - ReadWriteMany
+          resources:
+            requests:
+              storage: 50Gi
+        source:
+          registry:
+            url: "docker://gcr.io/spectro-images-public/release/virtual-machine-orchestrator/os/fedora-container-disk:37"
+  liveUpdateFeatures:
+    cpu: {}
+  template:
+    metadata:
+      annotations:
+        descheduler.alpha.kubernetes.io/evict: "true"
+    spec:
+      domain:
+        cpu:
+          cores: 2
+          sockets: 1
+          threads: 1
+        devices:
+          disks:
+          - disk:
+              bus: virtio
+            name: datavolume-os
+          - disk:
+              bus: virtio
+            name: cloudinitdisk
+          interfaces:
+            - bridge: {}
+              #macAddress: '00:5e:ab:cd:ef:01'
+              model: virtio
+              name: default
+        machine:
+          type: q35
+        resources:
+          limits:
+            memory: 2Gi
+          requests:
+            memory: 2Gi
+      networks:
+        - name: default
+          multus:
+            networkName: vlan-0
+      volumes:
+        - dataVolume:
+            name: dv-f37-sip
+          name: datavolume-os
+        - cloudInitNoCloud:
+            networkData: |
+              network:
+                version: 1
+                config:
+                  - type: physical
+                    name: eth0
+                    subnets:
+                      #- type: dhcp
+                      - type: static
+                        address: a.b.c.d/prefixlength
+                        gateway: e.f.g.h
+                  - type: nameserver
+                    address:
+                      - 8.8.8.8
+            userData: |
+              #cloud-config
+              ssh_pwauth: True
+              chpasswd: { expire: False }
+              password: spectro
+              disable_root: false
+              packages:
+                - qemu-guest-agent
+              runcmd:
+                - ["sudo", "systemctl", "enable", "--now", "qemu-guest-agent"]
+          name: cloudinitdisk
+{{- end }}

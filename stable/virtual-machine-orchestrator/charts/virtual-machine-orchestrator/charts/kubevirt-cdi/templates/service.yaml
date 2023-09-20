@@ -1,0 +1,15 @@
+{{ if not .Values.ingress.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: cdi-uploadproxy-lb
+  namespace: {{ .Values.namespace }}
+spec:
+  ports:
+    - port: {{ .Values.service.port }}
+      protocol: TCP
+      targetPort: {{ .Values.service.targetPort }}
+  selector:
+    cdi.kubevirt.io: cdi-uploadproxy
+  type: {{ .Values.service.type }}
+{{ end }}

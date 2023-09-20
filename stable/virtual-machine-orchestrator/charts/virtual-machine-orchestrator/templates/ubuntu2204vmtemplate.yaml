@@ -1,0 +1,62 @@
+{{- if .Values.sampleTemplates.ubuntu2204 }}
+apiVersion: spectrocloud.com/v1
+kind: VmTemplate
+metadata:
+  labels:
+    app.kubernetes.io/name: ubuntu-2204
+    app.kubernetes.io/instance: ubuntu-2204-instance
+    app.kubernetes.io/part-of: vmtemplate
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: vmtemplate
+  name: ubuntu-2204
+spec:
+  description: This is Ubuntu 22.04 image
+  displayName: Ubuntu 22.04
+  icon: "https://s3.amazonaws.com/manifests.spectrocloud.com/logos/ubuntu.png"
+  liveUpdateFeatures:
+    cpu:
+      maxSockets: 4
+  running: false
+  template:
+    spec:
+      domain:
+        cpu:
+          cores: 2
+          threads: 1
+        devices:
+          disks:
+            - name: containerdisk
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              disk:
+                bus: virtio
+          interfaces:
+            - name: default
+              masquerade: {}
+        resources:
+          requests:
+            memory: 1Gi
+          limits:
+            memory: 2Gi
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - name: containerdisk
+          containerDisk:
+            image:  gcr.io/spectro-images-public/release/virtual-machine-orchestrator/os/ubuntu-container-disk:22.04
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            # user name is ubuntu
+            userData: |
+              #cloud-config
+              ssh_pwauth: True
+              chpasswd: { expire: False }
+              password: spectro
+              disable_root: false
+              runcmd:
+                - apt-get update
+                - apt-get install -y qemu-guest-agent
+                - systemctl start qemu-guest-agent
+{{- end }}

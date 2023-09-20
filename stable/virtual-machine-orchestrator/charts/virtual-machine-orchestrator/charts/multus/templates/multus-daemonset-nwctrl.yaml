@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: dynamic-networks-controller-ds
+  namespace: kube-system
+  labels:
+    tier: node
+    app: dynamic-networks-controller
+    name: dynamic-networks-controller
+spec:
+  selector:
+    matchLabels:
+      name: dynamic-networks-controller
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        tier: node
+        app: dynamic-networks-controller
+        name: dynamic-networks-controller
+    spec:
+      tolerations:
+        - operator: Exists
+          effect: NoSchedule
+        - operator: Exists
+          effect: NoExecute
+      serviceAccountName: dynamic-networks-controller
+      containers:
+        - name: dynamic-networks-controller
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                    fieldPath: spec.nodeName
+          image: ghcr.io/k8snetworkplumbingwg/multus-dynamic-networks-controller:latest-amd64
+          command: [ "/dynamic-networks-controller" ]
+          args:
+            - "-config=/etc/dynamic-networks-controller/dynamic-networks-config.json"
+            - "-v=5"
+          livenessProbe:
+            exec:
+                command:
+                - curl
+                - --fail
+                - --unix-socket
+                - /host/run/multus/multus.sock
+                - localhost/healthz
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "50Mi"
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: dynamic-networks-controller-config-dir
+              mountPath: /etc/dynamic-networks-controller/
+              readOnly: true
+            - name: multus-server-socket
+              mountPath: /host/run/multus/multus.sock
+            - name: cri-socket
+              mountPath: {{ .Values.networkController.criSocketPath }}
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: dynamic-networks-controller-config-dir
+          configMap:
+            name: dynamic-networks-controller-config
+            items:
+              - key: dynamic-networks-config.json
+                path: dynamic-networks-config.json
+        -  name: multus-server-socket
+           hostPath:
+             path: /run/multus/multus.sock
+             type: Socket
+        -  name: cri-socket
+           hostPath:
+             path: /run/containerd/containerd.sock
+             type: Socket

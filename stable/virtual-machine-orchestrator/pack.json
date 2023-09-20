@@ -1,0 +1,14 @@
+{
+  "addonType": "integration",
+  "addonSubType": "system app",
+  "cloudTypes": [
+    "all"
+  ],
+  "displayName": "Virtual Machine Orchestrator",
+  "charts": [
+    "charts/virtual-machine-orchestrator-1.0.1.tgz"
+  ],
+  "layer": "addon",
+  "name": "virtual-machine-orchestrator",
+  "version": "4.0.1-k3s"
+}

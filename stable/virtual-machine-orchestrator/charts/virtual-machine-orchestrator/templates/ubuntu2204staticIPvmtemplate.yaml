@@ -1,0 +1,90 @@
+{{- if .Values.sampleTemplates.ubuntu2204staticIP }}
+apiVersion: spectrocloud.com/v1
+kind: VmTemplate
+metadata:
+  name: ubuntu-2204-static-ip
+spec:
+  description: Ubuntu 22.04 with a static IP address on a VLAN
+  displayName: Ubuntu 22.04 (static IP)
+  icon: https://s3.amazonaws.com/manifests.spectrocloud.com/logos/ubuntu.png
+  running: false
+  dataVolumeTemplates:
+    - metadata:
+        name: dv-u2204-sip
+      spec:
+        pvc:
+          accessModes:
+            - ReadWriteMany
+          resources:
+            requests:
+              storage: 50Gi
+        source:
+          registry:
+            url: "docker://gcr.io/spectro-images-public/release/virtual-machine-orchestrator/os/ubuntu-container-disk:22.04"
+  liveUpdateFeatures:
+    cpu: {}
+  template:
+    metadata:
+      annotations:
+        descheduler.alpha.kubernetes.io/evict: "true"
+    spec:
+      domain:
+        cpu:
+          cores: 2
+          sockets: 1
+          threads: 1
+        devices:
+          disks:
+          - disk:
+              bus: virtio
+            name: datavolume-os
+          - disk:
+              bus: virtio
+            name: cloudinitdisk
+          interfaces:
+            - bridge: {}
+              #macAddress: '00:5e:ab:cd:ef:01'
+              model: virtio
+              name: default
+        machine:
+          type: q35
+        resources:
+          limits:
+            memory: 2Gi
+          requests:
+            memory: 2Gi
+      networks:
+        - name: default
+          multus:
+            networkName: vlan-0
+      volumes:
+        - dataVolume:
+            name: dv-u2204-sip
+          name: datavolume-os
+        - cloudInitNoCloud:
+            networkData: |
+              network:
+                version: 1
+                config:
+                  - type: physical
+                    name: enp1s0
+                    subnets:
+                      #- type: dhcp
+                      - type: static
+                        address: a.b.c.d/prefixlength
+                        gateway: e.f.g.h
+                  - type: nameserver
+                    address:
+                      - 8.8.8.8
+            userData: |
+              #cloud-config
+              ssh_pwauth: True
+              chpasswd: { expire: False }
+              password: spectro
+              disable_root: false
+              runcmd:
+                - apt-get update
+                - apt-get install -y qemu-guest-agent
+                - systemctl start qemu-guest-agent
+          name: cloudinitdisk
+{{- end }}

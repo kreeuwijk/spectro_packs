@@ -1,0 +1,11 @@
+{{- if .Values.networkAttachDef.create }}
+{{- if  gt (len .Values.networkAttachDef.config) 0 }}
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: multus-spectro-config
+  namespace: {{ .Release.Namespace }}
+spec:
+  config: '{{ .Values.networkAttachDef.config }}'
+{{- end }}
+{{- end }}

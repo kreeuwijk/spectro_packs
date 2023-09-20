@@ -1,0 +1,574 @@
+## spectro-vm-viewer OOB role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: spectro-vm-viewer
+  labels:
+    {{- include "virtual-machine-orchestrator.labels" . | nindent 4 }}
+    rbac.authorization.k8s.io/aggregate-to-view: "true"
+rules:
+  - apiGroups: ["spectrocloud.com"]
+    resources: ["vmtemplates"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["kubevirt.io"]
+    resources: ["virtualmachines", "virtualmachineinstances", "virtualmachineinstancereplicasets", "virtualmachineinstancepresets", "virtualmachineinstancemigrations"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["instancetype.kubevirt.io"]
+    resources: ["virtualmachineclusterinstancetypes", "virtualmachineclusterpreferences", "virtualmachineinstancetypes", "virtualmachinepreferences"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["migrations.kubevirt.io"]
+    resources: ["migrationpolicies"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["pool.kubevirt.io"]
+    resources: ["virtualmachinepools"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["snapshot.kubevirt.io"]
+    resources: ["virtualmachinerestores", "virtualmachinesnapshotcontents", "virtualmachinesnapshots"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["subresources.kubevirt.io"]
+    resources: ["filesystemlist", "guestosinfo", "userlist", "expand-spec"]
+    verbs: ["get"]
+  - apiGroups: ["cdi.kubevirt.io"]
+    resources: ["cdiconfigs", "dataimportcrons", "datasources", "datavolumes", "objecttransfers", "storageprofiles"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups:
+    - ""
+    resources:
+    - persistentvolumeclaims
+    - pods
+    - events
+    - services
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - k8s.cni.cncf.io
+    resources:
+    - '*'
+    verbs:
+    - get
+    - list
+    - watch
+---
+## spectro-vm-user OOB role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: spectro-vm-user
+  labels:
+    {{- include "virtual-machine-orchestrator.labels" . | nindent 4 }}
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"
+rules:
+  - apiGroups: ["spectrocloud.com"]
+    resources: ["vmtemplates"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups:
+    - subresources.kubevirt.io
+    resources:
+    - virtualmachineinstances/console
+    - virtualmachineinstances/vnc
+    - virtualmachineinstances/vnc/screenshot
+    - virtualmachineinstances/portforward
+    - virtualmachineinstances/guestosinfo
+    - virtualmachineinstances/filesystemlist
+    - virtualmachineinstances/userlist
+    verbs:
+    - get
+  - apiGroups:
+    - subresources.kubevirt.io
+    resources:
+    - virtualmachineinstances/pause
+    - virtualmachineinstances/unpause
+    - virtualmachineinstances/addvolume
+    - virtualmachineinstances/removevolume
+    - virtualmachineinstances/freeze
+    - virtualmachineinstances/unfreeze
+    - virtualmachineinstances/softreboot
+    verbs:
+    - update
+  - apiGroups:
+    - subresources.kubevirt.io
+    resources:
+    - virtualmachines/expand-spec
+    - virtualmachines/portforward
+    verbs:
+    - get
+  - apiGroups:
+    - subresources.kubevirt.io
+    resources:
+    - virtualmachines/start
+    - virtualmachines/stop
+    - virtualmachines/restart
+    - virtualmachines/addvolume
+    - virtualmachines/removevolume
+    - virtualmachines/migrate
+    - virtualmachines/memorydump
+    verbs:
+    - update
+  - apiGroups:
+    - kubevirt.io
+    resources:
+    - virtualmachines
+    - virtualmachineinstances
+    - virtualmachineinstancepresets
+    - virtualmachineinstancereplicasets
+    - virtualmachineinstancemigrations
+    verbs:
+    - get
+    - list
+    - watch
+    - patch
+  - apiGroups:
+    - snapshot.kubevirt.io
+    resources:
+    - virtualmachinesnapshots
+    - virtualmachinesnapshotcontents
+    - virtualmachinerestores
+    verbs:
+    - get
+    - delete
+    - create
+    - update
+    - patch
+    - list
+    - watch
+  - apiGroups:
+    - instancetype.kubevirt.io
+    resources:
+    - virtualmachineinstancetypes
+    - virtualmachineclusterinstancetypes
+    - virtualmachinepreferences
+    - virtualmachineclusterpreferences
+    verbs:
+    - get
+    - create
+    - update
+    - patch
+    - list
+    - watch
+  - apiGroups:
+    - pool.kubevirt.io
+    resources:
+    - virtualmachinepools
+    verbs:
+    - get
+    - delete
+    - create
+    - update
+    - patch
+    - list
+    - watch
+  - apiGroups:
+    - kubevirt.io
+    resources:
+    - kubevirts
+    verbs:
+    - get
+    - list
+  - apiGroups:
+    - migrations.kubevirt.io
+    resources:
+    - migrationpolicies
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - cdi.kubevirt.io
+    resources:
+    - cdiconfigs
+    - dataimportcrons
+    - datasources
+    - objecttransfers
+    - storageprofiles
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - cdi.kubevirt.io
+    resources:
+    - datavolumes
+    verbs:
+    - '*'
+  - apiGroups:
+    - cdi.kubevirt.io
+    resources:
+    - datavolumes/source
+    verbs:
+    - create
+  - apiGroups:
+    - ""
+    resources:
+    - persistentvolumeclaims
+    - pods
+    - events
+    - services
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - k8s.cni.cncf.io
+    resources:
+    - '*'
+    verbs:
+    - get
+    - list
+    - watch
+    - patch
+    - update
+    - delete
+---
+## spectro-vm-power-user OOB role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: spectro-vm-power-user
+  labels:
+    {{- include "virtual-machine-orchestrator.labels" . | nindent 4 }}
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"
+rules:
+- apiGroups: ["spectrocloud.com"]
+  resources: ["vmtemplates"]
+  verbs: ["get", "list", "watch", "update"]
+- apiGroups:
+  - subresources.kubevirt.io
+  resources:
+  - virtualmachineinstances/console
+  - virtualmachineinstances/vnc
+  - virtualmachineinstances/vnc/screenshot
+  - virtualmachineinstances/portforward
+  - virtualmachineinstances/guestosinfo
+  - virtualmachineinstances/filesystemlist
+  - virtualmachineinstances/userlist
+  verbs:
+  - get
+- apiGroups:
+  - subresources.kubevirt.io
+  resources:
+  - virtualmachineinstances/pause
+  - virtualmachineinstances/unpause
+  - virtualmachineinstances/addvolume
+  - virtualmachineinstances/removevolume
+  - virtualmachineinstances/freeze
+  - virtualmachineinstances/unfreeze
+  - virtualmachineinstances/softreboot
+  verbs:
+  - update
+- apiGroups:
+  - subresources.kubevirt.io
+  resources:
+  - virtualmachines/expand-spec
+  - virtualmachines/portforward
+  verbs:
+  - get
+- apiGroups:
+  - subresources.kubevirt.io
+  resources:
+  - virtualmachines/start
+  - virtualmachines/stop
+  - virtualmachines/restart
+  - virtualmachines/addvolume
+  - virtualmachines/removevolume
+  - virtualmachines/migrate
+  - virtualmachines/memorydump
+  verbs:
+  - update
+- apiGroups:
+  - subresources.kubevirt.io
+  resources:
+  - expand-vm-spec
+  verbs:
+  - update
+- apiGroups:
+  - kubevirt.io
+  resources:
+  - virtualmachines
+  - virtualmachineinstances
+  - virtualmachineinstancepresets
+  - virtualmachineinstancereplicasets
+  - virtualmachineinstancemigrations
+  verbs:
+  - get
+  - delete
+  - create
+  - update
+  - patch
+  - list
+  - watch
+- apiGroups:
+  - snapshot.kubevirt.io
+  resources:
+  - virtualmachinesnapshots
+  - virtualmachinesnapshotcontents
+  - virtualmachinerestores
+  verbs:
+  - get
+  - delete
+  - create
+  - update
+  - patch
+  - list
+  - watch
+- apiGroups:
+  - instancetype.kubevirt.io
+  resources:
+  - virtualmachineinstancetypes
+  - virtualmachineclusterinstancetypes
+  - virtualmachinepreferences
+  - virtualmachineclusterpreferences
+  verbs:
+  - get
+  - delete
+  - create
+  - update
+  - patch
+  - list
+  - watch
+- apiGroups:
+  - pool.kubevirt.io
+  resources:
+  - virtualmachinepools
+  verbs:
+  - get
+  - delete
+  - create
+  - update
+  - patch
+  - list
+  - watch
+- apiGroups:
+  - kubevirt.io
+  resources:
+  - kubevirts
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - migrations.kubevirt.io
+  resources:
+  - migrationpolicies
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - cdi.kubevirt.io
+  resources:
+  - datavolumes
+  verbs:
+  - '*'
+- apiGroups:
+  - cdi.kubevirt.io
+  resources:
+  - datavolumes/source
+  verbs:
+  - create
+- apiGroups:
+  - upload.cdi.kubevirt.io
+  resources:
+  - uploadtokenrequests
+  verbs:
+  - '*'
+- apiGroups:
+  - ""
+  resources:
+  - persistentvolumeclaims
+  - pods
+  - events
+  - services
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - k8s.cni.cncf.io
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+  - patch
+  - update
+  - delete
+---
+## spectro-vm-admin OOB role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: spectro-vm-admin
+  labels:
+    {{- include "virtual-machine-orchestrator.labels" . | nindent 4 }}
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+rules:
+  - apiGroups: ["spectrocloud.com"]
+    resources: ["vmtemplates"]
+    verbs: ["get", "list", "watch", "create", "patch", "update", "delete", "deletecollection"]
+  - apiGroups: ["kubevirt.io"]
+    resources: ["kubevirts", "virtualmachines", "virtualmachineinstances", "virtualmachineinstancereplicasets", "virtualmachineinstancepresets", "virtualmachineinstancemigrations"]
+    verbs: ["get", "list", "watch", "create", "patch", "update", "delete", "deletecollection"]
+  - apiGroups: ["instancetype.kubevirt.io"]
+    resources: ["virtualmachineclusterinstancetypes", "virtualmachineclusterpreferences", "virtualmachineinstancetypes", "virtualmachinepreferences"]
+    verbs: ["get", "list", "watch", "create", "patch", "update", "delete", "deletecollection"]
+  - apiGroups: ["migrations.kubevirt.io"]
+    resources: ["migrationpolicies"]
+    verbs: ["get", "list", "watch", "delete"]
+  - apiGroups: ["pool.kubevirt.io"]
+    resources: ["virtualmachinepools"]
+    verbs: ["get", "list", "watch", "create", "patch", "update", "delete", "deletecollection"]
+  - apiGroups: ["snapshot.kubevirt.io"]
+    resources: ["virtualmachinerestores", "virtualmachinesnapshotcontents", "virtualmachinesnapshots"]
+    verbs: ["get", "list", "watch", "create", "patch", "update", "delete", "deletecollection"]
+  - apiGroups:
+    - subresources.kubevirt.io
+    resources:
+    - virtualmachineinstances/console
+    - virtualmachineinstances/vnc
+    - virtualmachineinstances/vnc/screenshot
+    - virtualmachineinstances/portforward
+    - virtualmachineinstances/guestosinfo
+    - virtualmachineinstances/filesystemlist
+    - virtualmachineinstances/userlist
+    verbs:
+    - get
+  - apiGroups:
+    - subresources.kubevirt.io
+    resources:
+    - virtualmachineinstances/pause
+    - virtualmachineinstances/unpause
+    - virtualmachineinstances/addvolume
+    - virtualmachineinstances/removevolume
+    - virtualmachineinstances/freeze
+    - virtualmachineinstances/unfreeze
+    - virtualmachineinstances/softreboot
+    verbs:
+    - update
+    - apiGroups:
+    - subresources.kubevirt.io
+    resources:
+    - virtualmachines/expand-spec
+    - virtualmachines/portforward
+    verbs:
+    - get
+  - apiGroups:
+    - subresources.kubevirt.io
+    resources:
+    - virtualmachines/start
+    - virtualmachines/stop
+    - virtualmachines/restart
+    - virtualmachines/addvolume
+    - virtualmachines/removevolume
+    - virtualmachines/migrate
+    - virtualmachines/memorydump
+    verbs:
+    - update
+  - apiGroups:
+    - subresources.kubevirt.io
+    resources:
+    - expand-vm-spec
+    verbs:
+    - update
+  - apiGroups:
+    - cdi.kubevirt.io
+    resources:
+    - datavolumes
+    verbs:
+    - '*'
+  - apiGroups:
+    - cdi.kubevirt.io
+    resources:
+    - datavolumes/source
+    verbs:
+    - create
+    - apiGroups:
+    - upload.cdi.kubevirt.io
+    resources:
+    - uploadtokenrequests
+    verbs:
+    - '*'
+    - apiGroups:
+    - cdi.kubevirt.io
+    resources:                                                                                                                                                                           
+    - datavolumes
+    verbs:
+    - '*'
+  - apiGroups:
+    - cdi.kubevirt.io
+    resources:
+    - datavolumes/source
+    verbs:
+    - create
+  - apiGroups:
+    - upload.cdi.kubevirt.io
+    resources:
+    - uploadtokenrequests
+    verbs:
+    - '*'
+  - apiGroups:
+    - cdi.kubevirt.io
+    resources:
+    - cdiconfigs
+    verbs:
+    - '*'
+  - apiGroups:
+    - cdi.kubevirt.io
+    resources:
+    - datavolumes
+    verbs:
+    - '*'
+  - apiGroups:
+    - cdi.kubevirt.io
+    resources:
+    - datavolumes/source
+    verbs:
+    - create
+  - apiGroups:
+    - upload.cdi.kubevirt.io
+    resources:
+    - uploadtokenrequests
+    verbs:
+    - '*'
+  - apiGroups:
+    - ""
+    resources:
+    - persistentvolumeclaims
+    - pods
+    - events
+    - services
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - k8s.cni.cncf.io
+    resources:
+    - '*'
+    verbs:
+    - get
+    - list
+    - watch
+    - patch
+    - update
+    - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: spectro-list-namespaces
+rules:
+- apiGroups: [""]
+  resources: ["namespaces"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations: {}
+  name: spectro-list-vmtemplates
+rules:
+  - apiGroups: ["spectrocloud.com"]
+    resources: ["vmtemplates"]
+    verbs: ["get", "list", "watch"]

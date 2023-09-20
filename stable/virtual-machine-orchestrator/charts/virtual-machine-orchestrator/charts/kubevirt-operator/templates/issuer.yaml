@@ -1,0 +1,7 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: kubevirt-selfsigned-issuer
+  namespace: {{ .Values.namespace | default "kubevirt" }}
+spec:
+  selfSigned: {}

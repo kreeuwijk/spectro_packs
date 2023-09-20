@@ -1,0 +1,7 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: cdi-selfsigned-issuer
+  namespace: {{ .Values.namespace | default "cdi" }}
+spec:
+  selfSigned: {}

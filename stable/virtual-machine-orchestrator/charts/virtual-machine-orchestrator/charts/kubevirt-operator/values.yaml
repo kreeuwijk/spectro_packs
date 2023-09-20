@@ -1,0 +1,109 @@
+# Default values for kubevirt.
+# This is a YAML-formatted file.
+
+namespace: kubevirt
+replicas: 1
+
+image:
+  repository: quay.io/kubevirt/virt-operator
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v1.0.0"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+service:
+  type: LoadBalancer
+  port: 443
+  targetPort: 8443
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+## The Kubevirt CR that gets created
+kubevirtResource:
+  name: kubevirt
+  useEmulation: false
+  # below gates are required for spectro dashboard pack, users can append additional gates 
+  additionalFeatureGates:
+  - LiveMigration
+  - HotplugVolumes
+  - Snapshot
+  - VMExport
+  - ExpandDisks
+  - HotplugNICs
+  - VMLiveUpdateFeatures
+  
+  config:
+    evictionStrategy: ""
+    
+    # additionalConfig lets you define any configuration other than developerConfiguration and evictionStrategy
+    additionalConfig: {}
+    # additionalDevConfig lets you define dev config other than emulation and feature gate
+    additionalDevConfig: {}
+  
+  certificateRotateStrategy: {}
+
+  customizeComponents:
+    # flags:
+    #   api:
+    #     v: 
+    #       "5"
+    #     port:
+    #       "8443"  
+
+  imagePullPolicy: IfNotPresent
+
+  infra: {}
+  # The name of the Prometheus service account that needs read-access to KubeVirt endpoints
+  monitorAccount: ""
+  # The namespace Prometheus is deployed in
+  monitorNamespace: ""
+  # The namespace the service monitor will be deployed. Either specify this or the monitorNamespace
+  serviceMonitorNamespace: ""
+
+  workloads: {}
+
+  workloadsUpdateStrategy: {}
+
+  # uninstallStrategy to use, options are RemoveWorkloads, BlockUninstallIfWorkloadsExist 
+  uninstallStrategy: ""
+
+ingress:
+  enabled: false
+  ingressClassName: nginx
+  annotations:
+    cert-manager.io/issuer: kubevirt-selfsigned-issuer
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+  labels: {}
+  hosts:
+    - host: virt-exportproxy.maas.sc
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+ # tls:
+ #   - secretName: chart-example-tls
+ #     hosts:
+ #       - virt-exportproxy.maas.sc
