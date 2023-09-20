@@ -10,5 +10,5 @@
   ],
   "layer": "addon",
   "name": "virtual-machine-orchestrator",
-  "version": "4.0.1-k3s"
+  "version": "4.0.2"
 }
