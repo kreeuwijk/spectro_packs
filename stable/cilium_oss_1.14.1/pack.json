@@ -4,6 +4,7 @@
   },
   "cloudTypes": [
     "aws",
+    "azure",
     "vsphere",
     "maas",
     "openstack",
