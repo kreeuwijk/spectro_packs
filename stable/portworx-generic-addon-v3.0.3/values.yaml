@@ -66,7 +66,7 @@ charts:
         # Select a preset from the pane on the right, or use the Portworx Spec Builder to define a custom configuration and
         # then paste that spec section here. (Spec Builder: https://central.portworx.com/specGen/wizard)
         # ### Example spec
-        # image: portworx/oci-monitor:3.0.0
+        # image: portworx/oci-monitor:3.0.3
         # imagePullPolicy: Always
         # deleteStrategy:
         #   type: UninstallAndWipe
@@ -100,7 +100,7 @@ charts:
         #   enabled: true
         # monitoring:
         #   telemetry:
-        #       enabled: true
+        #       enabled: false
         #   prometheus:
         #     enabled: false
         #     exportMetrics: true
