@@ -1,0 +1,519 @@
+presets:
+  - name: "px-essentials"
+    displayName: "PX Essentials"
+    group: "License Models"
+    remove:
+    - "charts.portworx-generic.license.saas"
+    - "charts.portworx-generic.license.enterprise"
+    add: |
+      charts:
+        portworx-generic:
+          license:
+            # Valid options for "type" are: essentials, saas, enterprise
+            type: essentials
+            essentials:
+              # Base64-decoded value of the px-essen-user-id value in the px-essential secret
+              # Find your Essential Entitlement ID at https://central.portworx.com/profile
+              userId: 1234abcd-12ab-12ab-12ab-123456abcdef
+              # Base64-decoded value of the px-osb-endpoint value in the px-essential secret
+              # Leave at the default value unless there are special circumstances
+              endpoint: https://pxessentials.portworx.com/osb/billing/v1/register
+
+  - name: "px-enterprise-saas"
+    displayName: "PX Enterprise SaaS PAYG"
+    group: "License Models"
+    remove:
+    - "charts.portworx-generic.license.essentials"
+    - "charts.portworx-generic.license.enterprise"
+    add: |
+      charts:
+        portworx-generic:
+          license:
+            # Valid options for "type" are: essentials, saas, enterprise
+            type: saas
+            saas:
+              key: <PAY-AS-YOU-GO-KEY>
+
+  - name: "px-enterprise"
+    displayName: "PX Enterprise"
+    group: "License Models"
+    remove:
+    - "charts.portworx-generic.license.essentials"
+    - "charts.portworx-generic.license.saas"
+    add: |
+      charts:
+        portworx-generic:
+          license:
+            # Valid options for "type" are: essentials, saas, enterprise
+            # If you want to deploy the PX Enterprise Trial version, or need manual offline activation,
+            # select the "enterprise" type and set "activateLicense" to false.
+            type: enterprise
+            enterprise:
+              activateLicense: true
+              activationId: <Activation ID>
+              # customLicenseServer:
+              #   url: http://hostname:7070/fne/bin/capability
+              #   importUnknownCa: true
+              #   licenseBorrowInterval: 1w15m
+              #   addFeatures:
+              #   - feature1
+              #   - feature2
+
+  - name: "px-spec-existing-disks"
+    displayName: "Use existing disks (generic)"
+    group: "Storagecluster Specs"
+    remove:
+    - "charts.portworx-generic.storageCluster.annotations"
+    - "charts.portworx-generic.storageCluster.spec"
+    - "charts.portworx-generic.azureSecret"
+    - "charts.portworx-generic.vsphereSecret"
+    add: |
+      charts:
+        portworx-generic:
+          storageCluster:
+            spec:
+              # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
+              image: portworx/oci-monitor:3.0.0
+              imagePullPolicy: Always
+              deleteStrategy:
+                type: UninstallAndWipe
+              kvdb:
+                internal: true
+                # endpoints:
+                # - etcd:https://etcd.company.domain:2379
+                # authSecret: px-kvdb-auth
+              storage:
+                useAll: true
+                # kvdbDevice: /dev/sdb
+                journalDevice: auto
+            # network:
+            #   dataInterface: eth0
+            #   mgmtInterface: eth1
+              secretsProvider: k8s
+              stork:
+                enabled: true
+                args:
+                  webhook-controller: "true"
+              autopilot:
+                enabled: true
+                providers:
+                - name: default
+                  params:
+                    url: http://prometheus-operator-prometheus.monitoring.svc.cluster.local:9090
+                  type: prometheus
+              runtimeOptions:
+                default-io-profile: "6"
+              csi:
+                enabled: true
+              monitoring:
+                telemetry:
+                  enabled: true
+                prometheus:
+                  enabled: false
+                  exportMetrics: true
+
+  - name: "px-spec-aws"
+    displayName: "AWS Cloud Storage for EKS"
+    group: "Storagecluster Specs"
+    remove:
+    - "charts.portworx-generic.storageCluster.annotations"
+    - "charts.portworx-generic.storageCluster.spec"
+    - "charts.portworx-generic.azureSecret"
+    - "charts.portworx-generic.vsphereSecret"
+    add: |
+      charts:
+        portworx-generic:
+          storageCluster:
+            annotations:
+              portworx.io/is-eks: "true"
+            spec:
+              # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
+              image: portworx/oci-monitor:3.0.0
+              imagePullPolicy: Always
+              deleteStrategy:
+                type: UninstallAndWipe
+              kvdb:
+                internal: true
+                # endpoints:
+                # - etcd:https://etcd.company.domain:2379
+                # authSecret: px-kvdb-auth
+              cloudStorage:
+                maxStorageNodesPerZone: 0
+                deviceSpecs:
+                - type=gp3,size=150
+                kvdbDeviceSpec: type=gp3,size=150
+                journalDeviceSpec: auto
+              secretsProvider: k8s
+              stork:
+                enabled: true
+                args:
+                  webhook-controller: "true"
+              autopilot:
+                enabled: true
+                providers:
+                - name: default
+                  params:
+                    url: http://prometheus-operator-prometheus.monitoring.svc.cluster.local:9090
+                  type: prometheus
+              runtimeOptions:
+                default-io-profile: "6"
+              csi:
+                enabled: true
+              monitoring:
+                telemetry:
+                  enabled: true
+                prometheus:
+                  enabled: false
+                  exportMetrics: true
+
+  - name: "px-spec-azure"
+    displayName: "Azure Cloud Storage for AKS"
+    group: "Storagecluster Specs"
+    remove:
+    - "charts.portworx-generic.storageCluster.annotations"
+    - "charts.portworx-generic.storageCluster.spec"
+    - "charts.portworx-generic.vsphereSecret"
+    add: |
+      charts:
+        portworx-generic:
+          storageCluster:
+            annotations:
+              portworx.io/is-aks: "true"
+            spec:
+              # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
+              image: portworx/oci-monitor:3.0.0
+              imagePullPolicy: Always
+              deleteStrategy:
+                type: UninstallAndWipe
+              kvdb:
+                internal: true
+                # endpoints:
+                # - etcd:https://etcd.company.domain:2379
+                # authSecret: px-kvdb-auth
+              cloudStorage:
+                maxStorageNodesPerZone: 0
+                deviceSpecs:
+                - type=Premium_LRS,size=150
+                kvdbDeviceSpec: type=Premium_LRS,size=150
+                journalDeviceSpec: auto
+              secretsProvider: k8s
+              stork:
+                enabled: true
+                args:
+                  webhook-controller: "true"
+              autopilot:
+                enabled: true
+                providers:
+                - name: default
+                  params:
+                    url: http://prometheus-operator-prometheus.monitoring.svc.cluster.local:9090
+                  type: prometheus
+              runtimeOptions:
+                default-io-profile: "6"
+              csi:
+                enabled: true
+              monitoring:
+                telemetry:
+                  enabled: true
+                prometheus:
+                  enabled: false
+                  exportMetrics: true
+              env:
+              - name: AZURE_CLIENT_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    name: px-azure
+                    key: AZURE_CLIENT_SECRET
+              - name: AZURE_CLIENT_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: px-azure
+                    key: AZURE_CLIENT_ID
+              - name: AZURE_TENANT_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: px-azure
+                    key: AZURE_TENANT_ID
+          azureSecret:
+            tenantId: "your_azure_tenant_id"
+            clientId: "your_azure_client_id"
+            clientSecret: "your_client_secret"
+
+  - name: "px-spec-google"
+    displayName: "Google Cloud Storage for GKE"
+    group: "Storagecluster Specs"
+    remove:
+    - "charts.portworx-generic.storageCluster.annotations"
+    - "charts.portworx-generic.storageCluster.spec"
+    - "charts.portworx-generic.azureSecret"
+    - "charts.portworx-generic.vsphereSecret"
+    add: |
+      charts:
+        portworx-generic:
+          storageCluster:
+            annotations:
+              portworx.io/is-gke: "true"
+            spec:
+              # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
+              image: portworx/oci-monitor:3.0.0
+              imagePullPolicy: Always
+              deleteStrategy:
+                type: UninstallAndWipe
+              kvdb:
+                internal: true
+                # endpoints:
+                # - etcd:https://etcd.company.domain:2379
+                # authSecret: px-kvdb-auth
+              cloudStorage:
+                maxStorageNodesPerZone: 0
+                deviceSpecs:
+                - type=pd-standard,size=150
+                kvdbDeviceSpec: type=pd-standard,size=150
+                journalDeviceSpec: auto
+              secretsProvider: k8s
+              stork:
+                enabled: true
+                args:
+                  webhook-controller: "true"
+              autopilot:
+                enabled: true
+                providers:
+                - name: default
+                  params:
+                    url: http://prometheus-operator-prometheus.monitoring.svc.cluster.local:9090
+                  type: prometheus
+              runtimeOptions:
+                default-io-profile: "6"
+              csi:
+                enabled: true
+              monitoring:
+                telemetry:
+                  enabled: true
+                prometheus:
+                  enabled: false
+                  exportMetrics: true
+
+  - name: "px-spec-vmware"
+    displayName: "VMware vSphere Datastores"
+    group: "Storagecluster Specs"
+    remove:
+    - "charts.portworx-generic.storageCluster.annotations"
+    - "charts.portworx-generic.storageCluster.spec"
+    - "charts.portworx-generic.azureSecret"
+    add: |
+      charts:
+        portworx-generic:
+          storageCluster:
+            spec:
+              # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
+              image: portworx/oci-monitor:3.0.0
+              imagePullPolicy: Always
+              deleteStrategy:
+                type: UninstallAndWipe
+              kvdb:
+                internal: true
+                # endpoints:
+                # - etcd:https://etcd.company.domain:2379
+                # authSecret: px-kvdb-auth
+              cloudStorage:
+                maxStorageNodesPerZone: 0
+                deviceSpecs:
+                - type=lazyzeroedthick,size=150
+                kvdbDeviceSpec: type=lazyzeroedthick,size=32
+                journalDeviceSpec: auto
+              secretsProvider: k8s
+              stork:
+                enabled: true
+                args:
+                  webhook-controller: "true"
+              autopilot:
+                enabled: true
+                providers:
+                - name: default
+                  params:
+                    url: http://prometheus-operator-prometheus.monitoring.svc.cluster.local:9090
+                  type: prometheus
+              runtimeOptions:
+                default-io-profile: "6"
+              csi:
+                enabled: true
+              monitoring:
+                telemetry:
+                  enabled: true
+                prometheus:
+                  enabled: false
+                  exportMetrics: true
+              env:
+              - name: VSPHERE_INSECURE
+                value: "true"
+              - name: VSPHERE_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: px-vsphere-secret
+                    key: VSPHERE_USER
+              - name: VSPHERE_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: px-vsphere-secret
+                    key: VSPHERE_PASSWORD
+              - name: VSPHERE_VCENTER
+                value: "my-vcenter.company.local"
+              - name: VSPHERE_VCENTER_PORT
+                value: "443"
+              - name: VSPHERE_DATASTORE_PREFIX
+                value: "Datastore"
+              - name: VSPHERE_INSTALL_MODE
+                value: "shared"
+          vsphereSecret:
+            user: "username_for_vCenter_here"
+            password: "your_password"
+
+  - name: "px-spec-flasharray"
+    displayName: "Pure Storage Flash Array"
+    group: "Storagecluster Specs"
+    remove:
+    - "charts.portworx-generic.storageCluster.annotations"
+    - "charts.portworx-generic.storageCluster.spec"
+    - "charts.portworx-generic.azureSecret"
+    - "charts.portworx-generic.vsphereSecret"
+    add: |
+      charts:
+        portworx-generic:
+          storageCluster:
+            spec:
+              # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
+              image: portworx/oci-monitor:3.0.0
+              imagePullPolicy: Always
+              deleteStrategy:
+                type: UninstallAndWipe
+              kvdb:
+                internal: true
+                # endpoints:
+                # - etcd:https://etcd.company.domain:2379
+                # authSecret: px-kvdb-auth
+              cloudStorage:
+                maxStorageNodesPerZone: 0
+                deviceSpecs:
+                - size=150
+                kvdbDeviceSpec: size=32
+                journalDeviceSpec: auto
+            # network:
+            #  dataInterface: eth0
+            #  mgmtInterface: eth1
+              secretsProvider: k8s
+              stork:
+                enabled: true
+                args:
+                  webhook-controller: "true"
+              autopilot:
+                enabled: true
+                providers:
+                - name: default
+                  params:
+                    url: http://prometheus-operator-prometheus.monitoring.svc.cluster.local:9090
+                  type: prometheus
+              runtimeOptions:
+                default-io-profile: "6"
+              csi:
+                enabled: true
+              monitoring:
+                telemetry:
+                  enabled: true
+                prometheus:
+                  enabled: false
+                  exportMetrics: true
+              env:
+              - name: PURE_FLASHARRAY_SAN_TYPE
+                value: "ISCSI" # or "FC"
+
+  - name: "px-internal-kvdb"
+    displayName: "Use internal Kvdb"
+    group: "Kvdb and Etcd"
+    remove:
+      - charts.portworx-generic.externalKvdb
+      - charts.portworx-generic.storageCluster.spec.kvdb.endpoints
+      - charts.portworx-generic.storageCluster.spec.kvdb.authSecret
+    add: |
+      charts:
+        portworx-generic:
+          storageCluster:
+            spec:
+              kvdb:
+                internal: true
+
+  - name: "px-external-kvdb"
+    displayName: "Use external Kvdb over HTTP"
+    group: "Kvdb and Etcd"
+    remove:
+    - charts.portworx-generic.storageCluster.spec.kvdb.internal
+    - charts.portworx-generic.externalKvdb.cacert
+    - charts.portworx-generic.externalKvdb.key
+    - charts.portworx-generic.externalKvdb.cert
+    add: |
+      charts:
+        portworx-generic:
+          storageCluster:
+            spec:
+              kvdb:
+                endpoints:
+                - etcd:http://etcd.company.domain:2379
+          externalKvdb:
+            useCertsForSSL: false
+
+  - name: "px-external-kvdb-ssl"
+    displayName: "Use external Kvdb over SSL"
+    group: "Kvdb and Etcd"
+    remove:
+    - charts.portworx-generic.storageCluster.spec.kvdb.internal
+    add: |
+      charts:
+        portworx-generic:
+          storageCluster:
+            spec:
+              kvdb:
+                endpoints:
+                - etcd:https://etcd.company.domain:2379
+                authSecret: px-kvdb-auth
+          externalKvdb:
+            useCertsForSSL: true
+
+            # The CA cert to use for etcd authentication. Make sure to follow the same indentation style as given in the example below
+            cacert: |-
+              -----BEGIN CERTIFICATE-----
+              MIIC3DCCAcQCCQCr1j968rOV3zANBgkqhkiG9w0BAQsFADAwMQswCQYDVQQGEwJV
+              < .. >
+              i9CNyx+CcwUCkWQzhrHBQA==
+              -----END CERTIFICATE-----
+
+            # The cert to use for etcd authentication. Make sure to follow the same indentation style as given in the example below
+            cert: |-
+              -----BEGIN CERTIFICATE-----
+              MIIDaTCCAlGgAwIBAgIJAPLC+6M3EezhMA0GCSqGSIb3DQEBCwUAMDAxCzAJBgNV
+              < .. >
+              ptWD/oDFCiCjlffyzg==
+              -----END CERTIFICATE-----
+
+            # The key to use for etcd authentication. Make sure to follow the same indentation style as given in the example below
+            key: |-
+              -----BEGIN RSA PRIVATE KEY-----
+              MIIEogIBAAKCAQEAsnJghz619GDZO+XLtx+UkL/w9ajQ9vtqxr79GcdvAPfCkfwX
+              < .. >
+              WsqUCBt5+DnOaDyvMkokP+T5tj/2LXemuIi4Q5nrOmw/WwVGGGs=
+              -----END RSA PRIVATE KEY-----
+
+  - name: "px-enable-proxy"
+    displayName: "Use Proxy server for HTTP(S)"
+    group: "HTTP(S) Proxy"
+    remove: []
+    add: |
+      charts:
+        portworx-generic:
+          storageCluster:
+            spec:
+              env:
+              - name: PX_HTTP_PROXY
+                value: "http://username:password@your-proxy-server:3128"
+              - name: PX_HTTPS_PROXY
+                value: "http://username:password@your-proxy-server:3128"
+              - name: NO_PROXY
+                value: "127.0.0.1,localhost,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,.company.local"
