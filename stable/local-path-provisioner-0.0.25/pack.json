@@ -1,0 +1,18 @@
+{
+  "annotations": {
+    "docsURL": "https://github.com/rancher/local-path-provisioner"
+  },
+  "cloudTypes": [
+    "maas",
+    "edge",
+    "edge-native",
+    "libvirt"
+  ],
+  "displayName": "Local Path Provisioner",
+  "charts": [
+    "charts/local-path-provisioner-0.0.25.tgz"
+  ],
+  "layer": "csi",
+  "name": "csi-local-path-provisioner",
+  "version": "0.0.25"
+}
