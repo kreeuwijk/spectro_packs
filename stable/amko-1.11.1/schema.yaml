@@ -1,0 +1,2 @@
+charts.amko.gslbLeaderCredentials.password:
+  schema: '{{ format "${password}" | hints "Specify the password for user" }}'

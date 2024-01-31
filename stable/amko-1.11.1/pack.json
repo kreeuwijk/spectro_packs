@@ -1,0 +1,26 @@
+{
+  "addonType":"load balancer",
+  "annotations": {
+    "docsURL": "",
+    "prerequisitesRequired": "true",
+    "source": "spectrocloud"
+  },
+  "cloudTypes": [
+    "aws",
+    "azure",
+    "gcp",
+    "vsphere",
+    "edge-native",
+    "maas",
+    "openstack",
+    "eks",
+    "tke"
+  ],
+  "displayName": "Avi Multi-cluster Kubernetes Operator (AMKO)",
+  "charts": [
+    "charts/amko-1.11.1.tgz"
+  ],
+  "layer": "addon",
+  "name": "lb-amko",
+  "version": "1.11.1"
+}

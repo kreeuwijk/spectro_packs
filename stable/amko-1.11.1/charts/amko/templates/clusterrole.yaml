@@ -1,0 +1,44 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: amko-role
+rules:
+  - apiGroups: ["extensions", "networking.k8s.io"]
+    resources: ["ingresses"]
+    verbs: ["get", "watch", "list"]
+  - apiGroups: ["route.openshift.io"]
+    resources: ["routes"]
+    verbs: ["get", "watch", "list"]
+  - apiGroups: ["route.openshift.io"]
+    resources: ["routes"]
+    verbs: ["get", "watch", "list"]
+  - apiGroups: [""]
+    resources: ["services", "secrets", "namespaces", "pods"]
+    verbs: ["get", "watch", "list"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create","patch","update"]
+  - apiGroups: ["amko.vmware.com"]
+    resources: ["gslbconfigs", "gslbconfigs/status", "globaldeploymentpolicies", "globaldeploymentpolicies/status", "gslbhostrules", "gslbhostrules/status", "amkoclusters", "amkoclusters/status"]
+    verbs: ["get", "watch", "list", "patch", "update"]
+  - apiGroups: ["ako.vmware.com"]
+    resources: ["clustersets", "multiclusteringresses"]
+    verbs: ["get", "watch", "list", "patch", "update"]
+  - apiGroups: ["ako.vmware.com"]
+    resources: ["serviceimports"]
+    verbs: ["create", "get", "watch", "list", "patch", "update", "delete"]
+  - apiGroups: ["ako.vmware.com"]
+    resources: ["hostrules"]
+    verbs: ["get", "watch", "list"]
+
+{{- if .Values.rbac.pspEnable }}
+  - apiGroups:
+    - policy
+    - extensions
+    resources:
+    - podsecuritypolicies
+    verbs:
+    - use
+    resourceNames:
+    - {{ template "amko.name" . }}
+{{- end }}

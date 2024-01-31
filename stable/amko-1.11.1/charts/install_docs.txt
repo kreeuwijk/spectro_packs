@@ -1,0 +1,46 @@
+# Installation Instructions for AMKO can be found at 
+# https://avinetworks.com/docs/amko/1.1/amko-release-notes/
+
+Prerequisites for install:
+* A private container registry to upload the AMKO docker image
+* helm > 3.0 CLI installed.
+
+Steps for install:
+
+* Create the GSLB members with the member clusters configuration and generate a secret with the kubeconfig file in cluster-amko as shown below:
+
+  kubectl create secret generic gslb-config-secret --from-file gslb-members -n avi-system 
+
+* Untar the combined tar file to get the AMKO installation directory with the helm and docker images. 
+
+  tar -zxvf amko-1.11.1.tar.gz
+    amko/
+    amko/install_docs.txt
+    amko/amko-1.11.1-docker.tar.gz
+    amko/amko-1.11.1-helm.tgz
+    amko/amko-federator-1.11.1-docker.tar.gz
+
+* Change working directory to this path
+
+  cd amko/
+
+* Load the docker image in one of your machines
+
+  sudo docker load < amko-1.11.1-docker.tar.gz
+  sudo docker load < amko-federator-1.11.1.tar.gz
+
+* Push the docker image to your private registry. https://docs.docker.com/engine/reference/commandline/push/
+* Untar the amko helm package. This will create subdirectory "amko/amko" which contains helm charts for AKO
+
+  ls amko/
+    Chart.yaml crds templates values.yaml
+
+* Update the helm values.yaml with required AMKO configurations(Controller IP/credentials, docker registry information etc)
+* Create namespace avi-system on the Openshift/Kubernetes cluster
+
+  kubectl create namespace avi-system
+
+* Install AKO using the updated helm charts
+
+  helm install ./amko --generate-name --namespace=avi-system
+

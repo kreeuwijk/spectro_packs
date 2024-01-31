@@ -1,0 +1,171 @@
+pack:
+  namespace: "avi-system"
+
+charts:
+  amko:
+    replicaCount: 1
+
+    image:
+      repository: projects.registry.vmware.com/ako/amko
+      pullPolicy: IfNotPresent
+
+    # Configs related to AMKO Federator
+    federation:
+      # image repository
+      image:
+        repository: projects.registry.vmware.com/ako/amko-federator
+        pullPolicy: IfNotPresent
+      # cluster context where AMKO is going to be deployed
+      currentCluster: ''
+      # Set to true if AMKO on this cluster is the leader
+      currentClusterIsLeader: false
+      # member clusters to federate the GSLBConfig and GDP objects on, if the
+      # current cluster context is part of this list, the federator will ignore it
+      memberClusters:
+      - cluster1-admin
+      - cluster2-admin
+
+    # Configs related to AMKO Service discovery
+    serviceDiscovery:
+      # image repository
+      # image:
+      #   repository: projects.registry.vmware.com/ako/amko-service-discovery
+      #   pullPolicy: IfNotPresent
+
+    # Configs related to Multi-cluster ingress. Note: MultiClusterIngress is a tech preview.
+    multiClusterIngress:
+      enable: false
+
+    configs:
+      gslbLeaderController: ''
+      controllerVersion: 20.1.4
+      tenant: admin
+      memberClusters:
+      - clusterContext: cluster1-admin
+      - clusterContext: cluster2-admin
+      refreshInterval: 1800
+      logLevel: INFO
+      # Set the below flag to true if a different GSLB Service fqdn is desired than the ingress/route's
+      # local fqdns. Note that, this field will use AKO's HostRule objects' to find out the local to global
+      # fqdn mapping. To configure a mapping between the local to global fqdn, configure the hostrule
+      # object as:
+      # [...]
+      # spec:
+      #  virtualhost:
+      #    fqdn: foo.avi.com
+      #    gslb:
+      #      fqdn: gs-foo.avi.com
+      useCustomGlobalFqdn: false
+      # Set the below field with a unique UUID in standard form of xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+      # If left empty AMKO will generate a unique identifier itself
+      amkoUUID:
+
+
+    gslbLeaderCredentials:
+      username: ''
+      password: ''
+
+    globalDeploymentPolicy:
+      # appSelector takes the form of:
+      # appSelector:
+      #   label:
+      #     app: gslb   <example label key-value for an ingress/service type LB>
+      # Uncomment below and add the required ingress/route/service label
+      # appSelector:
+
+      # namespaceSelector takes the form of:
+      # namespaceSelector:
+      #   label:
+      #     ns: gslb   <example label key-value for namespace>
+      # Uncomment below and add the reuqired namespace label
+      # namespaceSelector:
+
+      # list of all clusters that the GDP object will be applied to, can take any/all values
+      # from .configs.memberClusters
+      matchClusters:
+      - cluster: cluster1-admin
+      - cluster: cluster2-admin
+
+      # list of all clusters and their traffic weights, if unspecified, default weights will be
+      # given (optional). Uncomment below to add the required trafficSplit.
+      # trafficSplit:
+      #   - cluster: "cluster1-admin"
+      #     weight: 8
+      #   - cluster: "cluster2-admin"
+      #     weight: 2
+
+      # Uncomment below to specify a ttl value in seconds. By default, the value is inherited from
+      # Avi's DNS VS.
+      # ttl: 10
+
+      # Uncomment below to specify custom health monitor refs. By default, HTTP/HTTPS path based health
+      # monitors are applied on the GSs.
+      # healthMonitorRefs:
+      # - hmref1
+      # - hmref2
+
+      # Uncomment below to specify custom health monitor template. Either healthMonitorRefs or healthMonitorTemplate
+      # is allowed.
+      # healthMonitorTemplate: hmTemplate1
+
+      # Uncomment below to specify a Site Persistence profile ref. By default, Site Persistence is disabled.
+      # Also, note that, Site Persistence is only applicable on secure ingresses/routes and ignored
+      # for all other cases. Follow https://avinetworks.com/docs/20.1/gslb-site-cookie-persistence/ to create
+      # a Site persistence profile.
+      # sitePersistenceRef: gap-1
+
+      # Uncomment below to specify gslb service pool algorithm settings for all gslb services. Applicable
+      # values for lbAlgorithm:
+      # 1. GSLB_ALGORITHM_CONSISTENT_HASH (needs a hashMask field to be set too)
+      # 2. GSLB_ALGORITHM_GEO (needs geoFallback settings to be used for this field)
+      # 3. GSLB_ALGORITHM_ROUND_ROBIN (default)
+      # 4. GSLB_ALGORITHM_TOPOLOGY
+      #
+      # poolAlgorithmSettings:
+      #   lbAlgorithm:
+      #   hashMask:           # required only for lbAlgorithm == GSLB_ALGORITHM_CONSISTENT_HASH
+      #   geoFallback:        # fallback settings required only for lbAlgorithm == GSLB_ALGORITHM_GEO
+      #     lbAlgorithm:      # can only have either GSLB_ALGORITHM_ROUND_ROBIN or GSLB_ALGORITHM_CONSISTENT_HASH
+      #     hashMask:         # required only for fallback lbAlgorithm as GSLB_ALGORITHM_CONSISTENT_HASH
+
+      # Uncomment below to specify gslb service down response settings for all gslb services.
+      # Applicable values for type are:
+      # 1. GSLB_SERVICE_DOWN_RESPONSE_NONE (default)
+      # 2. GSLB_SERVICE_DOWN_RESPONSE_ALL_RECORDS
+      # 3. GSLB_SERVICE_DOWN_RESPONSE_FALLBACK_IP (needs fallbackIP to be set too)
+      # 4. GSLB_SERVICE_DOWN_RESPONSE_EMPTY
+      #
+      # downResponse:
+      #   type:
+      #   fallbackIP:         # required only for type == GSLB_SERVICE_DOWN_RESPONSE_FALLBACK_IP
+
+    serviceAccount:
+      # Specifies whether a service account should be created
+      create: true
+      # Annotations to add to the service account
+      annotations: {}
+      # The name of the service account to use.
+      # If not set and create is true, a name is generated using the fullname template
+      name:
+
+    resources:
+      limits:
+        cpu: 250m
+        memory: 300Mi
+      requests:
+        cpu: 100m
+        memory: 200Mi
+
+    service:
+      type: ClusterIP
+      port: 80
+
+    rbac:
+      # creates the pod security policy if set to true
+      pspEnable: false
+
+    persistentVolumeClaim: ''
+    mountPath: /log
+    logFile: amko.log
+
+    federatorLogFile: amko-federator.log

@@ -1,0 +1,48 @@
+# Installation Instructions for AKO can be found at 
+# https://avinetworks.com/docs/ako/1.1/ako-installation/
+
+Prerequisites for install:
+* A private container registry to upload the AKO docker image
+* helm > 3.0 CLI installed.
+
+Steps for install/upgrade:
+* Untar the combined tar file to get the ako installation directory with the helm and docker images. 
+
+  tar -zxvf ako-1.11.3.tar.gz
+    ako/
+    ako/install_docs.txt
+    ako/ako-1.11.3-docker.tar.gz
+    ako/ako-1.11.3-helm.tgz
+    ako/ako-1.11.3-gateway-api.tar.gz
+
+* Change working directory to this path
+
+  cd ako/
+
+* Load the docker image in one of your machines
+
+  sudo docker load < ako-1.11.3-docker.tar.gz
+
+* Load the AKO Gateway API image in one of your machines
+
+  sudo docker load < ako-1.11.3-gateway-api.tar.gz
+
+
+* Push the docker image to your private registry. https://docs.docker.com/engine/reference/commandline/push/
+* Untar the ako helm package. This will create subdirectory "ako/ako" which contains helm charts for AKO
+
+  ls ako/
+    Chart.yaml crds templates values.yaml
+
+* Update the helm values.yaml with required AKO configurations(Controller IP/credentials, docker registry information etc)
+* Create namespace avi-system on the Openshift/Kubernetes cluster
+
+  kubectl create namespace avi-system
+
+For first time installation of AKO:
+
+* Install AKO using the updated helm charts
+
+  helm install ./ako --generate-name --namespace=avi-system
+
+For upgrading AKO from a previous version, please follow the upgrade instructions present at https://avinetworks.com/docs/ako/1.1/ako-installation/

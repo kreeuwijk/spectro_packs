@@ -1,0 +1,5 @@
+charts.ako.avicredentials.password:
+  schema: '{{ format "${password}" | hints "Specify the password for user" }}'
+
+charts.ako.avicredentials.authtoken:
+  schema: '{{ format "${password}" | hints "Specify the authtoken for user" }}'

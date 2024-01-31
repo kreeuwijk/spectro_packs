@@ -1,0 +1,26 @@
+{
+  "addonType":"load balancer",
+  "annotations": {
+    "docsURL": "",
+    "prerequisitesRequired": "true",
+    "source": "spectrocloud"
+  },
+  "cloudTypes": [
+    "aws",
+    "azure",
+    "gcp",
+    "vsphere",
+    "edge-native",
+    "maas",
+    "openstack",
+    "eks",
+    "tke"
+  ],
+  "displayName": "Avi Kubernetes Operator (AKO)",
+  "charts": [
+    "charts/ako-1.11.3.tgz"
+  ],
+  "layer": "addon",
+  "name": "lb-ako",
+  "version": "1.11.3"
+}

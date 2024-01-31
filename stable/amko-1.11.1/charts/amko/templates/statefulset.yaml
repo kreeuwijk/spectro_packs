@@ -1,0 +1,140 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: amko
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "amko.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  serviceName: amko
+  selector:
+    matchLabels:
+      {{- include "amko.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "amko.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: amko-sa
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{ if .Values.persistentVolumeClaim }}
+      volumes:
+      - name: amko-pv-storage
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistentVolumeClaim }}
+      {{ end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          {{ if .Values.persistentVolumeClaim }}
+          volumeMounts:
+          - mountPath: {{ .Values.mountPath }}
+            name: amko-pv-storage
+          {{ end }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+          env:
+          - name: XDG_CACHE_HOME
+            value: "/tmp"
+          - name: GSLB_CONFIG
+            valueFrom:
+              secretKeyRef:
+                name: "gslb-config-secret"
+                key: "gslb-members"
+          {{ if .Values.persistentVolumeClaim }}
+          - name: USE_PVC
+            value: "true"
+          {{ end }}
+          - name: LOG_FILE_PATH
+            value: {{ .Values.mountPath }}
+          - name: LOG_FILE_NAME
+            value: {{ .Values.logFile }}
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          {{ if .Values.multiClusterIngress.enable }}
+          - name: MCI_ENABLED
+            value: "true"
+          {{ end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh","/var/pre_stop_hook.sh"]
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /api/status
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+        - name: amko-federator
+          {{ if .Values.persistentVolumeClaim }}
+          volumeMounts:
+          - mountPath: {{ .Values.mountPath }}
+            name: amko-pv-storage
+          {{ end }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.federation.image.repository }}:{{ .Chart.AppVersion }}"
+          env:
+          - name: XDG_CACHE_HOME
+            value: "/tmp"
+          - name: GSLB_CONFIG
+            valueFrom:
+              secretKeyRef:
+                name: "gslb-config-secret"
+                key: "gslb-members"
+          {{ if .Values.persistentVolumeClaim }}
+          - name: USE_PVC
+            value: "true"
+          {{ end }}
+          - name: LOG_FILE_PATH
+            value: {{ .Values.mountPath }}
+          - name: LOG_FILE_NAME
+            value: {{ .Values.federatorLogFile }}
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          imagePullPolicy: {{ .Values.federation.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        {{ if .Values.multiClusterIngress.enable }}
+        - name: amko-service-discovery
+          {{ if .Values.persistentVolumeClaim }}
+          volumeMounts:
+          - mountPath: {{ .Values.mountPath }}
+            name: amko-pv-storage
+          {{ end }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.serviceDiscovery.image.repository }}:{{ .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.serviceDiscovery.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        {{ end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

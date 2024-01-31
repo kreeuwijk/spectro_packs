@@ -1,0 +1,163 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: gslbhostrules.amko.vmware.com
+spec:
+  conversion:
+    strategy: None
+  group: amko.vmware.com
+  names:
+    kind: GSLBHostRule
+    listKind: GSLBHostRuleList
+    plural: gslbhostrules
+    shortNames:
+    - ghr
+    singular: gslbhostrule
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              fqdn:
+                description: "FQDN of the GslbService to which this set of rule applies."
+                type: string
+              ttl:
+                description: "Time To Live. Specify in seconds how long to hold a DNS record."
+                type: integer
+                minimum: 0
+                maximum: 86400
+              sitePersistence:
+                description: "Maintain stickiness to the same site where the connection was initiated. Provide the profile ref for site persistence."
+                type: object
+                properties:
+                  enabled:
+                    description: enable/disable Site Persistence, if enabled but no profile given, this will error out. If disabled,
+                                then Site Persistence will be disabled. If sitePersistence itself is absent, the site persistence
+                                will be derived from the GDP object
+                    type: boolean
+                  profileRef:
+                    description: "Custom Site Persistence profile reference, will be applied on the applicable GSLB Service"
+                    type: string
+              thirdPartyMembers:
+                description: "ThirdPartyMembers is a list of third party members site"
+                type: array
+                items:
+                  type: object
+                  properties: 
+                    vip:
+                      description: IP of the thirdPartyMember site
+                      type: string
+                    site: 
+                      description: Site name of the thirdPartyMember site
+                      type: string
+                    publicIP:
+                      description: Public IP of the thirdPartyMember site
+                      type: string
+              healthMonitorRefs:
+                description: "List of Custom Health Monitors that will monitor the Gslb Service pool members."
+                type: array
+                items:
+                  type: string
+              healthMonitorTemplate:
+                description: "Custom Health Monitor template based on which the health monitors will be created."
+                type: string
+              poolAlgorithmSettings:
+                description: "Algorithm settings to be specified for Gslb Service pool"
+                type: object
+                properties:
+                  lbAlgorithm:
+                    description: Name of the algorithm to be used
+                    enum:
+                    - GSLB_ALGORITHM_CONSISTENT_HASH
+                    - GSLB_ALGORITHM_GEO
+                    - GSLB_ALGORITHM_ROUND_ROBIN
+                    - GSLB_ALGORITHM_TOPOLOGY
+                    type: string
+                  hashMask:
+                    description: Mask required for Consistent Hash
+                    type: integer
+                    maximum: 31
+                    minimum: 1
+                  geoFallback:
+                    description: Fallback algorithm to be specified for Geo based algorithm
+                    type: object
+                    properties:
+                      lbAlgorithm:
+                        description: Algorithm name for fallback
+                        type: string
+                        enum:
+                        - GSLB_ALGORITHM_ROUND_ROBIN
+                        - GSLB_ALGORITHM_CONSISTENT_HASH
+                      hashMask:
+                        description: Hash mask for ConsistentHash as the fallback algorithm
+                        type: integer
+                        maximum: 31
+                        minimum: 1
+              trafficSplit:
+                description: "Weights for each pool member. Each pool member belong to one of the sites."
+                type: array
+                items:
+                  type: object
+                  properties:
+                    cluster:
+                      description: "Cluster context name"
+                      type: string
+                    weight:
+                      description: "Weight out of 20"
+                      type: integer
+                      maximum: 20
+                      minimum: 1
+                      default: 1
+                    priority:
+                      description: "Based on the given priority, this member will be grouped in a pool"
+                      type: integer
+                      minimum: 0
+                      default: 1
+              publicIP:
+                description: "Public IP of the sites"
+                type: array
+                items:
+                  type: object
+                  properties:
+                    cluster:
+                      description: "Cluster context name"
+                      type: string
+                    ip:
+                      description: "Public IP of the corresponding site"
+                      type: string
+                  required:
+                  - cluster
+                  - ip
+              downResponse:
+                description: "Response to the client query when the GSLB service is DOWN."
+                type: object
+                properties:
+                  type:
+                    description: "Response from DNS service towards the client when the GSLB service is DOWN. Enum options - GSLB_SERVICE_DOWN_RESPONSE_NONE, GSLB_SERVICE_DOWN_RESPONSE_ALL_RECORDS, GSLB_SERVICE_DOWN_RESPONSE_FALLBACK_IP, GSLB_SERVICE_DOWN_RESPONSE_EMPTY."
+                    type: string
+                    enum:
+                    - GSLB_SERVICE_DOWN_RESPONSE_NONE
+                    - GSLB_SERVICE_DOWN_RESPONSE_ALL_RECORDS
+                    - GSLB_SERVICE_DOWN_RESPONSE_FALLBACK_IP
+                    - GSLB_SERVICE_DOWN_RESPONSE_EMPTY
+                  fallbackIP:
+                    description: "Fallback IP address to use in A response to the client query when the GSLB service is DOWN."
+                    type: string
+                required:
+                - type
+          status:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+              status:
+                type: "string"
+        required:
+        - spec
+    served: true
+    storage: true
