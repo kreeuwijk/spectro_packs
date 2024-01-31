@@ -128,7 +128,7 @@ charts:
     avicredentials:
       username: ''
       password: ''
-      authtoken:
+      authtoken: ''
       certificateAuthorityData:
 
     persistentVolumeClaim: ''
