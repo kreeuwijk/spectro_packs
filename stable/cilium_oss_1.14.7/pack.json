@@ -16,5 +16,5 @@
   ],
   "layer": "cni",
   "name": "cni-cilium-oss",
-  "version": "1.14.7s"
+  "version": "1.14.7"
 }
