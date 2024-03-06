@@ -1,0 +1,33 @@
+apiVersion: core.k8sgpt.ai/v1alpha1
+kind: K8sGPT
+metadata:
+  name: k8sgpt
+spec:
+  ai:
+    enabled: {{ .Values.enableAI }}
+    model: {{ .Values.model | quote }}
+    backend: {{ .Values.backend | quote }}
+    baseUrl: {{ .Values.baseUrl | quote }}
+    secret:
+      name: k8sgpt-backend-secret
+      key: openai-api-key
+      # anonymized: false
+      # language: english
+  noCache: {{ .Values.noCache }}
+  version: v0.3.8
+  # filters:
+  #   - Ingress
+  # sink:
+  #   type: slack
+  #   webhook: <webhook-url>
+  # extraOptions:
+  #   backstage:
+  #     enabled: tru
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: k8sgpt-backend-secret
+type: Opaque
+stringData:
+  openai-api-key: {{ .Values.openAiApiKey | quote }}
