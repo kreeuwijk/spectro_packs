@@ -1,6 +1,4 @@
-{{- if hasKey .Values.storageCluster.spec "env" }}
-  {{- range .Values.storageCluster.spec.env | uniq -}}
-    {{- if eq .name "VSPHERE_VCENTER" -}}
+{{- if hasKey .Values "vsphereSecret" }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -216,6 +214,4 @@ spec:
         - name: vsphere-config-volume
           configMap:
             name: vsphere-cloud-config
-    {{- end }}
-  {{- end }}
 {{- end }}

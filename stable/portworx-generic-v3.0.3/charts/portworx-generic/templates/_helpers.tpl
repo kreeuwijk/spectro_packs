@@ -41,7 +41,9 @@
           image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.26.2
 {{- else if semverCompare "~1.27.0" .Capabilities.KubeVersion.Version }}
           image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.27.0
-{{- else }} # Default to the 1.27.0 CPI
-          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.27.0
+{{- else if semverCompare "~1.28.0" .Capabilities.KubeVersion.Version }}
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.28.0
+{{- else }} # Default to the 1.28.0 CPI
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.28.0
 {{- end }}
 {{- end }}

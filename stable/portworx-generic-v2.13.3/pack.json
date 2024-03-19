@@ -7,12 +7,12 @@
   "cloudTypes": [
     "aws",
     "azure",
-    "vsphere",
     "edge",
     "edge-native",
     "maas",
     "openstack",
     "eks",
+    "vsphere",
     "tke"
   ],
   "displayName": "Portworx /w Operator",

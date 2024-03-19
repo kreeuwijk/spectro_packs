@@ -1,16 +1,18 @@
 {
   "annotations": {
     "docsURL": "https://docs.spectrocloud.com/integrations/portworx",
-    "prerequisitesRequired": "true"
+    "prerequisitesRequired": "true",
+    "source": "spectrocloud",
+    "system_state": "deprecated"
   },
   "cloudTypes": [
     "aws",
     "azure",
-    "vsphere",
     "edge",
     "maas",
     "openstack",
     "eks",
+    "vsphere",
     "tke"
   ],
   "displayName": "Portworx /w Operator",
@@ -19,5 +21,6 @@
   ],
   "layer": "csi",
   "name": "csi-portworx-generic",
-  "version": "2.11.2"
+  "version": "2.11.2",
+  "commit_msg": "Updated supported cloud types for Portworx"
 }

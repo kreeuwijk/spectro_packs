@@ -30,12 +30,20 @@
 {{- else if semverCompare "~1.21.0" .Capabilities.KubeVersion.Version }}
           image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.21.3
 {{- else if semverCompare "~1.22.0" .Capabilities.KubeVersion.Version }}
-          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.22.6
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.22.8
 {{- else if semverCompare "~1.23.0" .Capabilities.KubeVersion.Version }}
-          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.23.1
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.23.4
 {{- else if semverCompare "~1.24.0" .Capabilities.KubeVersion.Version }}
-          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.24.0
-{{- else }} # Default to the 1.24.0 CPI
-          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.24.0
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.24.6
+{{- else if semverCompare "~1.25.0" .Capabilities.KubeVersion.Version }}
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.25.3
+{{- else if semverCompare "~1.26.0" .Capabilities.KubeVersion.Version }}
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.26.2
+{{- else if semverCompare "~1.27.0" .Capabilities.KubeVersion.Version }}
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.27.0
+{{- else if semverCompare "~1.28.0" .Capabilities.KubeVersion.Version }}
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.28.0
+{{- else }} # Default to the 1.28.0 CPI
+          image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.28.0
 {{- end }}
 {{- end }}

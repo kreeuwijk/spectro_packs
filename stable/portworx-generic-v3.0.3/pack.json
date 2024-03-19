@@ -8,13 +8,14 @@
     "aws",
     "azure",
     "gcp",
-    "vsphere",
     "edge",
     "edge-native",
     "maas",
     "openstack",
     "eks",
-    "tke"
+    "tke",
+    "vsphere",
+    "custom"
   ],
   "displayName": "Portworx /w Operator",
   "charts": [
