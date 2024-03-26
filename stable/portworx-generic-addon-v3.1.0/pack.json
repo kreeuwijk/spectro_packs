@@ -26,5 +26,15 @@
   ],
   "layer": "addon",
   "name": "portworx-add-on",
-  "version": "3.0.3"
+  "version": "3.0.4",
+  "constraints": {
+    "dependencies": [
+      {
+        "packName": "kubernetes",
+        "layer": "k8s",
+        "maxVersion": "1.28.99",
+        "type": "optional"
+      }
+    ]
+  }
 }

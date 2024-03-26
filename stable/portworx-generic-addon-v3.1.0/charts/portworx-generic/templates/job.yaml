@@ -1,0 +1,57 @@
+{{- if and (eq .Values.license.type "enterprise") .Values.license.enterprise.activateLicense }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: px-activate-license
+  namespace: {{ .Values.storageCluster.namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: px-activate-license-role
+  namespace: {{ .Values.storageCluster.namespace }}
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get","list"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: px-activate-license-rolebinding
+  namespace: {{ .Values.storageCluster.namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: px-activate-license
+roleRef:
+  kind: Role
+  name: px-activate-license-role
+  apiGroup: rbac.authorization.k8s.io     
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: px-activate-license
+  namespace: {{ .Values.storageCluster.namespace }}
+spec:
+  template:
+    metadata:
+      name: px-activate-license
+    spec:
+      serviceAccountName: px-activate-license
+      initContainers:
+        - name: init-px-activate-license
+          image: bitnami/kubectl:{{ .Capabilities.KubeVersion.Major }}.{{ .Capabilities.KubeVersion.Minor | trimSuffix "+" }}
+          command: ['sh', '-c', "until kubectl get pods -l name=portworx -n kube-system -o custom-columns=STATUS:.status.containerStatuses.'*'.ready | grep true,true; do echo Waiting for portworx; sleep 120; done"]
+      containers:
+        - name: kubectl-pod
+          image: bitnami/kubectl:{{ .Capabilities.KubeVersion.Major }}.{{ .Capabilities.KubeVersion.Minor | trimSuffix "+" }}
+          command:
+            - "bash"
+            - "-c"
+            - {{ template "portworx-generic.setPxEnterpriseLicense" . }}
+      restartPolicy: Never
+{{- end }}
