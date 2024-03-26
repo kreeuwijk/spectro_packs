@@ -2,22 +2,32 @@
 pack:
   content:
     images:
+      # From https://install.portworx.com/3.1.0/air-gapped
       - image: docker.io/nginxinc/nginx-unprivileged:1.25
       - image: docker.io/openstorage/csi-attacher:v1.2.1-1
-      - image: docker.io/openstorage/stork:23.8.0
-      - image: docker.io/portworx/autopilot:1.3.11
-      - image: docker.io/portworx/oci-monitor:3.0.3
+      - image: docker.io/openstorage/stork:23.11.0
+      - image: docker.io/openstorage/cmdexecutor:23.11.0
+      - image: docker.io/portworx/autopilot:1.3.14
+      - image: docker.io/portworx/oci-monitor:3.1.0
+      - image: docker.io/portworx/px-essentials:3.1.0
       - image: docker.io/portworx/portworx-dynamic-plugin:1.1.0
-      - image: docker.io/portworx/px-operator:23.10.0
-      - image: docker.io/purestorage/ccm-go:1.0.25
-      - image: docker.io/purestorage/log-upload:px-1.0.16
-      - image: docker.io/purestorage/realtime-metrics:1.0.20
-      - image: docker.io/purestorage/telemetry-envoy:1.1.6
+      - image: docker.io/portworx/px-operator:23.10.4
+      - image: docker.io/purestorage/ccm-go:1.2.2
+      - image: docker.io/purestorage/log-upload:px-1.1.8
+      - image: docker.io/purestorage/realtime-metrics:1.0.23
+      - image: docker.io/purestorage/telemetry-envoy:1.1.11
+      - image: registry.k8s.io/pause:3.1
+      - image: registry.k8s.io/kube-controller-manager-amd64:v1.28.2 # tag = K8S version
+      - image: registry.k8s.io/kube-scheduler-amd64:v1.28.2 # tag = K8S version
       - image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.9.0
       - image: registry.k8s.io/sig-storage/csi-provisioner:v3.6.1
       - image: registry.k8s.io/sig-storage/csi-resizer:v1.9.1
       - image: registry.k8s.io/sig-storage/csi-snapshotter:v6.3.1
       - image: registry.k8s.io/sig-storage/snapshot-controller:v6.3.1
+      - image: quay.io/prometheus/prometheus:v2.48.1
+      - image: quay.io/prometheus-operator/prometheus-operator:v0.70.0
+      - image: quay.io/prometheus-operator/prometheus-config-reloader:v0.70.0
+      - image: quay.io/prometheus/alertmanager:v0.26.0
 
 # Upgrade procedure from v2.x of the pack:
 # * Ensure you select a different namespace than kube-system for the operator
@@ -72,7 +82,7 @@ charts:
         # Select a preset from the pane on the right, or use the Portworx Spec Builder to define a custom configuration and
         # then paste that spec section here. (Spec Builder: https://central.portworx.com/specGen/wizard)
         # ### Example spec
-        # image: portworx/oci-monitor:3.0.4
+        # image: portworx/oci-monitor:3.1.0
         # imagePullPolicy: Always
         # deleteStrategy:
         #   type: UninstallAndWipe
@@ -106,7 +116,7 @@ charts:
         #   enabled: true
         # monitoring:
         #   telemetry:
-        #       enabled: false
+        #       enabled: true
         #   prometheus:
         #     enabled: false
         #     exportMetrics: true
@@ -129,7 +139,7 @@ charts:
       #   If you need additional annotations, specify them here
       reclaimPolicy: Delete # Delete or Retain
       volumeBindingMode: WaitForFirstConsumer # WaitForFirstConsumer or Immediate
-      # allowVolumeExpansion: true
+      allowVolumeExpansion: true
       parameters:
         repl: "2"
         # priority_io: "high"

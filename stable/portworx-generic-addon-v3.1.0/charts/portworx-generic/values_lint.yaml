@@ -52,7 +52,7 @@ storageClass:
   #   If you need additional annotations, specify them here
   reclaimPolicy: Delete # Delete or Retain
   volumeBindingMode: WaitForFirstConsumer # WaitForFirstConsumer or Immediate
-  # allowVolumeExpansion: true
+  allowVolumeExpansion: true
   parameters:
     repl: "2"
     # priority_io: "high"

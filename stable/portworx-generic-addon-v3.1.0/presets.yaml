@@ -73,7 +73,7 @@ presets:
           storageCluster:
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: portworx/oci-monitor:3.0.4
+              image: portworx/oci-monitor:3.1.0
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -128,7 +128,7 @@ presets:
               portworx.io/is-eks: "true"
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: portworx/oci-monitor:3.0.4
+              image: portworx/oci-monitor:3.1.0
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -181,7 +181,7 @@ presets:
               portworx.io/is-aks: "true"
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: portworx/oci-monitor:3.0.4
+              image: portworx/oci-monitor:3.1.0
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -255,7 +255,7 @@ presets:
               portworx.io/is-gke: "true"
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: portworx/oci-monitor:3.0.4
+              image: portworx/oci-monitor:3.1.0
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -306,7 +306,7 @@ presets:
           storageCluster:
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: portworx/oci-monitor:3.0.4
+              image: portworx/oci-monitor:3.1.0
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -382,7 +382,7 @@ presets:
           storageCluster:
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: portworx/oci-monitor:3.0.4
+              image: portworx/oci-monitor:3.1.0
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -516,4 +516,4 @@ presets:
               - name: PX_HTTPS_PROXY
                 value: "http://username:password@your-proxy-server:3128"
               - name: NO_PROXY
-                value: "127.0.0.1,localhost,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,.company.local"
+                value: "127.0.0.1,localhost,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,.company.local"
