@@ -19,7 +19,7 @@
 {{- if .Values.license.enterprise.customLicenseServer }}
 {{ template "portworx-generic.pxLicenseServer" . }}
 {{- end }}
-{{ cat "kubectl -n kube-system exec $(kubectl get pods -l name=portworx -n kube-system -o jsonpath='{.items[0].metadata.name}') -c portworx -- /opt/pwx/bin/pxctl license activate" .Values.license.enterprise.activationId | indent 14 }}
+{{ cat "kubectl -n" .Values.storageCluster.namespace "exec $(kubectl get pods -l name=portworx -n" .Values.storageCluster.namespace "-o jsonpath='{.items[0].metadata.name}') -c portworx -- /opt/pwx/bin/pxctl license activate" .Values.license.enterprise.activationId | indent 14 }}
 {{- end }}
 
 {{- define "portworx-generic.CPIversion" -}}
