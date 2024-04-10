@@ -154,3 +154,20 @@ Validate duration field, return validated duration, 0s when provided duration is
 0s
 {{- end }}
 {{- end }}
+
+{{- define "k8sService" }}
+  {{- if eq .host "auto" }}
+    {{- $configmap := (lookup "v1" "ConfigMap" "kube-public" "cluster-info") }}
+    {{- $kubeconfig := get $configmap.data "kubeconfig" }}
+    {{- range ( split "\n" $kubeconfig) }}
+      {{- if ( contains "server: https://" .) }}
+        {{- $uri := (split "https://" .)._1 | trim }}
+        {{- if eq $.lookup "host" }}{{ (split ":" $uri)._0 | quote }}{{ end }}
+        {{- if eq $.lookup "port" }}{{ (split ":" $uri)._1 | quote }}{{ end }}
+      {{- end }}
+    {{- end }}
+  {{- else }}
+    {{- if eq .lookup "host" }}{{ .host | quote }}{{ end }}
+    {{- if eq .lookup "port" }}{{ .port | quote }}{{ end }}
+  {{- end }}
+{{- end }}

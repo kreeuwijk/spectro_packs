@@ -132,15 +132,11 @@ spec:
           env:
           {{- if .Values.k8sServiceHost }}
           - name: KUBERNETES_SERVICE_HOST
-          {{- if eq .Values.k8sServiceHost "auto" }}
-            value: {{ (lookup "v1" "ConfigMap" "kube-public" "cluster-name").data.name }}
-          {{- else }}
-            value: {{ .Values.k8sServiceHost | quote }}
-          {{- end }}
+            value: {{ include "k8sService" (dict "host" .Values.k8sServiceHost "lookup" "host") }}
           {{- end }}
           {{- if .Values.k8sServicePort }}
           - name: KUBERNETES_SERVICE_PORT
-            value: {{ .Values.k8sServicePort | quote }}
+            value: {{ include "k8sService" (dict "host" .Values.k8sServiceHost "port" .Values.k8sServicePort "lookup" "port") }}
           {{- end }}
           volumeMounts:
           - name: cilium-run
