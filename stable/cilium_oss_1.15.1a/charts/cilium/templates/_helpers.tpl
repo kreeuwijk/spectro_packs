@@ -168,6 +168,6 @@ Validate duration field, return validated duration, 0s when provided duration is
     {{- end }}
   {{- else }}
     {{- if eq .lookup "host" }}{{ .host | quote }}{{ end }}
-    {{- if eq .lookup "port" }}{{ .port | quote }}{{ end }}
+    {{- if eq .lookup "port" }}{{ .port | default 6443 | quote }}{{ end }}
   {{- end }}
 {{- end }}
