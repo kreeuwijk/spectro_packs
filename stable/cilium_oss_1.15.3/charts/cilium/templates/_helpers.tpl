@@ -171,7 +171,7 @@ Enable automatic lookup of k8sServiceHost from the cluster-info ConfigMap (kubea
 {{- end }}
 
 {{/*
-Enable automatic lookup of k8sServiceHost from the cluster-info ConfigMap (kubeadm-based clusters only)
+Enable automatic lookup of k8sServicePort from the cluster-info ConfigMap (kubeadm-based clusters only)
 */}}
 {{- define "k8sServicePort" }}
   {{- if eq .Values.k8sServiceHost "auto" }}
