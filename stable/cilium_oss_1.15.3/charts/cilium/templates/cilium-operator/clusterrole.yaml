@@ -56,12 +56,6 @@ rules:
   resources:
   - endpointslices
   verbs:
-{{- if .Values.clustermesh.enableEndpointSliceSynchronization }}
-  - create
-  - update
-  - delete
-  - deletecollection
-{{- end }}
   - get
   - list
   - watch
@@ -100,15 +94,6 @@ rules:
   - update
   - delete
   - patch
-{{- end }}
-{{- if .Values.clustermesh.enableEndpointSliceSynchronization }}
-- apiGroups:
-  - ""
-  resources:
-  - events
-  verbs:
-  - patch
-  - create
 {{- end }}
 - apiGroups:
   - cilium.io
@@ -230,7 +215,6 @@ rules:
   resources:
   - ciliumloadbalancerippools
   - ciliumpodippools
-  - ciliumbgppeeringpolicies
   - ciliumbgpclusterconfigs
   - ciliumbgpnodeconfigoverrides
   verbs:
@@ -306,13 +290,5 @@ rules:
   verbs:
   - update
   - patch
-- apiGroups:
-  - multicluster.x-k8s.io
-  resources:
-  - serviceimports
-  verbs:
-  - get
-  - list
-  - watch
 {{- end }}
 {{- end }}

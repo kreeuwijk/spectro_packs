@@ -156,17 +156,6 @@ Validate duration field, return validated duration, 0s when provided duration is
 {{- end }}
 
 {{/*
-Convert a map to a comma-separated string: key1=value1,key2=value2
-*/}}
-{{- define "mapToString" -}}
-{{- $list := list -}}
-{{- range $k, $v := . -}}
-{{- $list = append $list (printf "%s=%s" $k $v) -}}
-{{- end -}}
-{{ join "," $list }}
-{{- end -}}
-
-{{/*
 Enable automatic lookup of k8sServiceHost and k8sServicePort values from the cluster-info ConfigMap (kubeadm-based clusters only)
 */}}
 {{- define "k8sService" }}

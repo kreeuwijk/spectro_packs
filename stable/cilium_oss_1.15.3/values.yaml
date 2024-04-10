@@ -1,23 +1,23 @@
-# spectrocloud.com/enabled-presets: IPAM mode:ipam-kubernetes
+# spectrocloud.com/enabled-presets: IPAM mode:ipam-kubernetes,Kube-proxy replacement:ebpf-kubeproxy,Loadbalancer mode:lb-no-xdp
 pack:
   content:
     images:
-      - image: quay.io/cilium/certgen:v0.1.9@sha256:89a0847753686444daabde9474b48340993bd19c7bea66a46e45b2974b82041f
+      - image: quay.io/cilium/certgen:v0.1.9
       - image: quay.io/cilium/cilium:v1.15.3
-      - image: quay.io/cilium/cilium-envoy:v1.27.3-713b673cccf1af661efd75ca20532336517ddcb90@sha256:a811830c708296194eaf9cee6c1d22c5f8de3544b7eea6cbdfb810326522a4a2
-      - image: quay.io/cilium/cilium-etcd-operator:v2.0.7@sha256:04b8327f7f992693c2cb483b999041ed8f92efc8e14f2a5f3ab95574a65ea2dc
+      - image: quay.io/cilium/cilium-envoy:v1.27.3-99c1c8f42c8de70fc8f6dd594f4a425cd38b6688
+      - image: quay.io/cilium/cilium-etcd-operator:v2.0.7
       - image: quay.io/cilium/clustermesh-apiserver:v1.15.3
       - image: quay.io/cilium/hubble-relay:v1.15.3
-      - image: quay.io/cilium/hubble-ui:v0.13.0@sha256:7d663dc16538dd6e29061abd1047013a645e6e69c115e008bee9ea9fef9a6666
-      - image: quay.io/cilium/hubble-ui-backend:v0.13.0@sha256:1e7657d997c5a48253bb8dc91ecee75b63018d16ff5e5797e5af367336bc8803
+      - image: quay.io/cilium/hubble-ui:v0.13.0
+      - image: quay.io/cilium/hubble-ui-backend:v0.13.0
       - image: quay.io/cilium/operator:v1.15.3
       - image: quay.io/cilium/operator-generic:v1.15.3
       - image: quay.io/cilium/operator-aws:v1.15.3
       - image: quay.io/cilium/operator-azure:v1.15.3
       - image: quay.io/cilium/startup-script:62093c5c233ea914bfa26a10ba41f8780d9b737f
-      - image: ghcr.io/spiffe/spire-agent:1.8.5@sha256:99405637647968245ff9fe215f8bd2bd0ea9807be9725f8bf19fe1b21471e52b
-      - image: ghcr.io/spiffe/spire-server:1.8.5@sha256:28269265882048dcf0fed32fe47663cd98613727210b8d1a55618826f9bf5428
-      - image: docker.io/library/busybox:1.36.1@sha256:223ae047b1065bd069aac01ae3ac8088b3ca4a527827e283b85112f29385fb1b
+      - image: ghcr.io/spiffe/spire-agent:1.8.5
+      - image: ghcr.io/spiffe/spire-server:1.8.5
+      - image: docker.io/library/busybox:1.36.1
 
     charts:
       - repo: https://helm.cilium.io/
@@ -63,7 +63,7 @@ charts:
     # -- (string) Kubernetes config path
     # @default -- `"~/.kube/config"`
     kubeConfigPath: ""
-    # -- (string) Kubernetes service host
+    # -- (string) Kubernetes service host - use "auto" for automatic lookup from the cluster-info ConfigMap (kubeadm-based clusters only)
     k8sServiceHost: ""
     # -- (string) Kubernetes service port
     k8sServicePort: ""
@@ -173,7 +173,7 @@ charts:
     image:
       override: ~
       repository: "quay.io/cilium/cilium"
-      tag: "v1.15.1"
+      tag: "v1.15.3"
       pullPolicy: "IfNotPresent"
       # cilium-digest
       digest: ""
@@ -1251,7 +1251,7 @@ charts:
         image:
           override: ~
           repository: "quay.io/cilium/hubble-relay"
-          tag: "v1.15.1"
+          tag: "v1.15.3"
           # hubble-relay-digest
           digest: ""
           useDigest: false
@@ -2096,9 +2096,9 @@ charts:
       image:
         override: ~
         repository: "quay.io/cilium/cilium-envoy"
-        tag: "v1.27.3-713b673cccf1af661efd75ca20532336517ddcb9"
+        tag: "v1.27.3-99c1c8f42c8de70fc8f6dd594f4a425cd38b6688"
         pullPolicy: "IfNotPresent"
-        digest: "sha256:a811830c708296194eaf9cee6c1d22c5f8de3544b7eea6cbdfb810326522a4a2"
+        digest: "sha256:877ead12d08d4c04a9f67f86d3c6e542aeb7bf97e1e401aee74de456f496ac30"
         useDigest: true
 
       # -- Additional containers added to the cilium Envoy DaemonSet.
@@ -2214,7 +2214,20 @@ charts:
             labelSelector:
               matchLabels:
                 k8s-app: cilium-envoy
-
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchLabels:
+                k8s-app: cilium
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: cilium.io/no-schedule
+                  operator: NotIn
+                  values:
+                  - "true"
       # -- Node selector for cilium-envoy.
       nodeSelector:
         kubernetes.io/os: linux
@@ -2504,7 +2517,7 @@ charts:
       image:
         override: ~
         repository: "quay.io/cilium/operator"
-        tag: "v1.15.1"
+        tag: "v1.15.3"
         # operator-generic-digest
         genericDigest: ""
         # operator-azure-digest
@@ -2799,7 +2812,7 @@ charts:
       image:
         override: ~
         repository: "quay.io/cilium/cilium"
-        tag: "v1.15.1"
+        tag: "v1.15.3"
         # cilium-digest
         digest: ""
         useDigest: false
@@ -2961,7 +2974,7 @@ charts:
         image:
           override: ~
           repository: "quay.io/cilium/clustermesh-apiserver"
-          tag: "v1.15.1"
+          tag: "v1.15.3"
           # clustermesh-apiserver-digest
           digest: ""
           useDigest: false
@@ -3533,3 +3546,4 @@ charts:
           agentSocketPath: /run/spire/sockets/agent/agent.sock
           # -- SPIRE connection timeout
           connectionTimeout: 30s
+
