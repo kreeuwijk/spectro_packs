@@ -156,21 +156,31 @@ Validate duration field, return validated duration, 0s when provided duration is
 {{- end }}
 
 {{/*
-Enable automatic lookup of k8sServiceHost and k8sServicePort values from the cluster-info ConfigMap (kubeadm-based clusters only)
+Enable automatic lookup of k8sServiceHost from the cluster-info ConfigMap (kubeadm-based clusters only)
 */}}
-{{- define "k8sService" }}
-  {{- if eq .host "auto" }}
+{{- define "k8sServiceHost" }}
+  {{- if eq .Values.k8sServiceHost "auto" }}
     {{- $configmap := (lookup "v1" "ConfigMap" "kube-public" "cluster-info") }}
     {{- $kubeconfig := get $configmap.data "kubeconfig" }}
-    {{- range ( split "\n" $kubeconfig) }}
-      {{- if ( contains "server: https://" .) }}
-        {{- $uri := (split "https://" .)._1 | trim }}
-        {{- if eq $.lookup "host" }}{{ (split ":" $uri)._0 | quote }}{{ end }}
-        {{- if eq $.lookup "port" }}{{ (split ":" $uri)._1 | quote }}{{ end }}
-      {{- end }}
-    {{- end }}
+    {{- $k8sServer := get ($kubeconfig | fromYaml) "clusters" | mustFirst | dig "cluster" "server" "" }}
+    {{- $uri := (split "https://" $k8sServer)._1 | trim }}
+    {{- (split ":" $uri)._0 | quote }}
   {{- else }}
-    {{- if eq .lookup "host" }}{{ .host | quote }}{{ end }}
-    {{- if eq .lookup "port" }}{{ .port | default 6443 | quote }}{{ end }}
+    {{- .Values.k8sServiceHost | quote }}
+  {{- end }}
+{{- end }}
+
+{{/*
+Enable automatic lookup of k8sServiceHost from the cluster-info ConfigMap (kubeadm-based clusters only)
+*/}}
+{{- define "k8sServicePort" }}
+  {{- if eq .Values.k8sServiceHost "auto" }}
+    {{- $configmap := (lookup "v1" "ConfigMap" "kube-public" "cluster-info") }}
+    {{- $kubeconfig := get $configmap.data "kubeconfig" }}
+    {{- $k8sServer := get ($kubeconfig | fromYaml) "clusters" | mustFirst | dig "cluster" "server" "" }}
+    {{- $uri := (split "https://" $k8sServer)._1 | trim }}
+    {{- (split ":" $uri)._1 | quote }}
+  {{- else }}
+    {{- .Values.k8sServicePort | quote }}
   {{- end }}
 {{- end }}

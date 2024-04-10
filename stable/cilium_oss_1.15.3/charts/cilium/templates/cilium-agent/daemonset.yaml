@@ -204,9 +204,9 @@ spec:
               divisor: '1'
         {{- if .Values.k8sServiceHost }}
         - name: KUBERNETES_SERVICE_HOST
-          value: {{ include "k8sService" (dict "host" .Values.k8sServiceHost "lookup" "host") }}
+          value: {{ include "k8sServiceHost" . }}
         - name: KUBERNETES_SERVICE_PORT
-          value: {{ include "k8sService" (dict "host" .Values.k8sServiceHost "port" .Values.k8sServicePort "lookup" "port") }}
+          value: {{ include "k8sServicePort" . }}
         {{- end }}
         {{- with .Values.extraEnv }}
         {{- toYaml . | trim | nindent 8 }}
@@ -444,9 +444,9 @@ spec:
               fieldPath: metadata.namespace
         {{- if .Values.k8sServiceHost }}
         - name: KUBERNETES_SERVICE_HOST
-          value: {{ include "k8sService" (dict "host" .Values.k8sServiceHost "lookup" "host") }}
+          value: {{ include "k8sServiceHost" . }}
         - name: KUBERNETES_SERVICE_PORT
-          value: {{ include "k8sService" (dict "host" .Values.k8sServiceHost "port" .Values.k8sServicePort "lookup" "port") }}
+          value: {{ include "k8sServicePort" . }}
         {{- end }}
         {{- with .Values.extraEnv }}
         {{- toYaml . | nindent 8 }}
@@ -627,9 +627,9 @@ spec:
               optional: true
         {{- if .Values.k8sServiceHost }}
         - name: KUBERNETES_SERVICE_HOST
-          value: {{ include "k8sService" (dict "host" .Values.k8sServiceHost "lookup" "host") }}
+          value: {{ include "k8sServiceHost" . }}
         - name: KUBERNETES_SERVICE_PORT
-          value: {{ include "k8sService" (dict "host" .Values.k8sServiceHost "port" .Values.k8sServicePort "lookup" "port") }}
+          value: {{ include "k8sServicePort" . }}
         {{- end }}
         {{- with .Values.extraEnv }}
         {{- toYaml . | nindent 8 }}

@@ -132,9 +132,9 @@ spec:
           env:
           {{- if .Values.k8sServiceHost }}
           - name: KUBERNETES_SERVICE_HOST
-            value: {{ include "k8sService" (dict "host" .Values.k8sServiceHost "lookup" "host") }}
+            value: {{ include "k8sServiceHost" . }}
           - name: KUBERNETES_SERVICE_PORT
-            value: {{ include "k8sService" (dict "host" .Values.k8sServiceHost "port" .Values.k8sServicePort "lookup" "port") }}
+            value: {{ include "k8sServicePort" . }}
           {{- end }}
           volumeMounts:
           - name: cilium-run

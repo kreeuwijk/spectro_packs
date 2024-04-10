@@ -53,6 +53,26 @@ presets:
               # @default -- `4.0`
               externalAPILimitQPS: ~
 
+  - name: "op-single-node"
+    displayName: "Optimize for single node clusters"
+    group: "Cilium Operator"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          operator:
+            replicas: 1
+
+  - name: "op-multi-node"
+    displayName: "Optimize for multi node clusters"
+    group: "Cilium Operator"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          operator:
+            replicas: 2
+
   - name: "ebpf-kubeproxy"
     displayName: "Do not replace kube-proxy"
     group: "Kube-proxy replacement"
