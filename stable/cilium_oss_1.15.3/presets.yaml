@@ -54,7 +54,7 @@ presets:
               externalAPILimitQPS: ~
 
   - name: "op-single-node"
-    displayName: "Optimize for single node clusters"
+    displayName: "For 1-node cluster"
     group: "Cilium Operator"
     remove: []
     add: |
@@ -64,7 +64,7 @@ presets:
             replicas: 1
 
   - name: "op-multi-node"
-    displayName: "Optimize for multi node clusters"
+    displayName: "For multi-node cluster"
     group: "Cilium Operator"
     remove: []
     add: |
