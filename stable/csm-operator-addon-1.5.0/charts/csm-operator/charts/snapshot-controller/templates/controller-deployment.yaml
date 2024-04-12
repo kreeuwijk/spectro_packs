@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "snapshot-controller.labels" . | nindent 4 }}
 spec:
-  minReadySeconds: 15
+  minReadySeconds: 35
   replicas: {{ .Values.replicas | default 2}}
   selector:
     matchLabels:
@@ -21,6 +21,7 @@ spec:
     metadata:
       labels:
         app: snapshot-controller
+        spectrocloud.com/connection: proxy
         {{- include "snapshot-controller.selectorLabels" . | nindent 8 }}
     spec:
       containers:
@@ -35,4 +36,21 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         name: {{ .Chart.Name }}
+        env:
+          - name: NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
       serviceAccountName: snapshot-controller
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -12,32 +12,22 @@ spec:
       # Allowed values: ReadWriteOnceWithFSType, File , None
       # Default value: ReadWriteOnceWithFSType
       fSGroupPolicy: "{{ .Values.csm.config.driver.fSGroupPolicy }}"
-    configVersion: "{{ include "csm-operator.powerflexVersion" (dict "lookup" "driver-config" "version" .Values.csm.version) }}"
+      # storageCapacity: Helps the scheduler to schedule the pod on a node satisfying the topology constraints, only if the requested capacity is available on the storage array
+      # Allowed values:
+      #   true: enable storage capacity tracking
+      #   false: disable storage capacity tracking
+      storageCapacity: {{ .Values.csm.config.driver.storageCapacity }}
+    configVersion: "{{ include "csm-operator.powerflex" (dict "lookup" "driver-config") }}"
     authSecret: {{ default .Values.csm.config.driver.authSecret "vxflexos-config" | quote }}
     replicas: {{ .Values.csm.config.driver.replicas }}
     dnsPolicy: {{ .Values.csm.config.driver.dnsPolicy }}
-    forceUpdate: false
-    forceRemoveDriver: true
+    forceUpdate: {{ .Values.csm.config.driver.forceUpdate }}
+    forceRemoveDriver: {{ .Values.csm.config.driver.forceRemoveDriver }}
     common:
-      image: "dellemc/csi-vxflexos:{{ include "csm-operator.powerflexVersion" (dict "lookup" "driver-image" "version" .Values.csm.version) }}"
+      image: "dellemc/csi-vxflexos:{{ include "csm-operator.powerflex" (dict "lookup" "driver-image") }}"
       imagePullPolicy: IfNotPresent
       envs:
 {{ toYaml .Values.csm.config.driver.envs | indent 8 }}
-        # Specify kubelet config dir path.
-        # Ensure that the config.yaml file is present at this path.
-        # Default value: None
-        - name: KUBELET_CONFIG_DIR
-          value: "/var/lib/kubelet"
-        - name: "CERT_SECRET_COUNT"
-          value: "0"
-{{- if semverCompare ">=2.8.0" (substr 1 -1 .Values.csm.version) }}
-        - name: X_CSI_NFS_ACLS
-          value: "0777"
-        - name: X_CSI_POWERFLEX_EXTERNAL_ACCESS
-          value: ""
-        - name: X_CSI_QUOTA_ENABLED
-          value: "false"
-{{- end }}
 
     sideCars:
 {{ toYaml .Values.csm.config.driver.sideCars | indent 6 }}
@@ -101,22 +91,22 @@ spec:
       #   effect: "NoSchedule"
 
     initContainers:
-      - image: dellemc/sdc:3.6.0.6
+      - image: dellemc/sdc:4.5.1
         imagePullPolicy: IfNotPresent
         name: sdc
         envs:
           - name: MDM
-            value: "" # Set by CSM Operator
+            value: "10.xx.xx.xx,10.xx.xx.xx"  #provide MDM value
 
   modules:
     # Authorization: enable csm-authorization for RBAC
     - name: authorization
       # enable: Enable/Disable csm-authorization
       enabled: {{ .Values.csm.config.modules.authorization.enabled }}
-      configVersion: "{{ include "csm-operator.powerflexVersion" (dict "lookup" "module-auth-config" "version" .Values.csm.version) }}"
+      configVersion: "{{ include "csm-operator.powerflex" (dict "lookup" "module-auth-config") }}"
       components:
       - name: karavi-authorization-proxy
-        image: "dellemc/csm-authorization-sidecar:{{ include "csm-operator.powerflexVersion" (dict "lookup" "module-auth-image" "version" .Values.csm.version) }}"
+        image: "dellemc/csm-authorization-sidecar:{{ include "csm-operator.powerflex" (dict "lookup" "module-auth-image") }}"
         envs:
 {{ toYaml .Values.csm.config.modules.authorization.envs | indent 10 }}
 
@@ -124,14 +114,22 @@ spec:
     - name: observability
       # enabled: Enable/Disable observability
       enabled: {{ .Values.csm.config.modules.observability.enabled }}
-      configVersion: "{{ include "csm-operator.powerflexVersion" (dict "lookup" "module-obsv-config" "version" .Values.csm.version) }}"
+      configVersion: "{{ include "csm-operator.powerflex" (dict "lookup" "module-obsv-config") }}"
       components:
         - name: topology
           # enabled: Enable/Disable topology
           enabled: {{ .Values.csm.config.modules.observability.topology.enabled }}
           # image: Defines karavi-topology image. This shouldn't be changed
           # Allowed values: string
-          image: "dellemc/csm-topology:{{ include "csm-operator.powerflexVersion" (dict "lookup" "module-obsv-image" "version" .Values.csm.version) }}"
+          image: "dellemc/csm-topology:{{ include "csm-operator.powerflex" (dict "lookup" "module-obsv-image") }}"
+          # certificate: base64-encoded certificate for cert/private-key pair -- add cert here to use custom certificates
+          #  for self-signed certs, leave empty string
+          # Allowed values: string
+          certificate: "{{ .Values.csm.config.modules.observability.topology.certificate }}"
+          # privateKey: base64-encoded private key for cert/private-key pair -- add private key here to use custom certificates
+          #  for self-signed certs, leave empty string
+          # Allowed values: string
+          privateKey: "{{ .Values.csm.config.modules.observability.topology.privateKey }}"
           envs:
 {{ toYaml .Values.csm.config.modules.observability.topology.envs | indent 12 }}
 
@@ -141,6 +139,14 @@ spec:
           # image: Defines otel-collector image. This shouldn't be changed
           # Allowed values: string
           image: otel/opentelemetry-collector:0.42.0
+          # certificate: base64-encoded certificate for cert/private-key pair -- add cert here to use custom certificates
+          #  for self-signed certs, leave empty string
+          # Allowed values: string
+          certificate: "{{ .Values.csm.config.modules.observability.otelCollector.certificate }}"
+          # privateKey: base64-encoded private key for cert/private-key pair -- add private key here to use custom certificates
+          #  for self-signed certs, leave empty string
+          # Allowed values: string
+          privateKey: "{{ .Values.csm.config.modules.observability.otelCollector.privateKey }}"
           envs:
 {{ toYaml .Values.csm.config.modules.observability.otelCollector.envs | indent 12 }}
 
@@ -156,7 +162,7 @@ spec:
           # enabled: Enable/Disable PowerFlex metrics
           enabled: {{ .Values.csm.config.modules.observability.metricsPowerflex.enabled }}
           # image: Defines PowerFlex metrics image. This shouldn't be changed
-          image: "dellemc/csm-metrics-powerflex:{{ include "csm-operator.powerflexVersion" (dict "lookup" "module-metrics-image" "version" .Values.csm.version) }}"
+          image: "dellemc/csm-metrics-powerflex:{{ include "csm-operator.powerflex" (dict "lookup" "module-metrics-image") }}"
           envs:
 {{ toYaml .Values.csm.config.modules.observability.metricsPowerflex.envs | indent 12 }}
 
@@ -169,27 +175,22 @@ spec:
       #   false: disable replication feature(do not install dell-csi-replicator sidecar)
       # Default value: false
       enabled: {{ .Values.csm.config.modules.replication.enabled }}
-      configVersion: "{{ include "csm-operator.powerflexVersion" (dict "lookup" "module-repl-config" "version" .Values.csm.version) }}"
+      configVersion: "{{ include "csm-operator.powerflex" (dict "lookup" "module-repl-config") }}"
       components:
       - name: dell-csi-replicator
         # image: Image to use for dell-csi-replicator. This shouldn't be changed
         # Allowed values: string
         # Default value: None
-        image: "dellemc/dell-csi-replicator:{{ include "csm-operator.powerflexVersion" (dict "lookup" "module-repl-image-replicator" "version" .Values.csm.version) }}"
+        image: "dellemc/dell-csi-replicator:{{ include "csm-operator.powerflex" (dict "lookup" "module-repl-image-replicator") }}"
         envs:
 {{ toYaml .Values.csm.config.modules.replication.dellCsiReplicator.envs | indent 10 }}
 
       - name: dell-replication-controller-manager
         # image: Defines controller image. This shouldn't be changed
         # Allowed values: string
-        image: "dellemc/dell-replication-controller:{{ include "csm-operator.powerflexVersion" (dict "lookup" "module-repl-image-controller" "version" .Values.csm.version) }}"
+        image: "dellemc/dell-replication-controller:{{ include "csm-operator.powerflex" (dict "lookup" "module-repl-image-controller") }}"
         envs:
 {{ toYaml .Values.csm.config.modules.replication.dellReplicationControllerManager.envs | indent 10 }}
-
-      - name: dell-replication-controller-init
-        # image: Defines replication init container image. This shouldn't be changed
-        # Allowed values: string
-        image: "dellemc/dell-replication-init:{{ include "csm-operator.powerflexVersion" (dict "lookup" "module-repl-image-init" "version" .Values.csm.version) }}"
 
     - name: resiliency
       # enabled: Enable/Disable Resiliency feature
@@ -198,10 +199,10 @@ spec:
       #   false: disable Resiliency feature(do not deploy podmon sidecar)
       # Default value: false
       enabled: {{ .Values.csm.config.modules.resiliency.enabled }}
-      configVersion: "{{ include "csm-operator.powerflexVersion" (dict "lookup" "module-resiliency-config" "version" .Values.csm.version) }}"
+      configVersion: "{{ include "csm-operator.powerflex" (dict "lookup" "module-resiliency-config") }}"
       components:
         - name: podmon-controller
-          image: "dellemc/podmon:{{ include "csm-operator.powerflexVersion" (dict "lookup" "module-resiliency-image-podmon" "version" .Values.csm.version) }}"
+          image: "dellemc/podmon:{{ include "csm-operator.powerflex" (dict "lookup" "module-resiliency-image-podmon") }}"
           imagePullPolicy: IfNotPresent
           args:
 {{ toYaml .Values.csm.config.modules.resiliency.podmonController.args | indent 12 }}
@@ -210,7 +211,7 @@ spec:
             - "--mode=controller"
             - "--driver-config-params=/vxflexos-config-params/driver-config-params.yaml"
         - name: podmon-node
-          image: "dellemc/podmon:{{ include "csm-operator.powerflexVersion" (dict "lookup" "module-resiliency-image-podmon" "version" .Values.csm.version) }}"
+          image: "dellemc/podmon:{{ include "csm-operator.powerflex" (dict "lookup" "module-resiliency-image-podmon") }}"
           imagePullPolicy: IfNotPresent
           envs:
 {{ toYaml .Values.csm.config.modules.resiliency.podmonNode.envs | indent 12 }}

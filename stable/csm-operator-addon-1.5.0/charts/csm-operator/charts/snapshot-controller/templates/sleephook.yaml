@@ -10,11 +10,12 @@ metadata:
     "helm.sh/hook-weight": "2"
   labels:
     app: sleephook
+    spectrocloud.com/connection: proxy
 spec:
   restartPolicy: OnFailure
   containers:
   - name: sleephook
-    image: gcr.io/spectro-images-public/release/spectro-kubectl:1.26.3
+    image: gcr.io/spectro-images-public/release/spectro-kubectl:1.28.4
     args:
     - sleep
     - "{{- .Values.hooksleepTime }}"

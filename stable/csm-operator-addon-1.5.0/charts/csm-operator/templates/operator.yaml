@@ -161,6 +161,14 @@ rules:
   - update
   - watch
 - apiGroups:
+  - '*'
+  resourceNames:
+  - application-mobility-velero-server
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- apiGroups:
   - acme.cert-manager.io
   resources:
   - '*/*'
@@ -299,6 +307,18 @@ rules:
   - update
   - watch
 - apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
   - auditregistration.k8s.io
   resources:
   - auditsinks
@@ -369,8 +389,8 @@ rules:
   - certificaterequests/status
   - certificates/status
   verbs:
-  - update
   - patch
+  - update
 - apiGroups:
   - cert-manager.io
   resources:
@@ -447,6 +467,7 @@ rules:
   - delete
   - get
   - list
+  - patch
   - update
   - watch
 - apiGroups:
@@ -478,7 +499,16 @@ rules:
   - leases
   verbs:
   - get
+  - patch
   - update
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
 - apiGroups:
   - csi.storage.k8s.io
   resources:
@@ -495,6 +525,183 @@ rules:
   - get
   - list
   - watch
+- apiGroups:
+  - gateway.networking.k8s.io
+  resources:
+  - gateways
+  - httproutes
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - gateway.networking.k8s.io
+  resources:
+  - gateways/finalizers
+  - httproutes/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - gateway.networking.k8s.io
+  resources:
+  - httproutes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - update
+  - watch
+- apiGroups:
+  - mobility.storage.dell.com
+  resources:
+  - backups
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - mobility.storage.dell.com
+  resources:
+  - backups/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - mobility.storage.dell.com
+  resources:
+  - backups/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - mobility.storage.dell.com
+  resources:
+  - clusterconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - mobility.storage.dell.com
+  resources:
+  - clusterconfigs/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - mobility.storage.dell.com
+  resources:
+  - clusterconfigs/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - mobility.storage.dell.com
+  resources:
+  - podvolumebackups
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - mobility.storage.dell.com
+  resources:
+  - podvolumebackups/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - mobility.storage.dell.com
+  resources:
+  - podvolumebackups/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - mobility.storage.dell.com
+  resources:
+  - podvolumerestores
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - mobility.storage.dell.com
+  resources:
+  - podvolumerestores/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - mobility.storage.dell.com
+  resources:
+  - podvolumerestores/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - mobility.storage.dell.com
+  resources:
+  - restores
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - mobility.storage.dell.com
+  resources:
+  - restores/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - mobility.storage.dell.com
+  resources:
+  - restores/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - mobility.storage.dell.com
+  resources:
+  - schedules
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - mobility.storage.dell.com
+  resources:
+  - schedules/status
+  verbs:
+  - get
+  - patch
+  - update
 - apiGroups:
   - monitoring.coreos.com
   resources:
@@ -534,33 +741,6 @@ rules:
   - list
   - update
   - watch
-- apiGroups:
-  - gateway.networking.k8s.io
-  resources:
-  - gateways
-  - httproutes
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - gateway.networking.k8s.io
-  resources:
-  - gateways/finalizers
-  - httproutes/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - gateway.networking.k8s.io
-  resources:
-  - httproutes
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - delete
-  - update
 - apiGroups:
   - rbac.authorization.k8s.io
   resources:
@@ -688,6 +868,32 @@ rules:
 - apiGroups:
   - storage.dell.com
   resources:
+  - apexconnectivityclients
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - storage.dell.com
+  resources:
+  - apexconnectivityclients/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - storage.dell.com
+  resources:
+  - apexconnectivityclients/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - storage.dell.com
+  resources:
   - containerstoragemodules
   verbs:
   - create
@@ -775,6 +981,117 @@ rules:
   verbs:
   - patch
 - apiGroups:
+  - velero.io
+  resources:
+  - backuprepositories
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - velero.io
+  resources:
+  - backups
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - velero.io
+  resources:
+  - backups/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - velero.io
+  resources:
+  - backups/status
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+- apiGroups:
+  - velero.io
+  resources:
+  - backupstoragelocations
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - velero.io
+  resources:
+  - deletebackuprequests
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - watch
+- apiGroups:
+  - velero.io
+  resources:
+  - podvolumebackups
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - velero.io
+  resources:
+  - podvolumebackups/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - velero.io
+  resources:
+  - podvolumebackups/status
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+- apiGroups:
+  - velero.io
+  resources:
+  - podvolumerestores
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - velero.io
+  resources:
+  - restores
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
   - volumegroup.storage.dell.com
   resources:
   - dellcsivolumegroupsnapshots
@@ -785,6 +1102,8 @@ rules:
   - list
   - update
   - watch
+  - get
+  - patch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -836,6 +1155,31 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: dell-csm-operator-manager-role
+subjects:
+- kind: ServiceAccount
+  name: dell-csm-operator-manager-service-account
+  namespace: {{ .Values.namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: application-mobility-velero-server
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - '*'
+  verbs:
+  - '*'
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: application-mobility-velero-server-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: application-mobility-velero-server
 subjects:
 - kind: ServiceAccount
   name: dell-csm-operator-manager-service-account
@@ -905,6 +1249,8 @@ spec:
     metadata:
       labels:
         control-plane: controller-manager
+      annotations:
+        storage.dell.com/CSMVersion: v1.10.0
     spec:
       containers:
       - args:
@@ -929,7 +1275,7 @@ spec:
         resources:
           limits:
             cpu: 200m
-            memory: 256Mi
+            memory: 512Mi
           requests:
             cpu: 100m
             memory: 192Mi
