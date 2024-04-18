@@ -107,6 +107,34 @@ presets:
           bpf:
             masquerade: true
 
+  - name: "vmo-enable"
+    displayName: "Enable"
+    group: "VMO Compatibility"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          bpf:
+            hostLegacyRouting: true
+          cni:
+            exclusive: false
+          socketLB:
+            hostNamespaceOnly: true
+
+  - name: "vmo-disable"
+    displayName: "Disable"
+    group: "VMO Compatibility"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          bpf:
+            hostLegacyRouting: false
+          cni:
+            exclusive: true
+          socketLB:
+            hostNamespaceOnly: false
+
   - name: "lb-no-xdp"
     displayName: "No XDP acceleration"
     group: "Loadbalancer mode"
@@ -117,8 +145,18 @@ presets:
           loadBalancer:
             acceleration: disabled
 
+  - name: "lb-best-effort"
+    displayName: "Best Effort XDP LB acceleration"
+    group: "Loadbalancer mode"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          loadBalancer:
+            acceleration: best-effort
+
   - name: "lb-xdp"
-    displayName: "XDP LB acceleration (requires kube-proxy replacement)"
+    displayName: "Native XDP LB acceleration"
     group: "Loadbalancer mode"
     remove: []
     add: |
