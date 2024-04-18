@@ -114,8 +114,6 @@ presets:
     add: |
       charts:
         cilium:
-          bpf:
-            hostLegacyRouting: true
           cni:
             exclusive: false
           socketLB:
@@ -128,12 +126,21 @@ presets:
     add: |
       charts:
         cilium:
-          bpf:
-            hostLegacyRouting: false
           cni:
             exclusive: true
           socketLB:
             hostNamespaceOnly: false
+
+  - name: "vmo-br0"
+    displayName: "Host runs on br0 interface"
+    group: "VMO - Bridge interface"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          bpf:
+            hostLegacyRouting: true
+          devices: "br0"
 
   - name: "lb-no-xdp"
     displayName: "No XDP acceleration"
