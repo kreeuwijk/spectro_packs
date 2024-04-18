@@ -132,7 +132,7 @@ presets:
             hostNamespaceOnly: false
 
   - name: "vmo-br0"
-    displayName: "Host runs on br0 interface"
+    displayName: "Run Cilium on Bridge (br0)"
     group: "VMO - Bridge interface"
     remove: []
     add: |
