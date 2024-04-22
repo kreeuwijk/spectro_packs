@@ -19,7 +19,7 @@
   ],
   "displayName": "Portworx /w Operator",
   "charts": [
-    "charts/px-operator-1.2.2.tgz",
+    "charts/px-operator-1.2.3.tgz",
     "charts/portworx-generic-1.3.2.tgz"
   ],
   "layer": "csi",
@@ -30,7 +30,7 @@
       {
         "packName": "kubernetes",
         "layer": "k8s",
-        "maxVersion": "1.28.99",
+        "maxVersion": "1.29.99",
         "type": "optional"
       }
     ]

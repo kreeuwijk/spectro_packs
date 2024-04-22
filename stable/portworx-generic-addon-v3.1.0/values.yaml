@@ -31,7 +31,6 @@ pack:
       - image: quay.io/prometheus-operator/prometheus-operator:v0.70.0
       - image: quay.io/prometheus-operator/prometheus-config-reloader:v0.70.0
 
-
 # Upgrade procedure from v2.x of the pack:
 # * Ensure you select a different namespace than kube-system for the operator
 # * Ensure you select the kube-system namespace for the storagecluster
