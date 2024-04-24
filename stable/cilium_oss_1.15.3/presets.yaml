@@ -132,6 +132,18 @@ presets:
             hostNamespaceOnly: false
 
   - name: "vmo-br0"
+    displayName: "Autodetect Cilium interface"
+    group: "VMO - Bridge interface"
+    remove:
+    - "charts.cilium.devices"
+    add: |
+      charts:
+        cilium:
+          bpf:
+            hostLegacyRouting: false
+          # devices: ""
+
+  - name: "vmo-br0"
     displayName: "Run Cilium on Bridge (br0)"
     group: "VMO - Bridge interface"
     remove: []
