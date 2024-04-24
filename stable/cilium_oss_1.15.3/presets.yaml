@@ -131,7 +131,7 @@ presets:
           socketLB:
             hostNamespaceOnly: false
 
-  - name: "vmo-br0"
+  - name: "vmo-auto"
     displayName: "Autodetect Cilium interface"
     group: "VMO - Bridge interface"
     remove:
