@@ -183,3 +183,35 @@ presets:
         cilium:
           loadBalancer:
             acceleration: native
+
+  - name: "microk8s-enable"
+    displayName: "Enable MicroK8s"
+    group: "MicroK8s"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          cni:
+            confPath: /var/snap/microk8s/current/args/cni-network
+            binPath: /var/snap/microk8s/current/var/run/cilium
+          ipam:
+            operator:
+              clusterPoolIPv4PodCIDRList: ["10.1.0.0/16"]
+          nodePort:
+            enabled: true
+
+  - name: "microk8s-disable"
+    displayName: "Disable"
+    group: "MicroK8s"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          cni:
+            confPath: /etc/cni/net.d
+            binPath:  /opt/cni/bin
+          ipam:
+            operator:
+              clusterPoolIPv4PodCIDRList: ["10.0.0.0/8"]
+          nodePort:
+            enabled: false
