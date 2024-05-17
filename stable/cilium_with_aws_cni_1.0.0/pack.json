@@ -1,0 +1,16 @@
+{
+  "annotations": {
+    "source": "spectrocloud"
+  },
+  "cloudTypes": [
+    "aws"
+  ],
+  "displayName": "Cilium with AWS CNI",
+  "charts": [
+    "charts/cilium-1.15.3.tgz",
+    "charts/aws-vpc-cni-1.1.17.tgz"
+  ],
+  "layer": "cni",
+  "name": "cni-cilium-with-aws",
+  "version": "1.0.0"
+}
