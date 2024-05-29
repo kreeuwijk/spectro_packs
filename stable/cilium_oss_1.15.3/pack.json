@@ -4,6 +4,8 @@
   },
   "cloudTypes": [
     "aws",
+    "gcp",
+    "gke",
     "vsphere",
     "maas",
     "openstack",
