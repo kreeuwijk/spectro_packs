@@ -1,23 +1,14 @@
 pack:
   content:
-    images:
-      - image: quay.io/csiaddons/k8s-sidecar:v0.5.0
-      - image: quay.io/cephcsi/cephcsi:v3.8.0
-      - image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.7.0
-      - image: registry.k8s.io/sig-storage/csi-resizer:v1.7.0
-      - image: registry.k8s.io/sig-storage/csi-provisioner:v3.4.0
-      - image: registry.k8s.io/sig-storage/csi-snapshotter:v6.2.1
-      - image: registry.k8s.io/sig-storage/csi-attacher:v4.1.0
-      - image: rook/ceph:v1.11.9
-      - image: quay.io/ceph/ceph:v17.2.6
+    images: []
 
   charts:
     - repo: https://charts.rook.io/release
       name: rook-release/rook-ceph
-      version: 1.11.9
+      version: 1.14.9
     - repo: https://charts.rook.io/release
       name: rook-release/rook-ceph-cluster
-      version: 1.11.9
+      version: 1.14.9
 
   namespace: rook-ceph
   namespaceLabels:
@@ -26,13 +17,12 @@ pack:
 charts:
   rook-ceph:
     # Default values for rook-ceph-operator
-
     image:
       # -- Image
       repository: rook/ceph
       # -- Image tag
       # @default -- `master`
-      tag: v1.11.9
+      tag: v1.14.9
       # -- Image pull policy
       pullPolicy: IfNotPresent
 
@@ -48,10 +38,9 @@ charts:
     # -- Pod resource requests & limits
     resources:
       limits:
-        cpu: 500m
         memory: 512Mi
       requests:
-        cpu: 100m
+        cpu: 200m
         memory: 128Mi
 
     # -- Kubernetes [`nodeSelector`](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector) to add to the Deployment.
@@ -80,12 +69,23 @@ charts:
     # -- If true, create & use RBAC resources
     rbacEnable: true
 
+    rbacAggregate:
+      # -- If true, create a ClusterRole aggregated to [user facing roles](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) for objectbucketclaims
+      enableOBCs: false
+
     # -- If true, create & use PSP resources
     pspEnable: false
 
     # -- Set the priority class for the rook operator deployment if desired
     priorityClassName:
 
+    # -- Set the container security context for the operator
+    containerSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 2016
+      runAsGroup: 2016
+      capabilities:
+        drop: ["ALL"]
     # -- If true, loop devices are allowed to be used for osds in test clusters
     allowLoopDevices: false
 
@@ -96,12 +96,17 @@ charts:
       enableRbdDriver: true
       # -- Enable Ceph CSI CephFS driver
       enableCephfsDriver: true
-      # -- Enable Ceph CSI GRPC Metrics
-      enableGrpcMetrics: false
+      # -- Disable the CSI driver.
+      disableCsiDriver: "false"
+
       # -- Enable host networking for CSI CephFS and RBD nodeplugins. This may be necessary
       # in some network configurations where the SDN does not provide access to an external cluster or
       # there is significant drop in read/write performance
       enableCSIHostNetwork: true
+      # -- Deprecation note: Rook uses "holder" pods to allow CSI to connect to the multus public network
+      # without needing hosts to the network. Holder pods are being removed. See issue for details:
+      # https://github.com/rook/rook/issues/13055. New Rook deployments should set this to "true".
+      disableHolderPods: true
       # -- Enable Snapshotter in CephFS provisioner pod
       enableCephfsSnapshotter: true
       # -- Enable Snapshotter in NFS provisioner pod
@@ -113,6 +118,9 @@ charts:
       # -- Enable Ceph CSI PVC encryption support
       enableCSIEncryption: false
 
+      # -- Enable volume group snapshot feature. This feature is
+      # enabled by default as long as the necessary CRDs are available in the cluster.
+      enableVolumeGroupSnapshot: true
       # -- PriorityClassName to be set on csi driver plugin pods
       pluginPriorityClassName: system-node-critical
 
@@ -163,6 +171,10 @@ charts:
       # @default -- `0`
       sidecarLogLevel:
 
+      # -- CSI driver name prefix for cephfs, rbd and nfs.
+      # @default -- `namespace name where rook-ceph operator is deployed`
+      csiDriverNamePrefix:
+
       # -- CSI RBD plugin daemonset update strategy, supported values are OnDelete and RollingUpdate
       # @default -- `RollingUpdate`
       rbdPluginUpdateStrategy:
@@ -175,6 +187,10 @@ charts:
       # @default -- `RollingUpdate`
       cephFSPluginUpdateStrategy:
 
+      # -- A maxUnavailable parameter of CSI cephFS plugin daemonset update strategy.
+      # @default -- `1`
+      cephFSPluginUpdateStrategyMaxUnavailable:
+
       # -- CSI NFS plugin daemonset update strategy, supported values are OnDelete and RollingUpdate
       # @default -- `RollingUpdate`
       nfsPluginUpdateStrategy:
@@ -184,6 +200,12 @@ charts:
 
       # -- Allow starting an unsupported ceph-csi image
       allowUnsupportedVersion: false
+
+      # -- Burst to use while communicating with the kubernetes apiserver.
+      kubeApiBurst:
+
+      # -- QPS to use while communicating with the kubernetes apiserver.
+      kubeApiQPS:
 
       # -- The volume of the CephCSI RBD plugin DaemonSet
       csiRBDPluginVolume:
@@ -226,7 +248,6 @@ charts:
               cpu: 100m
             limits:
               memory: 256Mi
-              cpu: 200m
         - name : csi-resizer
           resource:
             requests:
@@ -234,7 +255,6 @@ charts:
               cpu: 100m
             limits:
               memory: 256Mi
-              cpu: 200m
         - name : csi-attacher
           resource:
             requests:
@@ -242,7 +262,6 @@ charts:
               cpu: 100m
             limits:
               memory: 256Mi
-              cpu: 200m
         - name : csi-snapshotter
           resource:
             requests:
@@ -250,15 +269,12 @@ charts:
               cpu: 100m
             limits:
               memory: 256Mi
-              cpu: 200m
         - name : csi-rbdplugin
           resource:
             requests:
               memory: 512Mi
-              cpu: 250m
             limits:
               memory: 1Gi
-              cpu: 500m
         - name : csi-omap-generator
           resource:
             requests:
@@ -266,7 +282,6 @@ charts:
               cpu: 250m
             limits:
               memory: 1Gi
-              cpu: 500m
         - name : liveness-prometheus
           resource:
             requests:
@@ -274,7 +289,6 @@ charts:
               cpu: 50m
             limits:
               memory: 256Mi
-              cpu: 100m
 
       # -- CEPH CSI RBD plugin resource requirement list
       # @default -- see values.yaml
@@ -286,7 +300,6 @@ charts:
               cpu: 50m
             limits:
               memory: 256Mi
-              cpu: 100m
         - name : csi-rbdplugin
           resource:
             requests:
@@ -294,7 +307,6 @@ charts:
               cpu: 250m
             limits:
               memory: 1Gi
-              cpu: 500m
         - name : liveness-prometheus
           resource:
             requests:
@@ -302,7 +314,6 @@ charts:
               cpu: 50m
             limits:
               memory: 256Mi
-              cpu: 100m
 
       # -- CEPH CSI CephFS provisioner resource requirement list
       # @default -- see values.yaml
@@ -314,7 +325,6 @@ charts:
               cpu: 100m
             limits:
               memory: 256Mi
-              cpu: 200m
         - name : csi-resizer
           resource:
             requests:
@@ -322,7 +332,6 @@ charts:
               cpu: 100m
             limits:
               memory: 256Mi
-              cpu: 200m
         - name : csi-attacher
           resource:
             requests:
@@ -330,7 +339,6 @@ charts:
               cpu: 100m
             limits:
               memory: 256Mi
-              cpu: 200m
         - name : csi-snapshotter
           resource:
             requests:
@@ -338,7 +346,6 @@ charts:
               cpu: 100m
             limits:
               memory: 256Mi
-              cpu: 200m
         - name : csi-cephfsplugin
           resource:
             requests:
@@ -346,7 +353,6 @@ charts:
               cpu: 250m
             limits:
               memory: 1Gi
-              cpu: 500m
         - name : liveness-prometheus
           resource:
             requests:
@@ -354,7 +360,6 @@ charts:
               cpu: 50m
             limits:
               memory: 256Mi
-              cpu: 100m
 
       # -- CEPH CSI CephFS plugin resource requirement list
       # @default -- see values.yaml
@@ -366,7 +371,6 @@ charts:
               cpu: 50m
             limits:
               memory: 256Mi
-              cpu: 100m
         - name : csi-cephfsplugin
           resource:
             requests:
@@ -374,7 +378,6 @@ charts:
               cpu: 250m
             limits:
               memory: 1Gi
-              cpu: 500m
         - name : liveness-prometheus
           resource:
             requests:
@@ -382,7 +385,6 @@ charts:
               cpu: 50m
             limits:
               memory: 256Mi
-              cpu: 100m
 
       # -- CEPH CSI NFS provisioner resource requirement list
       # @default -- see values.yaml
@@ -394,7 +396,6 @@ charts:
               cpu: 100m
             limits:
               memory: 256Mi
-              cpu: 200m
         - name : csi-nfsplugin
           resource:
             requests:
@@ -402,7 +403,6 @@ charts:
               cpu: 250m
             limits:
               memory: 1Gi
-              cpu: 500m
         - name : csi-attacher
           resource:
             requests:
@@ -410,7 +410,6 @@ charts:
               cpu: 250m
             limits:
               memory: 1Gi
-              cpu: 500m
 
       # -- CEPH CSI NFS plugin resource requirement list
       # @default -- see values.yaml
@@ -422,7 +421,6 @@ charts:
               cpu: 50m
             limits:
               memory: 256Mi
-              cpu: 100m
         - name : csi-nfsplugin
           resource:
             requests:
@@ -430,7 +428,6 @@ charts:
               cpu: 250m
             limits:
               memory: 1Gi
-              cpu: 500m
 
       # Set provisionerTolerations and provisionerNodeAffinity for provisioner pod.
       # The CSI provisioner would be best to start on the same nodes as other ceph daemons.
@@ -458,17 +455,9 @@ charts:
       # -- Enable Ceph CSI Liveness sidecar deployment
       enableLiveness: false
 
-      # -- CSI CephFS driver GRPC metrics port
-      # @default -- `9091`
-      cephfsGrpcMetricsPort:
-
       # -- CSI CephFS driver metrics port
       # @default -- `9081`
       cephfsLivenessMetricsPort:
-
-      # -- Ceph CSI RBD driver GRPC metrics port
-      # @default -- `9090`
-      rbdGrpcMetricsPort:
 
       # -- CSI Addons server port
       # @default -- `9070`
@@ -487,41 +476,63 @@ charts:
         # -- Enable ServiceMonitor for Ceph CSI drivers
         enabled: false
         # -- Service monitor scrape interval
-        interval: 5s
+        interval: 10s
+        # -- ServiceMonitor additional labels
+        labels: {}
+        # -- Use a different namespace for the ServiceMonitor
+        namespace:
 
       # -- Kubelet root directory path (if the Kubelet uses a different path for the `--root-dir` flag)
       # @default -- `/var/lib/kubelet`
       kubeletDirPath:
 
+      # -- Duration in seconds that non-leader candidates will wait to force acquire leadership.
+      # @default -- `137s`
+      csiLeaderElectionLeaseDuration:
+
+      # -- Deadline in seconds that the acting leader will retry refreshing leadership before giving up.
+      # @default -- `107s`
+      csiLeaderElectionRenewDeadline:
+
+      # -- Retry period in seconds the LeaderElector clients should wait between tries of actions.
+      # @default -- `26s`
+      csiLeaderElectionRetryPeriod:
+
       cephcsi:
-        # -- Ceph CSI image
-        # @default -- `quay.io/cephcsi/cephcsi:v3.8.0`
-        image:
+        # -- Ceph CSI image repository
+        repository: quay.io/cephcsi/cephcsi
+        # -- Ceph CSI image tag
+        tag: v3.11.0
 
       registrar:
-        # -- Kubernetes CSI registrar image
-        # @default -- `registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.7.0`
-        image:
+        # -- Kubernetes CSI registrar image repository
+        repository: registry.k8s.io/sig-storage/csi-node-driver-registrar
+        # -- Registrar image tag
+        tag: v2.10.1
 
       provisioner:
-        # -- Kubernetes CSI provisioner image
-        # @default -- `registry.k8s.io/sig-storage/csi-provisioner:v3.4.0`
-        image:
+        # -- Kubernetes CSI provisioner image repository
+        repository: registry.k8s.io/sig-storage/csi-provisioner
+        # -- Provisioner image tag
+        tag: v4.0.1
 
       snapshotter:
-        # -- Kubernetes CSI snapshotter image
-        # @default -- `registry.k8s.io/sig-storage/csi-snapshotter:v6.2.1`
-        image:
+        # -- Kubernetes CSI snapshotter image repository
+        repository: registry.k8s.io/sig-storage/csi-snapshotter
+        # -- Snapshotter image tag
+        tag: v7.0.2
 
       attacher:
-        # -- Kubernetes CSI Attacher image
-        # @default -- `registry.k8s.io/sig-storage/csi-attacher:v4.1.0`
-        image:
+        # -- Kubernetes CSI Attacher image repository
+        repository: registry.k8s.io/sig-storage/csi-attacher
+        # -- Attacher image tag
+        tag: v4.5.1
 
       resizer:
-        # -- Kubernetes CSI resizer image
-        # @default -- `registry.k8s.io/sig-storage/csi-resizer:v1.7.0`
-        image:
+        # -- Kubernetes CSI resizer image repository
+        repository: registry.k8s.io/sig-storage/csi-resizer
+        # -- Resizer image tag
+        tag: v1.10.1
 
       # -- Image pull policy
       imagePullPolicy: IfNotPresent
@@ -538,8 +549,10 @@ charts:
       csiAddons:
         # -- Enable CSIAddons
         enabled: false
-        # -- CSIAddons Sidecar image
-        image: "quay.io/csiaddons/k8s-sidecar:v0.5.0"
+        # -- CSIAddons sidecar image repository
+        repository: quay.io/csiaddons/k8s-sidecar
+        # -- CSIAddons sidecar image tag
+        tag: v0.8.0
 
       nfs:
         # -- Enable the nfs csi driver
@@ -556,17 +569,6 @@ charts:
         # - kubernetes.io/hostname
         # - topology.kubernetes.io/zone
         # - topology.rook.io/rack
-
-      readAffinity:
-        # -- Enable read affinity for RBD volumes. Recommended to
-        # set to true if running kernel 5.8 or newer.
-        # @default -- `false`
-        enabled: false
-        # -- Define which node labels to use
-        # as CRUSH location. This should correspond to the values set
-        # in the CRUSH map.
-        # @default -- labels listed [here](../CRDs/Cluster/ceph-cluster-crd.md#osd-topology)
-        crushLocationLabels:
 
       # -- Whether to skip any attach operation altogether for CephFS PVCs. See more details
       # [here](https://kubernetes-csi.github.io/docs/skip-attach.html#skip-attach-with-csi-driver-object).
@@ -591,6 +593,8 @@ charts:
 
     # -- Enable discovery daemon
     enableDiscoveryDaemon: false
+    # -- Set the discovery daemon device discovery interval (default to 60m)
+    discoveryDaemonInterval: 60m
 
     # -- The timeout for ceph commands in seconds
     cephCommandsTimeoutSeconds: "15"
@@ -621,20 +625,25 @@ charts:
       #     operator: Exists
       #     effect: NoSchedule
       # -- The node labels for affinity of `discover-agent` [^1]
-      nodeAffinity: # key1=value1,value2; key2=value3
+      nodeAffinity:
+      #   key1=value1,value2; key2=value3
+      #
+      #   or
+      #
+      #   requiredDuringSchedulingIgnoredDuringExecution:
+      #     nodeSelectorTerms:
+      #       - matchExpressions:
+      #           - key: storage-node
+      #             operator: Exists
       # -- Labels to add to the discover pods
       podLabels: # "key1=value1,key2=value2"
       # -- Add resources to discover daemon pods
       resources:
       #   - limits:
-      #       cpu: 500m
       #       memory: 512Mi
       #   - requests:
       #       cpu: 100m
       #       memory: 128Mi
-
-    # -- Whether to disable the admission controller
-    disableAdmissionController: true
 
     # -- Runs Ceph Pods as privileged to be able to write to `hostPaths` in OpenShift with SELinux restrictions.
     hostpathRequiresPrivileged: false
@@ -652,23 +661,19 @@ charts:
     # -- Whether the OBC provisioner should watch on the operator namespace or not, if not the namespace of the cluster will be used
     enableOBCWatchOperatorNamespace: true
 
-    # -- Set tolerations and nodeAffinity [^1] for admission controller pod.
-    # The admission controller would be best to start on the same nodes as other ceph daemons.
-    admissionController:
-      # tolerations:
-      #    - key: key
-      #      operator: Exists
-      #      effect: NoSchedule
-      # nodeAffinity: key1=value1,value2; key2=value3
-
-    # [^1]: `nodeAffinity` and `*NodeAffinity` options should have the format `"role=storage,rook; storage=ceph"` or `storage=;role=rook-example` or `storage=;` (_checks only for presence of key_)
+    # -- Specify the prefix for the OBC provisioner in place of the cluster namespace
+    # @default -- `ceph cluster namespace`
+    obcProvisionerNamePrefix:
 
     monitoring:
       # -- Enable monitoring. Requires Prometheus to be pre-installed.
       # Enabling will also create RBAC rules to allow Operator to create ServiceMonitors
       enabled: false
+
   rook-ceph-cluster:
     # Default values for a single rook-ceph cluster
+    # This is a YAML-formatted file.
+    # Declare variables to be passed into your templates.
 
     # -- Namespace of the main rook operator
     operatorNamespace: rook-ceph
@@ -684,24 +689,30 @@ charts:
     configOverride: |
       [global]
       osd_max_backfills = 10
-    # mon_allow_pool_delete = true
-    # osd_pool_default_size = 3
-    # osd_pool_default_min_size = 2
+    #  mon_allow_pool_delete = true
+    #  osd_pool_default_size = 3
+    #  osd_pool_default_min_size = 2
 
     # Installs a debugging toolbox deployment
     toolbox:
       # -- Enable Ceph debugging pod deployment. See [toolbox](../Troubleshooting/ceph-toolbox.md)
       enabled: true
       # -- Toolbox image, defaults to the image used by the Ceph cluster
-      image: #quay.io/ceph/ceph:v17.2.6
+      image: #quay.io/ceph/ceph:v18.2.4
       # -- Toolbox tolerations
       tolerations: []
       # -- Toolbox affinity
       affinity: {}
+      # -- Toolbox container security context
+      containerSecurityContext:
+        runAsNonRoot: true
+        runAsUser: 2016
+        runAsGroup: 2016
+        capabilities:
+          drop: ["ALL"]
       # -- Toolbox resources
       resources:
         limits:
-          cpu: "500m"
           memory: "1Gi"
         requests:
           cpu: "100m"
@@ -722,6 +733,8 @@ charts:
       # Monitoring settings for external clusters:
       # externalMgrEndpoints: <list of endpoints>
       # externalMgrPrometheusPort: <port>
+      # Scrape interval for prometheus
+      # interval: 10s
       # allow adding custom labels and annotations to the prometheus rule
       prometheusRule:
         # -- Labels applied to PrometheusRule
@@ -749,14 +762,14 @@ charts:
       # For more details, check https://rook.io/docs/rook/v1.10/CRDs/Cluster/ceph-cluster-crd/
       cephVersion:
         # The container image used to launch the Ceph daemon pods (mon, mgr, osd, mds, rgw).
-        # v16 is Pacific, v17 is Quincy.
-        # RECOMMENDATION: In production, use a specific version tag instead of the general v16 flag, which pulls the latest release and could result in different
+        # v17 is Quincy, v18 is Reef.
+        # RECOMMENDATION: In production, use a specific version tag instead of the general v18 flag, which pulls the latest release and could result in different
         # versions running within the cluster. See tags available at https://hub.docker.com/r/ceph/ceph/tags/.
-        # If you want to be more precise, you can always use a timestamp tag such quay.io/ceph/ceph:v15.2.11-20200419
+        # If you want to be more precise, you can always use a timestamp tag such as quay.io/ceph/ceph:v18.2.4-20240724
         # This tag might not contain a new Ceph version, just security fixes from the underlying operating system, which will reduce vulnerabilities
-        image: quay.io/ceph/ceph:v17.2.6
-        # Whether to allow unsupported versions of Ceph. Currently `pacific` and `quincy` are supported.
-        # Future versions such as `reef` (v18) would require this to be set to `true`.
+        image: quay.io/ceph/ceph:v18.2.4
+        # Whether to allow unsupported versions of Ceph. Currently `quincy`, and `reef` are supported.
+        # Future versions such as `squid` (v19) would require this to be set to `true`.
         # Do not set to true in production.
         allowUnsupported: false
 
@@ -781,6 +794,11 @@ charts:
       # The default wait timeout is 10 minutes.
       waitTimeoutForHealthyOSDInMinutes: 10
 
+      # Whether or not requires PGs are clean before an OSD upgrade. If set to `true` OSD upgrade process won't start until PGs are healthy.
+      # This configuration will be ignored if `skipUpgradeChecks` is `true`.
+      # Default is false.
+      upgradeOSDRequiresHealthyPGs: false
+
       mon:
         # Set the number of mons to be started. Generally recommended to be 3.
         # For highest availability, an odd number of mons should be specified.
@@ -796,23 +814,23 @@ charts:
         count: 2
         allowMultiplePerNode: false
         modules:
-          # Several modules should not need to be included in this list. The "dashboard" and "monitoring" modules
-          # are already enabled by other settings in the cluster CR.
-          - name: pg_autoscaler
-            enabled: true
+          # List of modules to optionally enable or disable.
+          # Note the "dashboard" and "monitoring" modules are already configured by other settings in the cluster CR.
+          # - name: rook
+          #   enabled: true
 
       # enable the ceph dashboard for viewing cluster status
       dashboard:
         enabled: true
         # serve the dashboard under a subpath (useful when you are accessing the dashboard via a reverse proxy)
-        urlPrefix: /ceph-dashboard
+        # urlPrefix: /ceph-dashboard
         # serve the dashboard at the given port.
         # port: 8443
         # Serve the dashboard using SSL (if using ingress to expose the dashboard and `ssl: true` you need to set
         # the corresponding "backend protocol" annotation(s) for your ingress controller of choice)
         ssl: true
 
-      # Network configuration, see: https://github.com/rook/rook/blob/master/Documentation/CRDs/ceph-cluster-crd.md#network-configuration-settings
+      # Network configuration, see: https://github.com/rook/rook/blob/master/Documentation/CRDs/Cluster/ceph-cluster-crd.md#network-configuration-settings
       network:
         connections:
           # Whether to encrypt the data in transit across the wire to prevent eavesdropping the data on the network.
@@ -863,7 +881,7 @@ charts:
         periodicity: daily # one of: hourly, daily, weekly, monthly
         maxLogSize: 500M # SUFFIX may be 'M' or 'G'. Must be at least 1M.
 
-      # automate [data cleanup process](https://github.com/rook/rook/blob/master/Documentation/ceph-teardown.md#delete-the-data-on-hosts) in cluster destruction.
+      # automate [data cleanup process](https://github.com/rook/rook/blob/master/Documentation/Storage-Configuration/ceph-teardown.md#delete-the-data-on-hosts) in cluster destruction.
       cleanupPolicy:
         # Since cluster cleanup is destructive to data, confirmation is required.
         # To destroy all Rook data on hosts during uninstall, confirmation must be set to "yes-really-destroy-data".
@@ -925,6 +943,7 @@ charts:
       #   prepareosd:
       #   # If no mgr annotations are set, prometheus scrape annotations will be set by default.
       #   mgr:
+      #   dashboard:
 
       # labels:
       #   all:
@@ -936,25 +955,23 @@ charts:
       #   # monitoring is a list of key-value pairs. It is injected into all the monitoring resources created by operator.
       #   # These labels can be passed as LabelSelector to Prometheus
       #   monitoring:
+      #   dashboard:
 
       resources:
         mgr:
           limits:
-            cpu: "1000m"
             memory: "1Gi"
           requests:
             cpu: "500m"
             memory: "512Mi"
         mon:
           limits:
-            cpu: "2000m"
             memory: "2Gi"
           requests:
             cpu: "1000m"
             memory: "1Gi"
         osd:
           limits:
-            cpu: "2000m"
             memory: "4Gi"
           requests:
             cpu: "1000m"
@@ -973,35 +990,30 @@ charts:
             memory: "50Mi"
         mgr-sidecar:
           limits:
-            cpu: "500m"
             memory: "100Mi"
           requests:
             cpu: "100m"
             memory: "40Mi"
         crashcollector:
           limits:
-            cpu: "500m"
             memory: "60Mi"
           requests:
             cpu: "100m"
             memory: "60Mi"
         logcollector:
           limits:
-            cpu: "500m"
             memory: "1Gi"
           requests:
             cpu: "100m"
             memory: "100Mi"
         cleanup:
           limits:
-            cpu: "500m"
             memory: "1Gi"
           requests:
             cpu: "500m"
             memory: "100Mi"
         exporter:
           limits:
-            cpu: "250m"
             memory: "128Mi"
           requests:
             cpu: "50m"
@@ -1024,7 +1036,6 @@ charts:
         #   crushRoot: "custom-root" # specify a non-default root label for the CRUSH map
         #   metadataDevice: "md0" # specify a non-rotational storage so ceph-volume will use it as block db device of bluestore.
         #   databaseSizeMB: "1024" # uncomment if the disks are smaller than 100 GB
-        #   journalSizeMB: "1024"  # uncomment if the disks are 20 GB or smaller
         #   osdsPerDevice: "1" # this value can be overridden at the node or device level
         #   encryptedDevice: "true" # the default value for this option is "false"
         # # Individual nodes and their config can be specified as well, but 'useAllNodes' above must be set to false. Then, only the named
@@ -1109,11 +1120,13 @@ charts:
           replicated:
             size: 3
           # Enables collecting RBD per-image IO statistics by enabling dynamic OSD performance counters. Defaults to false.
-          # For reference: https://docs.ceph.com/docs/master/mgr/prometheus/#rbd-io-statistics
+          # For reference: https://docs.ceph.com/docs/latest/mgr/prometheus/#rbd-io-statistics
           # enableRBDStats: true
         storageClass:
           enabled: true
           name: ceph-block
+          annotations: {}
+          labels: {}
           isDefault: false
           reclaimPolicy: Delete
           allowVolumeExpansion: true
@@ -1125,20 +1138,20 @@ charts:
           #            - key: rook-ceph-role
           #              values:
           #                - storage-node
-          # see https://github.com/rook/rook/blob/master/Documentation/ceph-block.md#provision-storage for available configuration
+          # see https://github.com/rook/rook/blob/master/Documentation/Storage-Configuration/Block-Storage-RBD/block-storage.md#provision-storage for available configuration
           parameters:
             # (optional) mapOptions is a comma-separated list of map options.
             # For krbd options refer
-            # https://docs.ceph.com/docs/master/man/8/rbd/#kernel-rbd-krbd-options
+            # https://docs.ceph.com/docs/latest/man/8/rbd/#kernel-rbd-krbd-options
             # For nbd options refer
-            # https://docs.ceph.com/docs/master/man/8/rbd-nbd/#options
+            # https://docs.ceph.com/docs/latest/man/8/rbd-nbd/#options
             # mapOptions: lock_on_read,queue_depth=1024
 
             # (optional) unmapOptions is a comma-separated list of unmap options.
             # For krbd options refer
-            # https://docs.ceph.com/docs/master/man/8/rbd/#kernel-rbd-krbd-options
+            # https://docs.ceph.com/docs/latest/man/8/rbd/#kernel-rbd-krbd-options
             # For nbd options refer
-            # https://docs.ceph.com/docs/master/man/8/rbd-nbd/#options
+            # https://docs.ceph.com/docs/latest/man/8/rbd-nbd/#options
             # unmapOptions: force
 
             # RBD image format. Defaults to "2".
@@ -1182,7 +1195,6 @@ charts:
             activeStandby: true
             resources:
               limits:
-                cpu: "2000m"
                 memory: "4Gi"
               requests:
                 cpu: "1000m"
@@ -1197,8 +1209,10 @@ charts:
           reclaimPolicy: Delete
           allowVolumeExpansion: true
           volumeBindingMode: "Immediate"
+          annotations: {}
+          labels: {}
           mountOptions: []
-          # see https://github.com/rook/rook/blob/master/Documentation/ceph-filesystem.md#provision-storage for available configuration
+          # see https://github.com/rook/rook/blob/master/Documentation/Storage-Configuration/Shared-Filesystem-CephFS/filesystem-storage.md#provision-storage for available configuration
           parameters:
             # The secrets contain Ceph admin credentials.
             csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
@@ -1256,7 +1270,6 @@ charts:
             port: 80
             resources:
               limits:
-                cpu: "2000m"
                 memory: "2Gi"
               requests:
                 cpu: "1000m"
@@ -1270,7 +1283,9 @@ charts:
           name: ceph-bucket
           reclaimPolicy: Delete
           volumeBindingMode: "Immediate"
-          # see https://github.com/rook/rook/blob/master/Documentation/ceph-object-bucket-claim.md#storageclass for available configuration
+          annotations: {}
+          labels: {}
+          # see https://github.com/rook/rook/blob/master/Documentation/Storage-Configuration/Object-Storage-RGW/ceph-object-bucket-claim.md#storageclass for available configuration
           parameters:
             # note: objectStoreNamespace and objectStoreName are configured by the chart
             region: us-east-1
@@ -1286,65 +1301,60 @@ charts:
           #     - objectstore.example.com
           #   secretName: ceph-objectstore-tls
           # ingressClassName: nginx
-
-    # cephECBlockPools are disabled by default, please remove the comments and set desired values to enable it
+    ## cephECBlockPools are disabled by default, please remove the comments and set desired values to enable it
+    ## For erasure coded a replicated metadata pool is required.
+    ## https://rook.io/docs/rook/latest/CRDs/Shared-Filesystem/ceph-filesystem-crd/#erasure-coded
     #cephECBlockPools:
-    #  # For erasure coded a replicated metadata pool is required.
-    #  # https://rook.io/docs/rook/latest/CRDs/Shared-Filesystem/ceph-filesystem-crd/#erasure-coded
-    #  - name: ec-metadata-pool
-    #    # see https://github.com/rook/rook/blob/master/Documentation/CRDs/Block-Storage/ceph-block-pool-crd.md#spec for available configuration
+    #  - name: ec-pool
     #    spec:
-    #      replicated:
-    #        size: 2
-    #  - name: ec-data-pool
-    #    spec:
-    #      failureDomain: osd
-    #      erasureCoded:
-    #        dataChunks: 2
-    #        codingChunks: 1
-    #      deviceClass: hdd
+    #      metadataPool:
+    #        replicated:
+    #          size: 2
+    #      dataPool:
+    #        failureDomain: osd
+    #        erasureCoded:
+    #          dataChunks: 2
+    #          codingChunks: 1
+    #        deviceClass: hdd
+    #
+    #    parameters:
+    #      # clusterID is the namespace where the rook cluster is running
+    #      # If you change this namespace, also change the namespace below where the secret namespaces are defined
+    #      clusterID: rook-ceph # namespace:cluster
+    #      # (optional) mapOptions is a comma-separated list of map options.
+    #      # For krbd options refer
+    #      # https://docs.ceph.com/docs/latest/man/8/rbd/#kernel-rbd-krbd-options
+    #      # For nbd options refer
+    #      # https://docs.ceph.com/docs/latest/man/8/rbd-nbd/#options
+    #      # mapOptions: lock_on_read,queue_depth=1024
+    #
+    #      # (optional) unmapOptions is a comma-separated list of unmap options.
+    #      # For krbd options refer
+    #      # https://docs.ceph.com/docs/latest/man/8/rbd/#kernel-rbd-krbd-options
+    #      # For nbd options refer
+    #      # https://docs.ceph.com/docs/latest/man/8/rbd-nbd/#options
+    #      # unmapOptions: force
+    #
+    #      # RBD image format. Defaults to "2".
+    #      imageFormat: "2"
+    #
+    #      # RBD image features, equivalent to OR'd bitfield value: 63
+    #      # Available for imageFormat: "2". Older releases of CSI RBD
+    #      # support only the `layering` feature. The Linux kernel (KRBD) supports the
+    #      # full feature complement as of 5.4
+    #      # imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
+    #      imageFeatures: layering
+    #
+    #    storageClass:
+    #      provisioner: rook-ceph.rbd.csi.ceph.com # csi-provisioner-name
+    #      enabled: true
+    #      name: rook-ceph-block
+    #      isDefault: false
+    #      annotations: { }
+    #      labels: { }
+    #      allowVolumeExpansion: true
+    #      reclaimPolicy: Delete
 
-    # cephECStorageClass also is disabled by default, please remove the comments and set desired values to enable it
-    # if cephECBlockPools are uncommented you must remove the comments of cephEcStorageClass as well
-    #cephECStorageClass:
-    #  name: rook-ceph-block
-    #  # Change "rook-ceph" provisioner prefix to match the operator namespace if needed
-    #  provisioner: rook-ceph.rbd.csi.ceph.com # driver:namespace:operator
-    #  parameters:
-    #    # clusterID is the namespace where the rook cluster is running
-    #    # If you change this namespace, also change the namespace below where the secret namespaces are defined
-    #    clusterID: rook-ceph # namespace:cluster
-    #
-    #    # If you want to use erasure coded pool with RBD, you need to create
-    #    # two pools. one erasure coded and one replicated.
-    #    # You need to specify the replicated pool here in the `pool` parameter, it is
-    #    # used for the metadata of the images.
-    #    # The erasure coded pool must be set as the `dataPool` parameter below.
-    #    dataPool: ec-data-pool
-    #    pool: ec-metadata-pool
-    #
-    #    # (optional) mapOptions is a comma-separated list of map options.
-    #    # For krbd options refer
-    #    # https://docs.ceph.com/docs/master/man/8/rbd/#kernel-rbd-krbd-options
-    #    # For nbd options refer
-    #    # https://docs.ceph.com/docs/master/man/8/rbd-nbd/#options
-    #    # mapOptions: lock_on_read,queue_depth=1024
-    #
-    #    # (optional) unmapOptions is a comma-separated list of unmap options.
-    #    # For krbd options refer
-    #    # https://docs.ceph.com/docs/master/man/8/rbd/#kernel-rbd-krbd-options
-    #    # For nbd options refer
-    #    # https://docs.ceph.com/docs/master/man/8/rbd-nbd/#options
-    #    # unmapOptions: force
-    #
-    #    # RBD image format. Defaults to "2".
-    #    imageFormat: "2"
-    #
-    #    # RBD image features, equivalent to OR'd bitfield value: 63
-    #    # Available for imageFormat: "2". Older releases of CSI RBD
-    #    # support only the `layering` feature. The Linux kernel (KRBD) supports the
-    #    # full feature complement as of 5.4
-    #    # imageFeatures: layering,fast-diff,object-map,deep-flatten,exclusive-lock
-    #    imageFeatures: layering
-    #  allowVolumeExpansion: true
-    #  reclaimPolicy: Delete
+    # -- CSI driver name prefix for cephfs, rbd and nfs.
+    # @default -- `namespace name where rook-ceph operator is deployed`
+    csiDriverNamePrefix:

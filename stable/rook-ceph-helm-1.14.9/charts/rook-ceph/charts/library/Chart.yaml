@@ -1,7 +1,7 @@
 apiVersion: v2
 name: library
 description: A simple library chart to share content between Rook's charts
-version: 1.11.9
+version: 1.14.9
 type: library
 
 # Developer notes:
