@@ -1203,6 +1203,8 @@ charts:
         storageClass:
           enabled: true
           isDefault: true
+          annotations: {}
+          labels: {}
           name: ceph-filesystem
           # (Optional) specify a data pool to use, must be the name of one of the data pools above, 'data0' by default
           pool: data0
