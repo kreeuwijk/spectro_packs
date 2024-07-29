@@ -135,6 +135,10 @@ presets:
     group: "Storage Configuration - Block"
     remove: 
       - charts.rook-ceph-cluster.cephBlockPools
+    add: |
+      charts:
+        rook-ceph-cluster:
+          cephBlockPools: []
 
   - name: "enable-file-storage"
     displayName: "Enable File Storage Poool"
@@ -198,3 +202,7 @@ presets:
     group: "Storage Configuration - File"
     remove: 
       - charts.rook-ceph-cluster.cephFileSystems
+    add: |
+      charts:
+        rook-ceph-cluster:
+          cephFileSystems: []
