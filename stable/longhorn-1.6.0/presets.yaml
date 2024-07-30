@@ -1,0 +1,20 @@
+presets:
+  - name: "autoScalerEnabled"
+    displayName: "Enabled"
+    group: "Kubernetes Cluster Autoscaler"
+    remove: []
+    add: |
+      charts:
+        longhorn:
+          defaultSettings:
+            kubernetesClusterAutoscalerEnabled: true
+
+  - name: "autoScalerDisabled"
+    displayName: "Disabled"
+    group: "Kubernetes Cluster Autoscaler"
+    remove: []
+    add: |
+      charts:
+        longhorn:
+          defaultSettings:
+            kubernetesClusterAutoscalerEnabled: false

@@ -1,0 +1,30 @@
+{
+  "cloudTypes": [
+    "maas",
+    "edge",
+    "edge-native",
+    "custom"
+  ],
+  "constraints": {
+    "dependencies": [
+      {
+        "packName": "csi-longhorn",
+        "layer": "csi",
+        "minVersion": "1.4.0",
+        "type": "upgrade"
+      }
+    ]
+  },
+  "annotations": {
+    "docsURL": "https://docs.spectrocloud.com/integrations/longhorn",
+    "description": "Longhorn",
+    "source": "spectrocloud"
+  },
+  "displayName": "Longhorn",
+  "charts": [
+    "charts/longhorn-1.6.0.tgz"
+  ],
+  "layer": "csi",
+  "name": "csi-longhorn",
+  "version": "1.6.0"
+}
