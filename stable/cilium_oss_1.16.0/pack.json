@@ -14,9 +14,9 @@
   ],
   "displayName": "Cilium",
   "charts": [
-    "charts/cilium-1.15.3.tgz"
+    "charts/cilium-1.16.0.tgz"
   ],
   "layer": "cni",
   "name": "cni-cilium-oss",
-  "version": "1.15.3"
+  "version": "1.16.0"
 }

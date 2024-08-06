@@ -212,6 +212,6 @@ presets:
             binPath:  /opt/cni/bin
           ipam:
             operator:
-              clusterPoolIPv4PodCIDRList: ["10.0.0.0/8"]
+              clusterPoolIPv4PodCIDRList: ["100.64.0.0/18"]
           nodePort:
             enabled: false

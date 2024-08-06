@@ -59,7 +59,7 @@ spec:
         {{- end }}
         # These need to match the equivalent arguments to etcd in the main container.
         - --etcd-cluster-name=clustermesh-apiserver
-        - --etcd-initial-cluster-token=clustermesh-apiserver
+        - --etcd-initial-cluster-token=$(INITIAL_CLUSTER_TOKEN)
         - --etcd-data-dir=/var/run/etcd
         {{- with .Values.clustermesh.apiserver.etcd.init.extraArgs }}
         {{- toYaml . | trim | nindent 8 }}
@@ -76,8 +76,16 @@ spec:
             configMapKeyRef:
               name: cilium-config
               key: cluster-name
+        - name: INITIAL_CLUSTER_TOKEN
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.uid
         {{- with .Values.clustermesh.apiserver.etcd.init.extraEnv }}
         {{- toYaml . | trim | nindent 8 }}
+        {{- end }}
+        {{- with .Values.clustermesh.apiserver.etcd.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
         {{- end }}
         volumeMounts:
         - name: etcd-data-dir
@@ -108,7 +116,7 @@ spec:
         # uses net.SplitHostPort() internally and it accepts the that format.
         - --listen-client-urls=https://127.0.0.1:2379,https://[$(HOSTNAME_IP)]:2379
         - --advertise-client-urls=https://[$(HOSTNAME_IP)]:2379
-        - --initial-cluster-token=clustermesh-apiserver
+        - --initial-cluster-token=$(INITIAL_CLUSTER_TOKEN)
         - --auto-compaction-retention=1
         {{- if .Values.clustermesh.apiserver.metrics.etcd.enabled }}
         - --listen-metrics-urls=http://[$(HOSTNAME_IP)]:{{ .Values.clustermesh.apiserver.metrics.etcd.port }}
@@ -121,6 +129,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+        - name: INITIAL_CLUSTER_TOKEN
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.uid
         ports:
         - name: etcd
           containerPort: 2379
@@ -164,11 +176,13 @@ spec:
         {{- end }}
         - --cluster-name=$(CLUSTER_NAME)
         - --cluster-id=$(CLUSTER_ID)
-        - --kvstore-opt
-        - etcd.config=/var/lib/cilium/etcd-config.yaml
+        - --kvstore-opt=etcd.config=/var/lib/cilium/etcd-config.yaml
+        - --kvstore-opt=etcd.qps=20
+        - --kvstore-opt=etcd.bootstrapQps=10000
         {{- if hasKey .Values.clustermesh "maxConnectedClusters" }}
         - --max-connected-clusters={{ .Values.clustermesh.maxConnectedClusters }}
         {{- end }}
+        - --health-port={{ .Values.clustermesh.apiserver.healthPort }}
         {{- if ne .Values.clustermesh.apiserver.tls.authMode "legacy" }}
         - --cluster-users-enabled
         - --cluster-users-config-path=/var/lib/cilium/etcd-config/users.yaml
@@ -193,22 +207,27 @@ spec:
               name: cilium-config
               key: cluster-id
               optional: true
-        - name: IDENTITY_ALLOCATION_MODE
-          valueFrom:
-            configMapKeyRef:
-              name: cilium-config
-              key: identity-allocation-mode
         - name: ENABLE_K8S_ENDPOINT_SLICE
           valueFrom:
             configMapKeyRef:
               name: cilium-config
               key: enable-k8s-endpoint-slice
               optional: true
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: apiserv-health
+          {{- with .Values.clustermesh.apiserver.readinessProbe }}
+          {{- toYaml . | trim | nindent 10 }}
+          {{- end }}
         {{- with .Values.clustermesh.apiserver.extraEnv }}
         {{- toYaml . | trim | nindent 8 }}
         {{- end }}
-        {{- if .Values.clustermesh.apiserver.metrics.enabled }}
         ports:
+        - name: apiserv-health
+          containerPort: {{ .Values.clustermesh.apiserver.healthPort }}
+          protocol: TCP
+        {{- if .Values.clustermesh.apiserver.metrics.enabled }}
         - name: apiserv-metrics
           containerPort: {{ .Values.clustermesh.apiserver.metrics.port }}
           protocol: TCP
@@ -253,11 +272,13 @@ spec:
         - --cluster-id=$(CLUSTER_ID)
         - --kvstore-opt=etcd.config=/var/lib/cilium/etcd-config.yaml
         - --kvstore-opt=etcd.qps=100
+        - --kvstore-opt=etcd.bootstrapQps=10000
         - --kvstore-opt=etcd.maxInflight=10
         - --clustermesh-config=/var/lib/cilium/clustermesh
         {{- if hasKey .Values.clustermesh "maxConnectedClusters" }}
         - --max-connected-clusters={{ .Values.clustermesh.maxConnectedClusters }}
         {{- end }}
+        - --health-port={{ .Values.clustermesh.apiserver.kvstoremesh.healthPort }}
         {{- if .Values.clustermesh.apiserver.metrics.kvstoremesh.enabled }}
         - --prometheus-serve-addr=:{{ .Values.clustermesh.apiserver.metrics.kvstoremesh.port }}
         - --controller-group-metrics=all
@@ -265,6 +286,13 @@ spec:
         {{- with .Values.clustermesh.apiserver.kvstoremesh.extraArgs }}
         {{- toYaml . | trim | nindent 8 }}
         {{- end }}
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: kvmesh-health
+          {{- with .Values.clustermesh.apiserver.kvstoremesh.readinessProbe }}
+          {{- toYaml . | trim | nindent 10 }}
+          {{- end }}
         env:
         - name: CLUSTER_NAME
           valueFrom:
@@ -279,8 +307,11 @@ spec:
         {{- with .Values.clustermesh.apiserver.kvstoremesh.extraEnv }}
         {{- toYaml . | trim | nindent 8 }}
         {{- end }}
-        {{- if .Values.clustermesh.apiserver.metrics.kvstoremesh.enabled }}
         ports:
+        - name: kvmesh-health
+          containerPort: {{ .Values.clustermesh.apiserver.kvstoremesh.healthPort }}
+          protocol: TCP
+        {{- if .Values.clustermesh.apiserver.metrics.kvstoremesh.enabled }}
         - name: kvmesh-metrics
           containerPort: {{ .Values.clustermesh.apiserver.metrics.kvstoremesh.port }}
           protocol: TCP
@@ -362,7 +393,8 @@ spec:
           defaultMode: 0400
       {{- end }}
       - name: etcd-data-dir
-        emptyDir: {}
+        emptyDir:
+          medium: {{ ternary "Memory" "" (eq .Values.clustermesh.apiserver.etcd.storageMedium "Memory") | quote }}
       {{- if .Values.clustermesh.apiserver.kvstoremesh.enabled }}
       - name: kvstoremesh-secrets
         projected:
@@ -392,7 +424,6 @@ spec:
       {{- end }}
       restartPolicy: Always
       priorityClassName: {{ include "cilium.priorityClass" (list $ .Values.clustermesh.apiserver.priorityClassName "system-cluster-critical") }}
-      serviceAccount: {{ .Values.serviceAccounts.clustermeshApiserver.name | quote }}
       serviceAccountName: {{ .Values.serviceAccounts.clustermeshApiserver.name | quote }}
       terminationGracePeriodSeconds: {{ .Values.clustermesh.apiserver.terminationGracePeriodSeconds }}
       automountServiceAccountToken: {{ .Values.serviceAccounts.clustermeshApiserver.automount }}
