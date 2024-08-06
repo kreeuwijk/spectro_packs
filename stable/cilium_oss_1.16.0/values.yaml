@@ -2,27 +2,26 @@
 pack:
   content:
     images:
-      - image: quay.io/cilium/certgen:v0.1.9
-      - image: quay.io/cilium/cilium:v1.15.3
-      - image: quay.io/cilium/cilium-envoy:v1.27.3-99c1c8f42c8de70fc8f6dd594f4a425cd38b6688
-      - image: quay.io/cilium/cilium-etcd-operator:v2.0.7
-      - image: quay.io/cilium/clustermesh-apiserver:v1.15.3
-      - image: quay.io/cilium/hubble-relay:v1.15.3
-      - image: quay.io/cilium/hubble-ui:v0.13.0
-      - image: quay.io/cilium/hubble-ui-backend:v0.13.0
-      - image: quay.io/cilium/operator:v1.15.3
-      - image: quay.io/cilium/operator-generic:v1.15.3
-      - image: quay.io/cilium/operator-aws:v1.15.3
-      - image: quay.io/cilium/operator-azure:v1.15.3
-      - image: quay.io/cilium/startup-script:62093c5c233ea914bfa26a10ba41f8780d9b737f
-      - image: ghcr.io/spiffe/spire-agent:1.8.5
-      - image: ghcr.io/spiffe/spire-server:1.8.5
+      - image: quay.io/cilium/certgen:v0.2.0
+      - image: quay.io/cilium/cilium:v1.16.0
+      - image: quay.io/cilium/cilium-envoy:v1.29.7-39a2a56bbd5b3a591f69dbca51d3e30ef97e0e51
+      - image: quay.io/cilium/clustermesh-apiserver:v1.16.0
+      - image: quay.io/cilium/hubble-relay:v1.16.0
+      - image: quay.io/cilium/hubble-ui:v0.13.1
+      - image: quay.io/cilium/hubble-ui-backend:v0.13.1
+      - image: quay.io/cilium/operator:v1.16.0
+      - image: quay.io/cilium/operator-generic:v1.16.0
+      - image: quay.io/cilium/operator-aws:v1.16.0
+      - image: quay.io/cilium/operator-azure:v1.16.0
+      - image: quay.io/cilium/startup-script:c54c7edeab7fde4da68e59acd319ab24af242c3f
+      - image: ghcr.io/spiffe/spire-agent:1.9.6
+      - image: ghcr.io/spiffe/spire-server:1.9.6
       - image: docker.io/library/busybox:1.36.1
 
     charts:
       - repo: https://helm.cilium.io/
         name: cilium
-        version: 1.15.3
+        version: 1.16.0
   #The namespace (on the target cluster) to install this chart
   #When not found, a new namespace will be created
   namespace: kube-system
