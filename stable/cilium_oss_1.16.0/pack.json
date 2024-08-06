@@ -1,0 +1,22 @@
+{
+  "annotations": {
+    "source": "spectrocloud"
+  },
+  "cloudTypes": [
+    "aws",
+    "gcp",
+    "gke",
+    "vsphere",
+    "maas",
+    "openstack",
+    "edge-native",
+    "azure"
+  ],
+  "displayName": "Cilium",
+  "charts": [
+    "charts/cilium-1.15.3.tgz"
+  ],
+  "layer": "cni",
+  "name": "cni-cilium-oss",
+  "version": "1.15.3"
+}
