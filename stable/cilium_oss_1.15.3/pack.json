@@ -4,6 +4,7 @@
   },
   "cloudTypes": [
     "aws",
+    "eks",
     "gcp",
     "gke",
     "vsphere",
