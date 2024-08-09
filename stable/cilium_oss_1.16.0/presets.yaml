@@ -185,7 +185,7 @@ presets:
             acceleration: native
 
   - name: "microk8s-enable"
-    displayName: "Enable MicroK8s"
+    displayName: "Enable MicroK8s support"
     group: "MicroK8s"
     remove: []
     add: |
@@ -201,7 +201,7 @@ presets:
             enabled: true
 
   - name: "microk8s-disable"
-    displayName: "Disable"
+    displayName: "Disable MicroK8s support"
     group: "MicroK8s"
     remove: []
     add: |
