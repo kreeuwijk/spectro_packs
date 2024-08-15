@@ -1,3 +1,4 @@
+{{- if .Values.olm.install }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -25,3 +26,4 @@ spec:
               kubectl delete subscriptions.operators.coreos.com -A --all;
               kubectl delete clusterserviceversions.operators.coreos.com -A --all;
       restartPolicy: OnFailure
+{{- end }}

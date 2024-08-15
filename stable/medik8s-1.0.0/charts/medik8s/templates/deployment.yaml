@@ -1,3 +1,4 @@
+{{- if .Values.olm.install }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -126,3 +127,4 @@ spec:
               memory: 80Mi
       nodeSelector:
         kubernetes.io/os: linux
+{{- end }}
