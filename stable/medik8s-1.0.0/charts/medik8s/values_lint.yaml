@@ -43,6 +43,7 @@ operators:
       - self-node-remediation.v0.9.0
     daemonSets:
       - self-node-remediation-ds
+
 nodeHealthChecks:
   - name: reboot-if-unhealthy
     spec:
