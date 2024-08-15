@@ -25,6 +25,7 @@ spec:
               kubectl delete nodehealthchecks.remediation.medik8s.io -A --all;
               kubectl delete subscriptions.operators.coreos.com -A --all;
               kubectl delete clusterserviceversions.operators.coreos.com -A --all;
+              kubectl delete ds -n {{ .Values.operators.namespace }} self-node-remediation-ds;
       restartPolicy: OnFailure
 ---
 apiVersion: v1
