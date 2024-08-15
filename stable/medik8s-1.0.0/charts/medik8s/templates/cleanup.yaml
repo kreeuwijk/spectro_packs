@@ -53,7 +53,7 @@ spec:
           - >
               kubectl delete subscriptions.operators.coreos.com -A --all;
               kubectl delete operators.operators.coreos.com -A --all;
-              kubectl delete clusterserviceversions.operators.coreos.com -A --all';
+              kubectl delete clusterserviceversions.operators.coreos.com -A --all;
               kubectl delete daemonset -l k8s-app=self-node-remediation -n {{ .Values.operators.namespace }};
 {{- end }}
 ---
