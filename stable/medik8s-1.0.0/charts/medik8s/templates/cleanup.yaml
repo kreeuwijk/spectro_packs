@@ -30,16 +30,16 @@ spec:
           - >
               echo "Cleaning up operator custom resources";
           {{- range $item := .Values.operators.cleanupOnDelete.subscriptions }}
-              kubectl delete subscriptions.operators.coreos.com -n {{ $.Values.operators.namespace }} {{ $item }};
+              kubectl delete subscriptions.operators.coreos.com --ignore-not-found=true -n {{ $.Values.operators.namespace }} {{ $item }};
           {{- end -}}
           {{- range $item := .Values.operators.cleanupOnDelete.operators }}
-              kubectl delete operators.operators.coreos.com -n {{ $.Values.operators.namespace }} {{ $item }};
+              kubectl delete operators.operators.coreos.com --ignore-not-found=true -n {{ $.Values.operators.namespace }} {{ $item }};
           {{- end -}}
           {{- range $item := .Values.operators.cleanupOnDelete.clusterServiceVersions }}
               kubectl delete clusterserviceversions.operators.coreos.com -A --field-selector='metadata.name={{ $item }}';
           {{- end -}}
           {{- range $item := .Values.operators.cleanupOnDelete.daemonSets }}
-              kubectl delete daemonsets -n {{ $.Values.operators.namespace }} {{ $item }};
+              kubectl delete daemonsets --ignore-not-found=true -n {{ $.Values.operators.namespace }} {{ $item }};
           {{- end }}
 {{- end }}
 {{- if .Values.olm.install }}
