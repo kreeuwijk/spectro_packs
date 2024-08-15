@@ -6,14 +6,14 @@ metadata:
   namespace: {{ .Release.Namespace }}
   annotations:
     "helm.sh/hook": pre-delete
-    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-weight": "-5"
     "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
 spec:
   template:
     metadata:
       name: medik8s-resource-cleanup
     spec:
-      serviceAccountName: palette-manager
+      serviceAccountName: sa-medik8s-resource-cleanup
       containers:
         - name: medik8s-resource-cleanup
           image: bitnami/kubectl
@@ -26,4 +26,55 @@ spec:
               kubectl delete subscriptions.operators.coreos.com -A --all;
               kubectl delete clusterserviceversions.operators.coreos.com -A --all;
       restartPolicy: OnFailure
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sa-medik8s-resource-cleanup
+  labels:
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: medik8s-resource-cleanup
+  labels:
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
+rules:
+  - apiGroups:
+      - *
+    resources:
+      - *
+    verbs:
+      - *
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: medik8s-resource-cleanup
+  labels:
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: medik8s-resource-cleanup
+subjects:
+  - kind: ServiceAccount
+    name: sa-medik8s-resource-cleanup
+    namespace: {{ .Release.Namespace | quote }}
 {{- end }}
