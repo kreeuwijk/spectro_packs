@@ -1,6 +1,6 @@
 {{- range $nhc := .Values.nodeHealthChecks }}
 ---
-apiVersion: operators.coreos.com/v1alpha1
+apiVersion: remediation.medik8s.io/v1alpha1
 kind: NodeHealthCheck
 metadata:
   name: {{ $nhc.name }}
