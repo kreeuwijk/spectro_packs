@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: medik8s-resource-cleanup
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
+spec:
+  template:
+    metadata:
+      name: medik8s-resource-cleanup
+    spec:
+      serviceAccountName: palette-manager
+      containers:
+        - name: medik8s-resource-cleanup
+          image: bitnami/kubectl
+          imagePullPolicy: {{ .Values.olm.packageserver.imagePullPolicy }}
+          command:
+          - bash
+          - -c
+          - >
+              kubectl delete nodehealthchecks.remediation.medik8s.io -A --all;
+              kubectl delete subscriptions.operators.coreos.com -A --all;
+              kubectl delete clusterserviceversions.operators.coreos.com -A --all;
+      restartPolicy: OnFailure
