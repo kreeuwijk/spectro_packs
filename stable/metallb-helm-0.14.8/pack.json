@@ -1,0 +1,21 @@
+{
+  "addonType":"load balancer",
+  "annotations": {
+    "docsURL": "https://docs.spectrocloud.com/integrations/metallb"
+  },
+  "cloudTypes": [
+    "vsphere",
+    "openstack",
+    "maas",
+    "edge",
+    "libvirt",
+    "edge-native"
+  ],
+  "displayName": "MetalLB (Helm)",
+  "layer":"addon",
+  "name": "lb-metallb-helm",
+  "version": "0.14.8",
+  "charts": [
+    "charts/metallb-full-0.14.8.tgz"
+  ]
+}
