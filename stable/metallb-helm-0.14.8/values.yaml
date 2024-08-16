@@ -1,6 +1,18 @@
 pack:
+  content:
+    images:
+      - image: quay.io/metallb/controller:v0.14.8
+      - image: quay.io/metallb/speaker:v0.14.8 
+      - image: quay.io/frrouting/frr:9.1.0
+      - image: gcr.io/kubebuilder/kube-rbac-proxy:v0.12.0
+      - image: quay.io/metallb/frr-k8s:v0.0.14
+    charts:
+      - repo: https://metallb.github.io/metallb 
+        name: metallb 
+        version: 0.14.8
   namespace: metallb-system
-  # Do not change this namespace, since CRDs expect the namespace to be metallb-system
+  namespaceLabels:
+    "metallb-system": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=v{{ .spectro.system.kubernetes.version | substr 0 4 }}"  # Do not change this namespace, since CRDs expect the namespace to be metallb-system
 
 charts:
   metallb-full:
