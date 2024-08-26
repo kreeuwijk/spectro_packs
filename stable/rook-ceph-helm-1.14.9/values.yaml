@@ -1211,8 +1211,6 @@ charts:
           reclaimPolicy: Delete
           allowVolumeExpansion: true
           volumeBindingMode: "Immediate"
-          annotations: {}
-          labels: {}
           mountOptions: []
           # see https://github.com/rook/rook/blob/master/Documentation/Storage-Configuration/Shared-Filesystem-CephFS/filesystem-storage.md#provision-storage for available configuration
           parameters:
