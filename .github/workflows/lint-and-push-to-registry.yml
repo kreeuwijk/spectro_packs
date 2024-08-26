@@ -57,3 +57,13 @@ jobs:
         PACK_PASSWORD: ${{ secrets.PACK_PASSWORD }}
       run: |
         find stable -maxdepth 1 -mindepth 1 -type d -print0 | xargs -0 -n1 -I {} spectro pack push {} -r $PACK_REGISTRY -f -m "Force pushed by Github Action"
+
+    - name: Trigger registry sync in Palette
+      env:
+        SC_API_KEY: ${{ secrets.SC_API_KEY }}
+      run: |
+        curl -s -X POST \
+        -H "ApiKey:$SC_API_KEY" \
+        -H 'Content-Type: application/json' \
+        -H 'Accept: application/json' \
+        "https://api.spectrocloud.com/v1/registries/pack/64cbb11ccd8804c7daa9543b/sync"
