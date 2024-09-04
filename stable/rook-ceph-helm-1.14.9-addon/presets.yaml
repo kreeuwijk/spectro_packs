@@ -298,8 +298,8 @@ presets:
       - charts.rook-ceph-cluster.cephClusterSpec.storage.onlyApplyOSDPlacement
       - charts.rook-ceph-cluster.cephClusterSpec.storage.storageClassDeviceSets
 
-  - name: "reduce-pvc-based-osd"
-    displayName: "Reduce PVC-based OSDs to 1 (single-node)"
+  - name: "1-pvc-based-osd"
+    displayName: "1 PVC-based OSD (single-node)"
     group: "vSphere storageClassDeviceSets amount"
     remove: []
     add: |
@@ -310,3 +310,16 @@ presets:
               storageClassDeviceSets:
                 - name: set1
                   count: 1
+
+  - name: "3-pvc-based-osd"
+    displayName: "3 PVC-based OSDs (multi-node)"
+    group: "vSphere storageClassDeviceSets amount"
+    remove: []
+    add: |
+      charts:
+        rook-ceph-cluster:
+          cephClusterSpec:
+            storage:
+              storageClassDeviceSets:
+                - name: set1
+                  count: 3
