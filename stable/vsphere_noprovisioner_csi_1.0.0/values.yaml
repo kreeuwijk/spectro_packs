@@ -1,0 +1,3 @@
+manifests:
+  vsphere-cloud-controller-manager:
+    k8sVersion: "{{ .spectro.system.kubernetes.version }}"
