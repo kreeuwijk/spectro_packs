@@ -5,7 +5,7 @@
   "annotations": {
     "description": "Dummy CSI for vSphere, only installs cloud-controller"
   },
-  "displayName": "vSphere no-provisioner",
+  "displayName": "vSphere No-Provisioner",
   "kubeManifests": [
     "manifests/vsphere-cloud-controller-manager.yaml"
   ],
