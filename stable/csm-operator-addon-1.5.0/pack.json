@@ -2,7 +2,8 @@
   "addonType":"system app",
   "annotations": {},
   "cloudTypes": [
-    "maas"
+    "maas",
+    "vsphere"
   ],
   "displayName": "Dell CSM Operator",
   "charts": [
