@@ -1,0 +1,26 @@
+{
+  "annotations": {
+    "prerequisitesRequired": "true",
+    "source": "spectrocloud"
+  },
+  "cloudTypes": [
+    "maas"
+  ],
+  "displayName": "Piraeus Operator",
+  "charts": [
+    "charts/piraeus-2.7.0.tgz"
+  ],
+  "layer": "csi",
+  "name": "csi-piraeus-operator",
+  "version": "0.0.1",
+  "constraints": {
+    "dependencies": [
+      {
+        "packName": "kubernetes",
+        "layer": "k8s",
+        "maxVersion": "1.31.99",
+        "type": "optional"
+      }
+    ]
+  } 
+}
