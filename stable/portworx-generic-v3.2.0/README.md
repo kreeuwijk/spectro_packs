@@ -1,11 +1,11 @@
-# Portworx-Generic-AddOn 
+# Portworx-Generic-Addon 
 A Kubernetes data-services platform designed to provide persistent storage, data protection, disaster recovery, and other capabilities for containerized applications. 
 
 # Kubernetes versions supported:
 Above 1.21
 Maximum supported minor version is 1.31
 
-# Contraints:
+# Constraints:
 Min 3 storage nodes are required.
 
 #Pre-requisites
