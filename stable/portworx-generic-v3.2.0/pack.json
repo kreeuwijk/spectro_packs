@@ -1,0 +1,38 @@
+{
+  "annotations": {
+    "docsURL": "https://docs.spectrocloud.com/integrations/portworx",
+    "prerequisitesRequired": "true",
+    "source": "spectrocloud"
+  },
+  "cloudTypes": [
+    "aws",
+    "azure",
+    "gcp",
+    "edge",
+    "edge-native",
+    "maas",
+    "openstack",
+    "eks",
+    "tke",
+    "vsphere",
+    "custom"
+  ],
+  "displayName": "Portworx /w Operator",
+  "charts": [
+    "charts/px-operator-1.3.0.tgz",
+    "charts/portworx-generic-1.3.5.tgz"
+  ],
+  "layer": "csi",
+  "name": "csi-portworx-generic",
+  "version": "3.1.5",
+  "constraints": {
+    "dependencies": [
+      {
+        "packName": "kubernetes",
+        "layer": "k8s",
+        "maxVersion": "1.30.99",
+        "type": "optional"
+      }
+    ]
+  } 
+}
