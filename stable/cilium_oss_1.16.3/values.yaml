@@ -3,16 +3,16 @@ pack:
   content:
     images:
       - image: quay.io/cilium/certgen:v0.2.0
-      - image: quay.io/cilium/cilium:v1.16.0
-      - image: quay.io/cilium/cilium-envoy:v1.29.7-39a2a56bbd5b3a591f69dbca51d3e30ef97e0e51
-      - image: quay.io/cilium/clustermesh-apiserver:v1.16.0
-      - image: quay.io/cilium/hubble-relay:v1.16.0
+      - image: quay.io/cilium/cilium:v1.16.3
+      - image: quay.io/cilium/cilium-envoy:v1.29.9-1728346947-0d05e48bfbb8c4737ec40d5781d970a550ed2bbd
+      - image: quay.io/cilium/clustermesh-apiserver:v1.16.3
+      - image: quay.io/cilium/hubble-relay:v1.16.3
       - image: quay.io/cilium/hubble-ui:v0.13.1
       - image: quay.io/cilium/hubble-ui-backend:v0.13.1
-      - image: quay.io/cilium/operator:v1.16.0
-      - image: quay.io/cilium/operator-generic:v1.16.0
-      - image: quay.io/cilium/operator-aws:v1.16.0
-      - image: quay.io/cilium/operator-azure:v1.16.0
+      - image: quay.io/cilium/operator:v1.16.3
+      - image: quay.io/cilium/operator-generic:v1.16.3
+      - image: quay.io/cilium/operator-aws:v1.16.3
+      - image: quay.io/cilium/operator-azure:v1.16.3
       - image: quay.io/cilium/startup-script:c54c7edeab7fde4da68e59acd319ab24af242c3f
       - image: ghcr.io/spiffe/spire-agent:1.9.6
       - image: ghcr.io/spiffe/spire-server:1.9.6
@@ -179,7 +179,7 @@ charts:
       # @schema
       override: ~
       repository: "quay.io/cilium/cilium"
-      tag: "v1.16.0"
+      tag: "v1.16.3"
       pullPolicy: "IfNotPresent"
       # cilium-digest
       digest: ""
@@ -1107,9 +1107,14 @@ charts:
           enabled: false
           # Configure hubble metrics server TLS.
           server:
-            # -- base64 encoded PEM values for the Hubble metrics server certificate.
+            # -- Name of the Secret containing the certificate and key for the Hubble metrics server.
+            # If specified, cert and key are ignored.
+            existingSecret: ""
+            # -- base64 encoded PEM values for the Hubble metrics server certificate (deprecated).
+            # Use existingSecret instead.
             cert: ""
-            # -- base64 encoded PEM values for the Hubble metrics server key.
+            # -- base64 encoded PEM values for the Hubble metrics server key (deprecated).
+            # Use existingSecret instead.
             key: ""
             # -- Extra DNS names added to certificate when it's auto generated
             extraDnsNames: []
@@ -1307,9 +1312,16 @@ charts:
           #   name: ca-issuer
           # -- certmanager issuer used when hubble.tls.auto.method=certmanager.
           certManagerIssuerRef: {}
-        # -- base64 encoded PEM values for the Hubble server certificate and private key
+        # -- The Hubble server certificate and private key
         server:
+          # -- Name of the Secret containing the certificate and key for the Hubble server.
+          # If specified, cert and key are ignored.
+          existingSecret: ""
+          # -- base64 encoded PEM values for the Hubble server certificate (deprecated).
+          # Use existingSecret instead.
           cert: ""
+          # -- base64 encoded PEM values for the Hubble server key (deprecated).
+          # Use existingSecret instead.
           key: ""
           # -- Extra DNS names added to certificate when it's auto generated
           extraDnsNames: []
@@ -1327,7 +1339,7 @@ charts:
           # @schema
           override: ~
           repository: "quay.io/cilium/hubble-relay"
-          tag: "v1.16.0"
+          tag: "v1.16.3"
           # hubble-relay-digest
           digest: ""
           useDigest: false
@@ -1421,14 +1433,21 @@ charts:
         listenPort: "4245"
         # -- TLS configuration for Hubble Relay
         tls:
-          # -- base64 encoded PEM values for the hubble-relay client certificate and private key
+          # -- The hubble-relay client certificate and private key.
           # This keypair is presented to Hubble server instances for mTLS
           # authentication and is required when hubble.tls.enabled is true.
           # These values need to be set manually if hubble.tls.auto.enabled is false.
           client:
+            # -- Name of the Secret containing the certificate and key for the Hubble metrics server.
+            # If specified, cert and key are ignored.
+            existingSecret: ""
+            # -- base64 encoded PEM values for the Hubble relay client certificate (deprecated).
+            # Use existingSecret instead.
             cert: ""
+            # -- base64 encoded PEM values for the Hubble relay client key (deprecated).
+            # Use existingSecret instead.
             key: ""
-          # -- base64 encoded PEM values for the hubble-relay server certificate and private key
+          # -- The hubble-relay server certificate and private key
           server:
             # When set to true, enable TLS on for Hubble Relay server
             # (ie: for clients connecting to the Hubble Relay API).
@@ -1437,8 +1456,14 @@ charts:
             # False allow non-mutual TLS connections.
             # This option has no effect when TLS is disabled.
             mtls: false
-            # These values need to be set manually if hubble.tls.auto.enabled is false.
+            # -- Name of the Secret containing the certificate and key for the Hubble relay server.
+            # If specified, cert and key are ignored.
+            existingSecret: ""
+            # -- base64 encoded PEM values for the Hubble relay server certificate (deprecated).
+            # Use existingSecret instead.
             cert: ""
+            # -- base64 encoded PEM values for the Hubble relay server key (deprecated).
+            # Use existingSecret instead.
             key: ""
             # -- extra DNS names added to certificate when its auto gen
             extraDnsNames: []
@@ -1545,12 +1570,15 @@ charts:
         # -- Roll out Hubble-ui pods automatically when configmap is updated.
         rollOutPods: false
         tls:
-          # -- base64 encoded PEM values used to connect to hubble-relay
-          # This keypair is presented to Hubble Relay instances for mTLS
-          # authentication and is required when hubble.relay.tls.server.enabled is true.
-          # These values need to be set manually if hubble.tls.auto.enabled is false.
           client:
+            # -- Name of the Secret containing the client certificate and key for Hubble UI
+            # If specified, cert and key are ignored.
+            existingSecret: ""
+            # -- base64 encoded PEM values for the Hubble UI client certificate (deprecated).
+            # Use existingSecret instead.
             cert: ""
+            # -- base64 encoded PEM values for the Hubble UI client key (deprecated).
+            # Use existingSecret instead.
             key: ""
         backend:
           # -- Hubble-ui backend image.
@@ -1774,9 +1802,9 @@ charts:
       # "kubernetes" so that Cilium respects the PodCIDR that is configured
       # in the K8s pack.
       mode: "kubernetes"
-      # The alternative below is the default for the Cilium helm chart      
+      # The alternative below is the default for the Cilium helm chart
       # mode: "cluster-pool"
-      # # -- Maximum rate at which the CiliumNode custom resource is updated.
+      # -- Maximum rate at which the CiliumNode custom resource is updated.
       # ciliumNodeUpdateRate: "15s"
       # operator:
       #   # @schema
@@ -1921,6 +1949,11 @@ charts:
     enableIPv4BIGTCP: false
     # -- Enables IPv6 BIG TCP support which increases maximum IPv6 GSO/GRO limits for nodes and pods
     enableIPv6BIGTCP: false
+    nat:
+      # -- Number of the top-k SNAT map connections to track in Cilium statedb.
+      mapStatsEntries: 32
+      # -- Interval between how often SNAT map is counted for stats.
+      mapStatsInterval: 30s
     egressGateway:
       # -- Enables egress gateway to redirect and SNAT the traffic that leaves the
       # cluster.
@@ -2160,9 +2193,9 @@ charts:
         # @schema
         override: ~
         repository: "quay.io/cilium/cilium-envoy"
-        tag: "v1.29.7-39a2a56bbd5b3a591f69dbca51d3e30ef97e0e51"
+        tag: "v1.29.9-1728346947-0d05e48bfbb8c4737ec40d5781d970a550ed2bbd"
         pullPolicy: "IfNotPresent"
-        digest: "sha256:bd5ff8c66716080028f414ec1cb4f7dc66f40d2fb5a009fff187f4a9b90b566b"
+        digest: "sha256:42614a44e508f70d03a04470df5f61e3cffd22462471a0be0544cf116f2c50ba"
         useDigest: true
       # -- Additional containers added to the cilium Envoy DaemonSet.
       extraContainers: []
@@ -2476,7 +2509,7 @@ charts:
         # @schema
         override: ~
         repository: "quay.io/cilium/operator"
-        tag: "v1.16.0"
+        tag: "v1.16.3"
         # operator-generic-digest
         genericDigest: ""
         # operator-azure-digest
@@ -2760,7 +2793,7 @@ charts:
         # @schema
         override: ~
         repository: "quay.io/cilium/cilium"
-        tag: "v1.16.0"
+        tag: "v1.16.3"
         # cilium-digest
         digest: ""
         useDigest: false
@@ -2909,7 +2942,7 @@ charts:
           # @schema
           override: ~
           repository: "quay.io/cilium/clustermesh-apiserver"
-          tag: "v1.16.0"
+          tag: "v1.16.3"
           # clustermesh-apiserver-digest
           digest: ""
           useDigest: false
@@ -3410,7 +3443,7 @@ charts:
               override: ~
               repository: "docker.io/library/busybox"
               tag: "1.36.1"
-              digest: "sha256:9ae97d36d26566ff84e8893c64a6dc4fe8ca6d1144bf5b87b2b85a32def253c7"
+              digest: "sha256:c230832bd3b0be59a6c47ed64294f9ce71e91b327957920b6929a0caa8353140"
               useDigest: true
               pullPolicy: "IfNotPresent"
             # SPIRE agent configuration
@@ -3553,5 +3586,3 @@ charts:
           agentSocketPath: /run/spire/sockets/agent/agent.sock
           # -- SPIRE connection timeout
           connectionTimeout: 30s
-
-
