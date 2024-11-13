@@ -8,7 +8,7 @@ pack:
     "piraeus-system": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=v{{ .spectro.system.kubernetes.version | substr 0 4 }}"
 
 charts:
-  piraeus-operator:
+  piraeus:
     replicaCount: 1
 
     installCRDs: true
