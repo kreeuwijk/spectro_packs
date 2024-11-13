@@ -1,4 +1,5 @@
 {
+  "addonType": "system app",
   "annotations": {
     "prerequisitesRequired": "true",
     "source": "spectrocloud"
@@ -10,9 +11,9 @@
   "charts": [
     "charts/piraeus-2.7.0.tgz"
   ],
-  "layer": "csi",
+  "layer": "addon",
   "name": "csi-piraeus-operator",
-  "version": "0.0.1",
+  "version": "2.7.0",
   "constraints": {
     "dependencies": [
       {
