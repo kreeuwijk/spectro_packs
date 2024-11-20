@@ -5,6 +5,7 @@
     "source": "spectrocloud"
   },
   "cloudTypes": [
+    "edge-native",
     "maas"
   ],
   "displayName": "Piraeus Operator",
