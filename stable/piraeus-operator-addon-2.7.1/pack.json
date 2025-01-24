@@ -10,6 +10,7 @@
   ],
   "displayName": "Piraeus Operator",
   "charts": [
+    "charts/linstor-gui-1.8.2.tgz",
     "charts/piraeus-2.7.1.tgz"
   ],
   "layer": "addon",
