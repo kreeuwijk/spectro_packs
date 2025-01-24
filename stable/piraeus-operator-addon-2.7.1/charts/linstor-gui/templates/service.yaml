@@ -1,15 +1,17 @@
+{{- if .Values.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
   name: linstor-gui-service
 spec:
-  type: {{ .Values.gui.service.type }}
+  type: {{ .Values.service.type }}
   selector:
     app: linstor-gui
   ports:
     - protocol: TCP
-      port: {{ .Values.gui.service.port | default 8000 }}
+      port: {{ .Values.service.port | default 8000 }}
       targetPort: 8000
-      {{- if .Values.gui.service.nodePort }}
-      nodePort: {{ .Values.gui.service.nodePort }}
+      {{- if .Values.service.nodePort }}
+      nodePort: {{ .Values.service.nodePort }}
       {{- end }}
+{{- end }}

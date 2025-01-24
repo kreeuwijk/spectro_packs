@@ -1,3 +1,4 @@
+{{- if .Values.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -5,7 +6,7 @@ metadata:
   labels:
     app: linstor-gui
 spec:
-  replicas: {{ .Values.gui.replicas }}
+  replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
       app: linstor-gui
@@ -16,10 +17,11 @@ spec:
     spec:
       containers:
         - name: linstor-gui
-          image: {{ .Values.gui.image.repository }}:{{ .Values.gui.image.tag | default .Chart.AppVersion }}
-          imagePullPolicy: {{ .Values.gui.image.pullPolicy }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 8000
           env:
             - name: LB_LINSTOR_API_HOST
-              value: {{ .Values.gui.apiHost }}
+              value: {{ .Values.apiHost }}
+{{- end }}
