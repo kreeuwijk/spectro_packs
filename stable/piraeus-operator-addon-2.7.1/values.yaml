@@ -1,67 +1,78 @@
-# spectrocloud.com/enabled-presets: License Models:px-essentials
+# spectrocloud.com/enabled-presets:
 pack:
   content:
     images:
-      - image: quay.io/piraeusdatastore/piraeus-operator:2.7.0
+      - image: quay.io/piraeusdatastore/piraeus-operator:2.7.1
+      - image: quay.io/piraeusdatastore/piraeus-server:v1.29.2
+      - image: quay.io/piraeusdatastore/piraeus-csi:v1.6.4
+      - image: quay.io/piraeusdatastore/drbd-reactor:v1.6.0
+      - image: quay.io/piraeusdatastore/piraeus-ha-controller:v1.2.2
+      - image: quay.io/piraeusdatastore/drbd-shutdown-guard:v1.0.0
+      - image: quay.io/piraeusdatastore/ktls-utils:v0.11
+      - image: quay.io/piraeusdatastore/drbd9-noble:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-centos7:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-almalinux8:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-centos7:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-almalinux8:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-almalinux9:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-almalinux9:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-almalinux8:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-centos7:v9.2.12
+      - image: quay.io/piraeusdatastore/rbd9-almalinux8:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-almalinux8:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-almalinux9:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-almalinux8:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-almalinux9:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-almalinux8:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-almalinux9:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-bionic:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-focal:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-jammy:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-noble:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-bookworm:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-bullseye:v9.2.12
+      - image: quay.io/piraeusdatastore/drbd9-buster:v9.2.12
+      - image: registry.k8s.io/sig-storage/csi-attacher:v4.7.0
+      - image: registry.k8s.io/sig-storage/livenessprobe:v2.14.0
+      - image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
+      - image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
+      - image: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
+      - image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
+      - image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
   namespace: piraeus-system
   namespaceLabels:
     "piraeus-system": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=v{{ .spectro.system.kubernetes.version | substr 0 4 }}"
 
 charts:
   piraeus:
-    replicaCount: 1
-
     installCRDs: true
 
     operator:
+      replicaCount: 1
       image:
         repository: quay.io/piraeusdatastore/piraeus-operator
         pullPolicy: IfNotPresent
         # Overrides the image tag whose default is the chart appVersion.
         tag: ""
       securityContext:
-        capabilities:
-          drop:
-            - ALL
+        allowPrivilegeEscalation: false
         readOnlyRootFilesystem: true
-        runAsNonRoot: true
-        runAsUser: 1000
-
-      options:
-        leaderElect: true
-
-      resources: { }
-        # limits:
-        #   cpu: 100m
-        #   memory: 128Mi
-        # requests:
-        #   cpu: 100m
-        #   memory: 128Mi
-
-    kubeRbacProxy:
-      enabled: false
-      image:
-        repository: gcr.io/kubebuilder/kube-rbac-proxy
-        pullPolicy: IfNotPresent
-        tag: v0.13.1
-      options:
-        logtostderr: "true"
-        v: 0
-      securityContext:
-        capabilities:
-          drop:
-            - ALL
-        readOnlyRootFilesystem: true
-        runAsNonRoot: true
-        runAsUser: 1000
-
-      resources: { }
-        # limits:
-        #   cpu: 100m
-        #   memory: 128Mi
-        # requests:
-        #   cpu: 100m
-        #   memory: 128Mi
+      options: []
+      resources:
+        limits:
+          cpu: 500m
+          memory: 256Mi
+        requests:
+          cpu: 10m
+          memory: 64Mi
+      priorityClassName: ""
+      nodeSelector: { }
+      tolerations:
+        - key: drbd.linbit.com/lost-quorum
+          effect: NoSchedule
+        - key: drbd.linbit.com/force-io-error
+          effect: NoSchedule
+      affinity: { }
 
     webhook:
       timeoutSeconds: 2
@@ -73,43 +84,8 @@ charts:
       renew: false
       certManagerIssuerRef: {}
 
-    imagePullSecrets: [ ]
     nameOverride: ""
     fullnameOverride: ""
-
-    serviceAccount:
-      # Specifies whether a service account should be created
-      create: true
-      # Annotations to add to the service account
-      annotations: { }
-      # The name of the service account to use.
-      # If not set and create is true, a name is generated using the fullname template
-      name: ""
-
-    rbac:
-      # Specifies whether RBAC resources should be created
-      create: true
-
-    podAnnotations: { }
-
-    podSecurityContext: {}
-      # fsGroup: 2000
-
-    nodeSelector: { }
-
-    tolerations:
-      - key: drbd.linbit.com/lost-quorum
-        effect: NoSchedule
-      - key: drbd.linbit.com/force-io-error
-        effect: NoSchedule
-    affinity: { }
-
-    priorityClassName: ""
-
-    podDisruptionBudget:
-      enabled: true
-      minAvailable: 1
-      # maxUnavailable: 1
 
     imageConfigOverride: []
       # - base: example.com/piraeus
@@ -119,3 +95,4 @@ charts:
       #       tag: my-custom-tag
       #   Results in the image example.com/piraeus/linstor-csi:my-custom-tag being used.
       #   See templates/config.yaml for available components.
+

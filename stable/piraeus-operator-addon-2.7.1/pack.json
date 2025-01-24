@@ -10,11 +10,11 @@
   ],
   "displayName": "Piraeus Operator",
   "charts": [
-    "charts/piraeus-2.7.0.tgz"
+    "charts/piraeus-2.7.1.tgz"
   ],
   "layer": "addon",
   "name": "csi-piraeus-operator",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "constraints": {
     "dependencies": [
       {
