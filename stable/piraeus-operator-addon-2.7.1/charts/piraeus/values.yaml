@@ -37,9 +37,6 @@ tls:
   renew: false
   certManagerIssuerRef: {}
 
-nameOverride: ""
-fullnameOverride: ""
-
 imageConfigOverride: []
   # - base: example.com/piraeus
   #   components:

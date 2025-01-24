@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: linstor-gui-service
+spec:
+  type: {{ .Values.gui.service.type }}
+  selector:
+    app: linstor-gui
+  ports:
+    - protocol: TCP
+      port: {{ .Values.gui.service.port | default 8000 }}
+      targetPort: 8000
+      {{- if .Values.gui.service.nodePort }}
+      nodePort: {{ .Values.gui.service.nodePort }}
+      {{- end }}

@@ -1,0 +1,13 @@
+gui:
+  apiHost: "http://linstor-controller.piraeus-system.svc.cluster.local:3370"
+  image:
+    repository: sheldonwl/linstor-gui
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+  replicas: 1
+  service:
+    type: NodePort
+    nodePort: 30337
+    # type: LoadBalancer
+    # port: 8000

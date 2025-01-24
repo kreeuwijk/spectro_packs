@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linstor-gui
+  labels:
+    app: linstor-gui
+spec:
+  replicas: {{ .Values.gui.replicas }}
+  selector:
+    matchLabels:
+      app: linstor-gui
+  template:
+    metadata:
+      labels:
+        app: linstor-gui
+    spec:
+      containers:
+        - name: linstor-gui
+          image: {{ .Values.gui.image.repository }}:{{ .Values.gui.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.gui.image.pullPolicy }}
+          ports:
+            - containerPort: 8000
+          env:
+            - name: LB_LINSTOR_API_HOST
+              value: {{ .Values.gui.apiHost }}

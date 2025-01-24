@@ -44,6 +44,20 @@ pack:
     "piraeus-system": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=v{{ .spectro.system.kubernetes.version | substr 0 4 }}"
 
 charts:
+  linstor-gui:
+    gui:
+      apiHost: "http://linstor-controller.piraeus-system.svc.cluster.local:3370"
+      image:
+        repository: sheldonwl/linstor-gui
+        pullPolicy: IfNotPresent
+        # Overrides the image tag whose default is the chart appVersion.
+        tag: ""
+      replicas: 1
+      service:
+        type: NodePort
+        nodePort: 30337
+        # type: LoadBalancer
+        # port: 8000
   piraeus:
     installCRDs: true
 
@@ -83,9 +97,6 @@ charts:
       autogenerate: true
       renew: false
       certManagerIssuerRef: {}
-
-    nameOverride: ""
-    fullnameOverride: ""
 
     imageConfigOverride: []
       # - base: example.com/piraeus
