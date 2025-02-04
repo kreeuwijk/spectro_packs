@@ -184,8 +184,10 @@ charts:
             - matchExpressions:
                 - key: node-role.kubernetes.io/control-plane
                   operator: DoesNotExist
-        # If you need to pull images from a different registry, change the value below
-        repository: quay.io/piraeusdatastore
+        # If you need to pull images from a different registry, enable and set the "repository" parameter below.
+        # Note that if the repository setting is enabled, the images from registry.k8s.io for Piraeus (lines 34-40 above)
+        # will also be pulled from your custom registry instead. Make sure you have those images on your registry.
+        # repository: registry.example.com/piraeus-mirror
 
     linstorSatelliteConfigurations:
       - name: host-network
