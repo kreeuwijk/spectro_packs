@@ -9,6 +9,6 @@ spec:
   selector:
     {{- include "piraeus-operator.selectorLabels" . | nindent 4 }}
   ports:
-    - port: 443
-      protocol: TCP
+    - name: https
+      port: 443
       targetPort: 9443

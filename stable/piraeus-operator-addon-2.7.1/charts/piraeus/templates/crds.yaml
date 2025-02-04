@@ -5,8 +5,6 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.1
-  labels:
-    app.kubernetes.io/name: piraeus-datastore
   name: linstorclusters.piraeus.io
 spec:
   group: piraeus.io
@@ -524,8 +522,6 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.1
-  labels:
-    app.kubernetes.io/name: piraeus-datastore
   name: linstornodeconnections.piraeus.io
 spec:
   group: piraeus.io
@@ -728,8 +724,6 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.1
-  labels:
-    app.kubernetes.io/name: piraeus-datastore
   name: linstorsatelliteconfigurations.piraeus.io
 spec:
   group: piraeus.io
@@ -1289,8 +1283,6 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.1
-  labels:
-    app.kubernetes.io/name: piraeus-datastore
   name: linstorsatellites.piraeus.io
 spec:
   group: piraeus.io

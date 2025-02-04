@@ -52,9 +52,20 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+Create the name of the service account to use
+*/}}
+{{- define "piraeus-operator.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "piraeus-operator.fullname" .) .Values.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}
+
+{{/*
 Certificate secret name
 */}}
-{{- define "piraeus-operator.certificateName" -}}
+{{- define "piraeus-operator.certifcateName" -}}
 {{- if .Values.tls.certificateSecret }}
 {{- .Values.tls.certificateSecret }}
 {{- else }}
