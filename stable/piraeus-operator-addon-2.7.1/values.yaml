@@ -174,8 +174,8 @@ charts:
   piraeus-cluster:
     cluster:
       masterPassphrase:
-        autoGenerate: true
-        #value: ""    
+        # Leave empty to auto-generate
+        value: ""
       spec:
         linstorPassphraseSecret: linstor-passphrase
         # Don't run on control plane nodes by default. Remove if you want to use control plane nodes.
