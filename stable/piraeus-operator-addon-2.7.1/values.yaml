@@ -39,6 +39,7 @@ pack:
       - image: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
       - image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.13.0
       - image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
+      - image: us-docker.pkg.dev/palette-images/packs/csi-piraeus-operator/2.7.1/linstor-gui:v1.8.2
   namespace: piraeus-system
   namespaceLabels:
     "piraeus-system": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=v{{ .spectro.system.kubernetes.version | substr 0 4 }}"
@@ -47,7 +48,7 @@ charts:
   linstor-gui:
     enabled: true
     image:
-      repository: sheldonwl/linstor-gui
+      repository: us-docker.pkg.dev/palette-images/packs/csi-piraeus-operator/2.7.1/linstor-gui
       pullPolicy: IfNotPresent
       # Overrides the image tag whose default is the chart appVersion.
       tag: ""
