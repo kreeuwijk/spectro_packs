@@ -51,15 +51,15 @@ spec:
         - alert: linstorSatelliteErrorRate
           annotations:
             description: |
-              LINSTOR Satellite "{{ $labels.hostname }}" reports {{ $value }} errors in the last 15 minutes.
-              Use "linstor error-reports list --nodes {{ $labels.hostname }} --since 15minutes" to see them.
+              LINSTOR Satellite {{ "{{" }} $labels.hostname }} reports {{ "{{" }} $value }} errors in the last 15 minutes.
+              Use "linstor error-reports list --nodes {{ "{{" }} $labels.hostname }} --since 15minutes" to see them.
           expr: increase(linstor_error_reports_count{module="SATELLITE"}[15m]) > 0
           labels:
             severity: warning
         - alert: linstorControllerErrorRate
           annotations:
             description: |
-              LINSTOR Controller reports {{ $value }} errors in the last 15 minutes.
+              LINSTOR Controller reports {{ "{{" }} $value }} errors in the last 15 minutes.
               Use "linstor error-reports list --since 15minutes" to see them.
           expr: increase(linstor_error_reports_count{module="CONTROLLER"}[15m]) > 0
           labels:
@@ -67,7 +67,7 @@ spec:
         - alert: linstorSatelliteNotOnline
           annotations:
             description: |
-              LINSTOR Satellite "{{ $labels.node }}" is not ONLINE.
+              LINSTOR Satellite {{ "{{" }} $labels.node }} is not ONLINE.
               Check that the Satellite is running and reachable from the LINSTOR Controller.
           expr: linstor_node_state{nodetype="SATELLITE"} != 2 and on (node) up{job=~".*/linstor-satellite"}
           labels:
@@ -75,14 +75,14 @@ spec:
         - alert: linstorStoragePoolErrors
           annotations:
             description: |
-              Storage pool "{{ $labels.storage_pool }}" on node "{{ $labels.node }}" ({{ $labels.driver }}={{ $labels.backing_pool }}) is reporting errors.
+              Storage pool {{ "{{" }} $labels.storage_pool }} on node {{ "{{" }} $labels.node }} ({{ "{{" }} $labels.driver }}={{ "{{" }} $labels.backing_pool }}) is reporting errors.
           expr: linstor_storage_pool_error_count > 0
           labels:
             severity: critical
         - alert: linstorStoragePoolAtCapacity
           annotations:
             description: |
-              Storage pool "{{ $labels.storage_pool }}" on node "{{ $labels.node }}" ({{ $labels.driver }}={{ $labels.backing_pool }}) has less than 20% free space available.
+              Storage pool {{ "{{" }} $labels.storage_pool }} on node {{ "{{" }} $labels.node }} ({{ "{{" }} $labels.driver }}={{ "{{" }} $labels.backing_pool }}) has less than 20% free space available.
           expr: ( linstor_storage_pool_capacity_free_bytes / linstor_storage_pool_capacity_total_bytes ) < 0.20
           labels:
             severity: warn
@@ -91,28 +91,28 @@ spec:
         - alert: drbdReactorOffline
           annotations:
             description: |
-              DRBD Reactor on "{{ $labels.node }}" is not reachable.
+              DRBD Reactor on {{ "{{" }} $labels.node }} is not reachable.
           expr: up{job=".*/linstor-satellite"} == 0
           labels:
             severity: critical
         - alert: drbdConnectionNotConnected
           annotations:
             description: |
-              DRBD Resource "{{ $labels.name }}" on "{{ $labels.node }}" is not connected to "{{ $labels.conn_name }}": {{ $labels.drbd_connection_state }}.
+              DRBD Resource {{ "{{" }} $labels.name }} on {{ "{{" }} $labels.node }} is not connected to {{ "{{" }} $labels.conn_name }}: {{ "{{" }} $labels.drbd_connection_state }}.
           expr: drbd_connection_state{drbd_connection_state!="Connected"} > 0
           labels:
             severity: warn
         - alert: drbdDeviceNotUpToDate
           annotations:
             description: |
-              DRBD device "{{ $labels.name }}" on "{{ $labels.node }}" has unexpected device state "{{ $labels.drbd_device_state }}".
+              DRBD device {{ "{{" }} $labels.name }} on {{ "{{" }} $labels.node }} has unexpected device state {{ "{{" }} $labels.drbd_device_state }}.
           expr: drbd_device_state{drbd_device_state!~"UpToDate|Diskless"} > 0
           labels:
             severity: warn
         - alert: drbdDeviceUnintentionalDiskless
           annotations:
             description: |
-              DRBD device "{{ $labels.name }}" on "{{ $labels.node }}" is unintenionally diskless.
+              DRBD device {{ "{{" }} $labels.name }} on {{ "{{" }} $labels.node }} is unintenionally diskless.
               This usually indicates IO errors reported on the backing device. Check the kernel log.
           expr: drbd_device_unintentionaldiskless > 0
           labels:
@@ -120,7 +120,7 @@ spec:
         - alert: drbdDeviceWithoutQuorum
           annotations:
             description: |
-              DRBD device "{{ $labels.name }}" on "{{ $labels.node }}" has no quorum.
+              DRBD device {{ "{{" }} $labels.name }} on {{ "{{" }} $labels.node }} has no quorum.
               This usually indicates connectivity issues.
           expr: drbd_device_quorum == 0
           labels:
@@ -128,7 +128,7 @@ spec:
         - alert: drbdResourceSuspended
           annotations:
             description: |
-              DRBD resource "{{ $labels.name }}" on "{{ $labels.node }}" has been suspended for 1m.
+              DRBD resource {{ "{{" }} $labels.name }} on {{ "{{" }} $labels.node }} has been suspended for 1m.
           for: 1m
           expr: drbd_resource_suspended > 0
           labels:
@@ -136,7 +136,7 @@ spec:
         - alert: drbdResourceResyncWithoutProgress
           annotations:
             description: |
-              DRBD resource "{{ $labels.name }}" on "{{ $labels.node }}" has been in Inconsistent without resync progress for 5 minutes.
+              DRBD resource {{ "{{" }} $labels.name }} on {{ "{{" }} $labels.node }} has been in Inconsistent without resync progress for 5 minutes.
               This may indicate there is no connection to UpToDate data, or a stuck resync.
           expr: drbd_device_state{drbd_device_state="Inconsistent"} and delta(drbd_peerdevice_outofsync_bytes[5m]) >= 0
           labels:
@@ -144,7 +144,7 @@ spec:
         - alert: drbdResourceWithNoUpToDateReplicas
           annotations:
             description: |
-              DRBD resource "{{ $labels.name }}" has no UpToDate replicas.
+              DRBD resource {{ "{{" }} $labels.name }} has no UpToDate replicas.
           expr: sum by (name) (drbd_device_state{drbd_device_state="UpToDate"}) == 0
           labels:
             severity: critical
