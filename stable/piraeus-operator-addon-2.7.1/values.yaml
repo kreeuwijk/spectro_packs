@@ -179,12 +179,13 @@ charts:
         value: ""
       spec:
         linstorPassphraseSecret: linstor-passphrase
-        # Don't run on control plane nodes by default. Remove if you want to use control plane nodes.
-        nodeAffinity:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: node-role.kubernetes.io/control-plane
-                  operator: DoesNotExist
+        # Set nodeAffinity or nodeSelector to control where Piraeus runs
+        # nodeAffinity:
+        #   nodeSelectorTerms:
+        #     - matchExpressions:
+        #         - key: node-role.kubernetes.io/control-plane
+        #           operator: DoesNotExist
+
         # If you need to pull images from a different registry, enable and set the "repository" parameter below.
         # Note that if the repository setting is enabled, the images from registry.k8s.io for Piraeus (lines 34-40 above)
         # will also be pulled from your custom registry instead. Make sure you have those images on your registry.
