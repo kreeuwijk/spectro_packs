@@ -74,4 +74,3 @@ storageClasses: []
 
 monitoring:
   installPrometheusRules: true
-  installGrafanaDashboard: true

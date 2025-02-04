@@ -252,4 +252,3 @@ charts:
 
     monitoring:
       installPrometheusRules: true
-      installGrafanaDashboard: true
