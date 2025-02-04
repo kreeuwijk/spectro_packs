@@ -71,3 +71,7 @@ storageClasses: []
   #     DrbdOptions/Net/max-buffers: "10000"
   #     DrbdOptions/Net/max-epoch-size: "10000"
   #     DrbdOptions/Net/sndbuf-size: "0"
+
+monitoring:
+  installPrometheusRules: true
+  installGrafanaDashboard: true
