@@ -1,11 +1,11 @@
-{{- if .Values.installPiraeusDashboard }}
+{{ "{{" }}- if .Values.installPiraeusDashboard }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   labels:
     grafana_dashboard: "1"
   name: piraeus-datastore-dashboard
-  namespace: {{ .Values.namespace }}
+  namespace: {{ "{{" }} .Values.namespace }}
 data:
   piraeus-dashboard.json: |
     {
@@ -86,7 +86,7 @@ data:
               "exemplar": true,
               "expr": "((sum by (storage_pool)(linstor_storage_pool_capacity_total_bytes{node=~\"$node\"} != 0)-sum by (storage_pool)(linstor_storage_pool_capacity_free_bytes{node=~\"$node\"}))*100/sum by (storage_pool)(linstor_storage_pool_capacity_total_bytes{node=~\"$node\"}))",
               "hide": false,
-              "legendFormat": "{{ storage_pool }}",
+              "legendFormat": "{{ "{{" }} storage_pool }}",
               "refId": "A"
             }
           ],
@@ -142,7 +142,7 @@ data:
               "exemplar": true,
               "expr": "sum by (storage_pool) (linstor_storage_pool_capacity_total_bytes{node=~\"$node\"} != 0)",
               "hide": false,
-              "legendFormat": "{{ storage_pool }}",
+              "legendFormat": "{{ "{{" }} storage_pool }}",
               "refId": "A"
             }
           ],
@@ -199,7 +199,7 @@ data:
               "exemplar": true,
               "expr": "sum by (storage_pool) (linstor_storage_pool_capacity_free_bytes{node=~\"$node\"} != 0)",
               "hide": false,
-              "legendFormat": "{{ storage_pool }}",
+              "legendFormat": "{{ "{{" }} storage_pool }}",
               "refId": "A"
             }
           ],
@@ -255,7 +255,7 @@ data:
               "exemplar": true,
               "expr": "sum by (storage_pool) ((linstor_storage_pool_capacity_total_bytes{node=~\"$node\"} != 0) - (linstor_storage_pool_capacity_free_bytes{node=~\"$node\"} != 0))",
               "hide": false,
-              "legendFormat": "{{ storage_pool }}",
+              "legendFormat": "{{ "{{" }} storage_pool }}",
               "refId": "A"
             }
           ],
@@ -621,7 +621,7 @@ data:
               "exemplar": true,
               "expr": "sum by (module) (round(increase(linstor_error_reports_count{module!=\"\", node=~\"$node\"}[$__rate_interval])))",
               "instant": false,
-              "legendFormat": "{{ module }}",
+              "legendFormat": "{{ "{{" }} module }}",
               "refId": "A"
             }
           ],
@@ -871,7 +871,7 @@ data:
               "exemplar": true,
               "expr": "rate(drbd_device_written_bytes_total{node=~\"$node\"}[$__rate_interval]) and topk(5, avg_over_time(drbd_device_written_bytes_total{node=~\"$node\"}[$__rate_interval]) > 0)",
               "instant": false,
-              "legendFormat": "{{name}} on {{node}}",
+              "legendFormat": "{{ "{{" }}name}} on {{ "{{" }}node}}",
               "refId": "A"
             }
           ],
@@ -969,7 +969,7 @@ data:
               "exemplar": true,
               "expr": "rate(drbd_device_read_bytes_total{node=~\"$node\"}[$__rate_interval]) and topk(5, avg_over_time(drbd_device_read_bytes_total{node=~\"$node\"}[$__rate_interval]) > 0)",
               "instant": false,
-              "legendFormat": "{{name}} on {{node}}",
+              "legendFormat": "{{ "{{" }}name}} on {{ "{{" }}node}}",
               "refId": "A"
             }
           ],
@@ -1067,7 +1067,7 @@ data:
               "exemplar": true,
               "expr": "sum by (node) (rate(drbd_device_written_bytes_total{node=~\"$node\"}[$__rate_interval]))",
               "instant": false,
-              "legendFormat": "{{ node }}",
+              "legendFormat": "{{ "{{" }} node }}",
               "refId": "A"
             }
           ],
@@ -1165,7 +1165,7 @@ data:
               "exemplar": true,
               "expr": "sum by (node) (rate(drbd_device_read_bytes_total{node=~\"$node\"}[$__rate_interval]))",
               "instant": false,
-              "legendFormat": "{{ node }}",
+              "legendFormat": "{{ "{{" }} node }}",
               "refId": "A"
             }
           ],
@@ -1280,7 +1280,7 @@ data:
               "displayValueWithAlias": "Never",
               "exemplar": true,
               "expr": "drbd_resource_resources{node=~\"$node\"}",
-              "legendFormat": "{{node}}",
+              "legendFormat": "{{ "{{" }}node}}",
               "refId": "A",
               "units": "none",
               "valueHandler": "Number Threshold"
@@ -1339,7 +1339,7 @@ data:
             {
               "exemplar": true,
               "expr": "avg_over_time(scrape_duration_seconds{job=\"linstor-node\", node=~\"$node\"}[$__rate_interval])",
-              "legendFormat": "{{node}}",
+              "legendFormat": "{{ "{{" }}node}}",
               "refId": "A"
             }
           ],
@@ -2201,4 +2201,4 @@ data:
       "uid": "f_tZtVlMz",
       "version": 0
     }
-{{- end }}
+{{ "{{" }}- end }}
