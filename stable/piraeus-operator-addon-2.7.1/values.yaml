@@ -124,7 +124,8 @@ charts:
           #DrbdOptions/Net/sndbuf-size: "0"
 
     monitoring:
-      installPrometheusRules: true
+      # Monitoring rules cannot be installed immediately during cluster build, but can be enabled after provisioning once Prometheus is installed.
+      installPrometheusRules: false
 
   piraeus:
     replicaCount: 1
