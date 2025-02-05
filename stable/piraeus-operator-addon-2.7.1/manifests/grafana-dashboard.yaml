@@ -1,11 +1,11 @@
-{{ "{{" }}- if .Values.installPiraeusDashboard }}
+{{- if .Values.installPiraeusDashboard }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   labels:
     grafana_dashboard: "1"
   name: piraeus-datastore-dashboard
-  namespace: {{ "{{" }} .Values.namespace }}
+  namespace: {{ .Values.namespace }}
 data:
   piraeus-dashboard.json: |
     {
@@ -2201,4 +2201,4 @@ data:
       "uid": "f_tZtVlMz",
       "version": 0
     }
-{{ "{{" }}- end }}
+{{- end }}
