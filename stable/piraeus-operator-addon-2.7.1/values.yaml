@@ -124,7 +124,7 @@ charts:
           #DrbdOptions/Net/sndbuf-size: "0"
 
     monitoring:
-      # Monitoring rules cannot be installed immediately during cluster build, but can be enabled after provisioning once Prometheus is installed.
+      # Ensure Prometheus (Agent) is installed before or at the same time as this pack when enabling this option
       installPrometheusRules: false
 
   piraeus:
@@ -232,6 +232,7 @@ charts:
     service:
       type: NodePort
       nodePort: 30337
+      # Ensure a LoadBalancer pack is installed before or at the same time as this pack when using the LoadBalancer type
       # type: LoadBalancer
       # port: 8000
     apiHost: "http://linstor-controller.piraeus-system.svc.cluster.local:3370"
