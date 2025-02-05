@@ -13,6 +13,9 @@
     "charts/linstor-gui-1.8.2.tgz",
     "charts/piraeus-cluster-1.0.0.tgz"
   ],
+  "kubeManifests": [
+    "manifests/grafana-dashboard.yaml"
+  ],
   "layer": "addon",
   "name": "csi-piraeus-operator",
   "version": "2.7.1",

@@ -58,6 +58,12 @@ readinessCheck:
       - keyToCheck: "status.conditions[2].status"
         expectedValue: "True"
 
+manifests:
+  grafana-dashboard:
+    # Ensure Grafana is installed before or at the same time as this pack when enabling this option
+    installPiraeusDashboard: false
+    namespace: monitoring
+
 charts:
   piraeus-cluster:
     cluster:
