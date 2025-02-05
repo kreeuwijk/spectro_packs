@@ -44,6 +44,20 @@ pack:
   namespaceLabels:
     "piraeus-system": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=v{{ .spectro.system.kubernetes.version | substr 0 4 }}"
 
+readinessCheck:
+  v1beta1:
+    - name: "linstorcluster"
+      kind: "LinstorCluster"
+      group: "piraeus.io"
+      version: "v1"
+      keysToCheck:
+      - keyToCheck: "status.conditions[0].status"
+        expectedValue: "True"
+      - keyToCheck: "status.conditions[1].status"
+        expectedValue: "True"
+      - keyToCheck: "status.conditions[2].status"
+        expectedValue: "True"
+
 charts:
   piraeus-cluster:
     cluster:
