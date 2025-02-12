@@ -27,6 +27,7 @@ pack:
 readinessCheck:
   v1beta1:
     - name: "rook-ceph"
+      namespace: "rook-ceph"
       kind: "CephCluster"
       group: "ceph.rook.io"
       version: "v1"
