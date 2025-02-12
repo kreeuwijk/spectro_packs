@@ -1,18 +1,37 @@
+# spectrocloud.com/enabled-presets: Cluster Configuration:multi-node-cluster,Storage - Block:enable-block-storage,Storage - File:enable-file-storage,Storage - Object:enable-object-storage
 pack:
   content:
-    images: []
+    images:
+      - image: quay.io/csiaddons/k8s-sidecar:v0.11.0
+      - image: quay.io/cephcsi/cephcsi:v3.13.0
+      - image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.13.0
+      - image: registry.k8s.io/sig-storage/csi-resizer:v1.13.1
+      - image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
+      - image: registry.k8s.io/sig-storage/csi-snapshotter:v8.2.0
+      - image: registry.k8s.io/sig-storage/csi-attacher:v4.8.0
+      - image: docker.io/rook/ceph:v1.16.3
+      - image: quay.io/ceph/ceph:v19.2.0
 
   charts:
     - repo: https://charts.rook.io/release
       name: rook-release/rook-ceph
-      version: 1.14.9
+      version: 1.16.3
     - repo: https://charts.rook.io/release
       name: rook-release/rook-ceph-cluster
-      version: 1.14.9
+      version: 1.16.3
 
   namespace: rook-ceph
   namespaceLabels:
     "rook-ceph": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=v{{ .spectro.system.kubernetes.version | substr 0 4 }}"
+
+readinessCheck:
+  v1beta1:
+    - name: "rook-ceph"
+      kind: "CephCluster"
+      group: "ceph.rook.io"
+      version: "v1"
+      expectedValue: "Ready"
+      keyToCheck: "status.phase"
 
 charts:
   rook-ceph:
@@ -22,7 +41,7 @@ charts:
       repository: rook/ceph
       # -- Image tag
       # @default -- `master`
-      tag: v1.14.9
+      tag: v1.16.3
       # -- Image pull policy
       pullPolicy: IfNotPresent
 
@@ -502,37 +521,37 @@ charts:
         # -- Ceph CSI image repository
         repository: quay.io/cephcsi/cephcsi
         # -- Ceph CSI image tag
-        tag: v3.11.0
+        tag: v3.13.0
 
       registrar:
         # -- Kubernetes CSI registrar image repository
         repository: registry.k8s.io/sig-storage/csi-node-driver-registrar
         # -- Registrar image tag
-        tag: v2.10.1
+        tag: v2.13.0
 
       provisioner:
         # -- Kubernetes CSI provisioner image repository
         repository: registry.k8s.io/sig-storage/csi-provisioner
         # -- Provisioner image tag
-        tag: v4.0.1
+        tag: v5.1.0
 
       snapshotter:
         # -- Kubernetes CSI snapshotter image repository
         repository: registry.k8s.io/sig-storage/csi-snapshotter
         # -- Snapshotter image tag
-        tag: v7.0.2
+        tag: v8.2.0
 
       attacher:
         # -- Kubernetes CSI Attacher image repository
         repository: registry.k8s.io/sig-storage/csi-attacher
         # -- Attacher image tag
-        tag: v4.5.1
+        tag: v4.8.0
 
       resizer:
         # -- Kubernetes CSI resizer image repository
         repository: registry.k8s.io/sig-storage/csi-resizer
         # -- Resizer image tag
-        tag: v1.10.1
+        tag: v1.13.1
 
       # -- Image pull policy
       imagePullPolicy: IfNotPresent
@@ -552,7 +571,7 @@ charts:
         # -- CSIAddons sidecar image repository
         repository: quay.io/csiaddons/k8s-sidecar
         # -- CSIAddons sidecar image tag
-        tag: v0.8.0
+        tag: v0.11.0
 
       nfs:
         # -- Enable the nfs csi driver
@@ -645,11 +664,20 @@ charts:
       #       cpu: 100m
       #       memory: 128Mi
 
+    # -- Custom label to identify node hostname. If not set `kubernetes.io/hostname` will be used
+    customHostnameLabel:
+
     # -- Runs Ceph Pods as privileged to be able to write to `hostPaths` in OpenShift with SELinux restrictions.
     hostpathRequiresPrivileged: false
 
+    # -- Whether to create all Rook pods to run on the host network, for example in environments where a CNI is not enabled
+    enforceHostNetwork: false
+
     # -- Disable automatic orchestration when new devices are discovered.
     disableDeviceHotplug: false
+
+    # -- The revision history limit for all pods created by Rook. If blank, the K8s default is 10.
+    revisionHistoryLimit:
 
     # -- Blacklist certain disks according to the regex provided.
     discoverDaemonUdev:
@@ -698,7 +726,7 @@ charts:
       # -- Enable Ceph debugging pod deployment. See [toolbox](../Troubleshooting/ceph-toolbox.md)
       enabled: true
       # -- Toolbox image, defaults to the image used by the Ceph cluster
-      image: #quay.io/ceph/ceph:v18.2.4
+      image: #quay.io/ceph/ceph:v19.2.0
       # -- Toolbox tolerations
       tolerations: []
       # -- Toolbox affinity
@@ -724,6 +752,8 @@ charts:
       # -- Enable Prometheus integration, will also create necessary RBAC rules to allow Operator to create ServiceMonitors.
       # Monitoring requires Prometheus to be pre-installed
       enabled: false
+      # -- Whether to disable the metrics reported by Ceph. If false, the prometheus mgr module and Ceph exporter are enabled
+      metricsDisabled: false
       # -- Whether to create the Prometheus rules for Ceph alerts
       createPrometheusRules: false
       # -- The namespace in which to create the prometheus rules, if different from the rook cluster namespace.
@@ -762,18 +792,18 @@ charts:
       # For more details, check https://rook.io/docs/rook/v1.10/CRDs/Cluster/ceph-cluster-crd/
       cephVersion:
         # The container image used to launch the Ceph daemon pods (mon, mgr, osd, mds, rgw).
-        # v17 is Quincy, v18 is Reef.
+        # v18 is Reef, v19 is Squid
         # RECOMMENDATION: In production, use a specific version tag instead of the general v18 flag, which pulls the latest release and could result in different
         # versions running within the cluster. See tags available at https://hub.docker.com/r/ceph/ceph/tags/.
-        # If you want to be more precise, you can always use a timestamp tag such as quay.io/ceph/ceph:v18.2.4-20240724
+        # If you want to be more precise, you can always use a timestamp tag such as quay.io/ceph/ceph:v19.2.0-20240927
         # This tag might not contain a new Ceph version, just security fixes from the underlying operating system, which will reduce vulnerabilities
-        image: quay.io/ceph/ceph:v18.2.4
-        # Whether to allow unsupported versions of Ceph. Currently `quincy`, and `reef` are supported.
-        # Future versions such as `squid` (v19) would require this to be set to `true`.
+        image: quay.io/ceph/ceph:v19.2.0
+        # Whether to allow unsupported versions of Ceph. Currently Reef and Squid are supported.
+        # Future versions such as Tentacle (v20) would require this to be set to `true`.
         # Do not set to true in production.
         allowUnsupported: false
 
-      # The path on the host where configuration files will be persisted. Must be specified.
+      # The path on the host where configuration files will be persisted. Must be specified. If there are multiple clusters, the directory must be unique for each cluster.
       # Important: if you reinstall the cluster, make sure you delete this directory from each host or else the mons will fail to start on the new cluster.
       # In Minikube, the '/data' directory is configured to persist across reboots. Use "/data/rook" in Minikube environment.
       dataDirHostPath: /var/lib/rook
@@ -842,7 +872,7 @@ charts:
           encryption:
             enabled: false
           # Whether to compress the data in transit across the wire. The default is false.
-          # Requires Ceph Quincy (v17) or newer. Also see the kernel requirements above for encryption.
+          # The kernel requirements above for encryption also apply to compression.
           compression:
             enabled: false
           # Whether to require communication over msgr2. If true, the msgr v1 port (6789) will be disabled
@@ -1265,6 +1295,8 @@ charts:
             erasureCoded:
               dataChunks: 2
               codingChunks: 1
+            parameters:
+              bulk: "true"
           preservePoolsOnDelete: true
           gateway:
             port: 80
@@ -1278,6 +1310,13 @@ charts:
             # sslCertificateRef:
             instances: 1
             priorityClassName: system-cluster-critical
+            # opsLogSidecar:
+            #   resources:
+            #     limits:
+            #       memory: "100Mi"
+            #     requests:
+            #       cpu: "100m"
+            #       memory: "40Mi"
         storageClass:
           enabled: true
           name: ceph-bucket

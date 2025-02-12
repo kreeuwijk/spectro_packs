@@ -61,7 +61,7 @@ presets:
 
   - name: "enable-block-storage"
     displayName: "Enable Block Storage Poool"
-    group: "Storage Configuration - Block"
+    group: "Storage - Block"
     remove: 
       - charts.rook-ceph-cluster.cephBlockPools
     add: |
@@ -132,7 +132,7 @@ presets:
 
   - name: "disable-block-storage"
     displayName: "Disable Block Storage Poool"
-    group: "Storage Configuration - Block"
+    group: "Storage - Block"
     remove: 
       - charts.rook-ceph-cluster.cephBlockPools
     add: |
@@ -142,7 +142,7 @@ presets:
 
   - name: "enable-file-storage"
     displayName: "Enable File Storage Poool"
-    group: "Storage Configuration - File"
+    group: "Storage - File"
     remove: 
       - charts.rook-ceph-cluster.cephFileSystems
     add: |
@@ -182,8 +182,6 @@ presets:
                 reclaimPolicy: Delete
                 allowVolumeExpansion: true
                 volumeBindingMode: "Immediate"
-                annotations: {}
-                labels: {}
                 mountOptions: []
                 # see https://github.com/rook/rook/blob/master/Documentation/Storage-Configuration/Shared-Filesystem-CephFS/filesystem-storage.md#provision-storage for available configuration
                 parameters:
@@ -200,8 +198,8 @@ presets:
                   csi.storage.k8s.io/fstype: ext4
 
   - name: "disable-file-storage"
-    displayName: "Enable File Storage Poool"
-    group: "Storage Configuration - File"
+    displayName: "Disable File Storage Poool"
+    group: "Storage - File"
     remove: 
       - charts.rook-ceph-cluster.cephFileSystems
     add: |
@@ -209,117 +207,79 @@ presets:
         rook-ceph-cluster:
           cephFileSystems: []
 
-  - name: "create-pvc-based-osds"
-    displayName: "Create PVC-based OSDs"
-    group: "vSphere storageClassDeviceSets"
-    remove: []
+  - name: "enable-object-storage"
+    displayName: "Enable Object Storage Poool"
+    group: "Storage - Object"
+    remove: 
+      - charts.rook-ceph-cluster.cephObjectStores
     add: |
       charts:
         rook-ceph-cluster:
-          cephClusterSpec:
-            mon:
-              volumeClaimTemplate:
-                spec:
-                  storageClassName: spectro-storage-class
+          cephObjectStores:
+            - name: ceph-objectstore
+              # see https://github.com/rook/rook/blob/master/Documentation/CRDs/Object-Storage/ceph-object-store-crd.md#object-store-settings for available configuration
+              spec:
+                metadataPool:
+                  failureDomain: host
+                  replicated:
+                    size: 3
+                dataPool:
+                  failureDomain: host
+                  erasureCoded:
+                    dataChunks: 2
+                    codingChunks: 1
+                  parameters:
+                    bulk: "true"
+                preservePoolsOnDelete: true
+                gateway:
+                  port: 80
                   resources:
+                    limits:
+                      memory: "2Gi"
                     requests:
-                      storage: 10Gi
-            storage:
-              onlyApplyOSDPlacement: false
-              storageClassDeviceSets:
-                - name: set1
-                  # The number of OSDs to create from this device set
-                  count: 3
-                  portable: true
-                  tuneDeviceClass: false
-                  tuneFastDeviceClass: true
-                  encrypted: false
+                      cpu: "1000m"
+                      memory: "1Gi"
+                  # securePort: 443
+                  # sslCertificateRef:
+                  instances: 1
+                  priorityClassName: system-cluster-critical
+                  # opsLogSidecar:
+                  #   resources:
+                  #     limits:
+                  #       memory: "100Mi"
+                  #     requests:
+                  #       cpu: "100m"
+                  #       memory: "40Mi"
+              storageClass:
+                enabled: true
+                name: ceph-bucket
+                reclaimPolicy: Delete
+                volumeBindingMode: "Immediate"
+                annotations: {}
+                labels: {}
+                # see https://github.com/rook/rook/blob/master/Documentation/Storage-Configuration/Object-Storage-RGW/ceph-object-bucket-claim.md#storageclass for available configuration
+                parameters:
+                  # note: objectStoreNamespace and objectStoreName are configured by the chart
+                  region: us-east-1
+              ingress:
+                # Enable an ingress for the ceph-objectstore
+                enabled: false
+                # annotations: {}
+                # host:
+                #   name: objectstore.example.com
+                #   path: /
+                # tls:
+                # - hosts:
+                #     - objectstore.example.com
+                #   secretName: ceph-objectstore-tls
+                # ingressClassName: nginx
 
-                  placement: 
-                    topologySpreadConstraints:
-                      - maxSkew: 1
-                        topologyKey: kubernetes.io/hostname
-                        whenUnsatisfiable: ScheduleAnyway
-                        labelSelector:
-                          matchExpressions:
-                            - key: app
-                              operator: In
-                              values:
-                                - rook-ceph-osd
-                  preparePlacement:
-                    podAntiAffinity:
-                      preferredDuringSchedulingIgnoredDuringExecution:
-                        - weight: 100
-                          podAffinityTerm:
-                            labelSelector:
-                              matchExpressions:
-                                - key: app
-                                  operator: In 
-                                  values:
-                                    - rook-ceph-osd
-                                - key: app
-                                  operator: In
-                                  values:
-                                    - rook-ceph-osd-prepare
-                            topologyKey: kubernetes.io/hostname
-                    topologySpreadConstraints:
-                      - maxSkew: 1
-                        # IMPORTANT: If you don't have zone labels, change this to another key such as kubernetes.io/hostname
-                        topologyKey: topology.kubernetes.io/zone
-                        whenUnsatisfiable: DoNotSchedule
-                        labelSelector:
-                          matchExpressions:
-                            - key: app
-                              operator: In
-                              values:
-                                - rook-ceph-osd-prepare
-
-                  volumeClaimTemplates:
-                    - metadata:
-                        name: data
-                        # if you are looking at giving your OSD a different CRUSH device class than the one detected by Ceph
-                        # annotations:
-                        #   crushDeviceClass: hybrid
-                      spec:
-                        resources:
-                          requests:
-                            storage: 100Gi
-                        # Using vsphere-csi storage-class to provision disks
-                        storageClassName: spectro-storage-class
-                        volumeMode: Block
-                        accessModes:
-                          - ReadWriteOnce
-
-  - name: "dont-create-pvc-based-osds"
-    displayName: "Do not create PVC-based OSDs"
-    group: "vSphere storageClassDeviceSets"
-    remove:
-      - charts.rook-ceph-cluster.cephClusterSpec.mon.volumeClaimTemplate
-      - charts.rook-ceph-cluster.cephClusterSpec.storage.onlyApplyOSDPlacement
-      - charts.rook-ceph-cluster.cephClusterSpec.storage.storageClassDeviceSets
-
-  - name: "1-pvc-based-osd"
-    displayName: "1 PVC-based OSD (single-node)"
-    group: "vSphere storageClassDeviceSets amount"
-    remove: []
+  - name: "disable-object-storage"
+    displayName: "Disable Object Storage Poool"
+    group: "Storage - Object"
+    remove: 
+      - charts.rook-ceph-cluster.cephObjectStores
     add: |
       charts:
         rook-ceph-cluster:
-          cephClusterSpec:
-            storage:
-              storageClassDeviceSets:
-                - name: set1
-                  count: 1
-
-  - name: "3-pvc-based-osd"
-    displayName: "3 PVC-based OSDs (multi-node)"
-    group: "vSphere storageClassDeviceSets amount"
-    remove: []
-    add: |
-      charts:
-        rook-ceph-cluster:
-          cephClusterSpec:
-            storage:
-              storageClassDeviceSets:
-                - name: set1
-                  count: 3
+          cephObjectStores: []

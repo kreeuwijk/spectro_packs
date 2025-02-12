@@ -4,10 +4,10 @@
 
 image:
   # -- Image
-  repository: rook/ceph
+  repository: docker.io/rook/ceph
   # -- Image tag
   # @default -- `master`
-  tag: v1.14.9
+  tag: v1.16.3
   # -- Image pull policy
   pullPolicy: IfNotPresent
 
@@ -88,10 +88,6 @@ csi:
   # in some network configurations where the SDN does not provide access to an external cluster or
   # there is significant drop in read/write performance
   enableCSIHostNetwork: true
-  # -- Deprecation note: Rook uses "holder" pods to allow CSI to connect to the multus public network
-  # without needing hosts to the network. Holder pods are being removed. See issue for details:
-  # https://github.com/rook/rook/issues/13055. New Rook deployments should set this to "true".
-  disableHolderPods: true
   # -- Enable Snapshotter in CephFS provisioner pod
   enableCephfsSnapshotter: true
   # -- Enable Snapshotter in NFS provisioner pod
@@ -182,9 +178,6 @@ csi:
 
   # -- Set GRPC timeout for csi containers (in seconds). It should be >= 120. If this value is not set or is invalid, it defaults to 150
   grpcTimeoutInSeconds: 150
-
-  # -- Allow starting an unsupported ceph-csi image
-  allowUnsupportedVersion: false
 
   # -- Burst to use while communicating with the kubernetes apiserver.
   kubeApiBurst:
@@ -487,37 +480,37 @@ csi:
     # -- Ceph CSI image repository
     repository: quay.io/cephcsi/cephcsi
     # -- Ceph CSI image tag
-    tag: v3.11.0
+    tag: v3.13.0
 
   registrar:
     # -- Kubernetes CSI registrar image repository
     repository: registry.k8s.io/sig-storage/csi-node-driver-registrar
     # -- Registrar image tag
-    tag: v2.10.1
+    tag: v2.13.0
 
   provisioner:
     # -- Kubernetes CSI provisioner image repository
     repository: registry.k8s.io/sig-storage/csi-provisioner
     # -- Provisioner image tag
-    tag: v4.0.1
+    tag: v5.1.0
 
   snapshotter:
     # -- Kubernetes CSI snapshotter image repository
     repository: registry.k8s.io/sig-storage/csi-snapshotter
     # -- Snapshotter image tag
-    tag: v7.0.2
+    tag: v8.2.0
 
   attacher:
     # -- Kubernetes CSI Attacher image repository
     repository: registry.k8s.io/sig-storage/csi-attacher
     # -- Attacher image tag
-    tag: v4.5.1
+    tag: v4.8.0
 
   resizer:
     # -- Kubernetes CSI resizer image repository
     repository: registry.k8s.io/sig-storage/csi-resizer
     # -- Resizer image tag
-    tag: v1.10.1
+    tag: v1.13.1
 
   # -- Image pull policy
   imagePullPolicy: IfNotPresent
@@ -537,7 +530,7 @@ csi:
     # -- CSIAddons sidecar image repository
     repository: quay.io/csiaddons/k8s-sidecar
     # -- CSIAddons sidecar image tag
-    tag: v0.8.0
+    tag: v0.11.0
 
   nfs:
     # -- Enable the nfs csi driver
@@ -630,11 +623,20 @@ discover:
   #       cpu: 100m
   #       memory: 128Mi
 
+# -- Custom label to identify node hostname. If not set `kubernetes.io/hostname` will be used
+customHostnameLabel:
+
 # -- Runs Ceph Pods as privileged to be able to write to `hostPaths` in OpenShift with SELinux restrictions.
 hostpathRequiresPrivileged: false
 
+# -- Whether to create all Rook pods to run on the host network, for example in environments where a CNI is not enabled
+enforceHostNetwork: false
+
 # -- Disable automatic orchestration when new devices are discovered.
 disableDeviceHotplug: false
+
+# -- The revision history limit for all pods created by Rook. If blank, the K8s default is 10.
+revisionHistoryLimit:
 
 # -- Blacklist certain disks according to the regex provided.
 discoverDaemonUdev:

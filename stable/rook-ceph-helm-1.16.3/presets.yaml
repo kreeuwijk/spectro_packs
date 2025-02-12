@@ -61,7 +61,7 @@ presets:
 
   - name: "enable-block-storage"
     displayName: "Enable Block Storage Poool"
-    group: "Storage Configuration - Block"
+    group: "Storage - Block"
     remove: 
       - charts.rook-ceph-cluster.cephBlockPools
     add: |
@@ -132,7 +132,7 @@ presets:
 
   - name: "disable-block-storage"
     displayName: "Disable Block Storage Poool"
-    group: "Storage Configuration - Block"
+    group: "Storage - Block"
     remove: 
       - charts.rook-ceph-cluster.cephBlockPools
     add: |
@@ -142,7 +142,7 @@ presets:
 
   - name: "enable-file-storage"
     displayName: "Enable File Storage Poool"
-    group: "Storage Configuration - File"
+    group: "Storage - File"
     remove: 
       - charts.rook-ceph-cluster.cephFileSystems
     add: |
@@ -182,8 +182,6 @@ presets:
                 reclaimPolicy: Delete
                 allowVolumeExpansion: true
                 volumeBindingMode: "Immediate"
-                annotations: {}
-                labels: {}
                 mountOptions: []
                 # see https://github.com/rook/rook/blob/master/Documentation/Storage-Configuration/Shared-Filesystem-CephFS/filesystem-storage.md#provision-storage for available configuration
                 parameters:
@@ -200,11 +198,88 @@ presets:
                   csi.storage.k8s.io/fstype: ext4
 
   - name: "disable-file-storage"
-    displayName: "Enable File Storage Poool"
-    group: "Storage Configuration - File"
+    displayName: "Disable File Storage Poool"
+    group: "Storage - File"
     remove: 
       - charts.rook-ceph-cluster.cephFileSystems
     add: |
       charts:
         rook-ceph-cluster:
           cephFileSystems: []
+
+  - name: "enable-object-storage"
+    displayName: "Enable Object Storage Poool"
+    group: "Storage - Object"
+    remove: 
+      - charts.rook-ceph-cluster.cephObjectStores
+    add: |
+      charts:
+        rook-ceph-cluster:
+          cephObjectStores:
+            - name: ceph-objectstore
+              # see https://github.com/rook/rook/blob/master/Documentation/CRDs/Object-Storage/ceph-object-store-crd.md#object-store-settings for available configuration
+              spec:
+                metadataPool:
+                  failureDomain: host
+                  replicated:
+                    size: 3
+                dataPool:
+                  failureDomain: host
+                  erasureCoded:
+                    dataChunks: 2
+                    codingChunks: 1
+                  parameters:
+                    bulk: "true"
+                preservePoolsOnDelete: true
+                gateway:
+                  port: 80
+                  resources:
+                    limits:
+                      memory: "2Gi"
+                    requests:
+                      cpu: "1000m"
+                      memory: "1Gi"
+                  # securePort: 443
+                  # sslCertificateRef:
+                  instances: 1
+                  priorityClassName: system-cluster-critical
+                  # opsLogSidecar:
+                  #   resources:
+                  #     limits:
+                  #       memory: "100Mi"
+                  #     requests:
+                  #       cpu: "100m"
+                  #       memory: "40Mi"
+              storageClass:
+                enabled: true
+                name: ceph-bucket
+                reclaimPolicy: Delete
+                volumeBindingMode: "Immediate"
+                annotations: {}
+                labels: {}
+                # see https://github.com/rook/rook/blob/master/Documentation/Storage-Configuration/Object-Storage-RGW/ceph-object-bucket-claim.md#storageclass for available configuration
+                parameters:
+                  # note: objectStoreNamespace and objectStoreName are configured by the chart
+                  region: us-east-1
+              ingress:
+                # Enable an ingress for the ceph-objectstore
+                enabled: false
+                # annotations: {}
+                # host:
+                #   name: objectstore.example.com
+                #   path: /
+                # tls:
+                # - hosts:
+                #     - objectstore.example.com
+                #   secretName: ceph-objectstore-tls
+                # ingressClassName: nginx
+
+  - name: "disable-object-storage"
+    displayName: "Disable Object Storage Poool"
+    group: "Storage - Object"
+    remove: 
+      - charts.rook-ceph-cluster.cephObjectStores
+    add: |
+      charts:
+        rook-ceph-cluster:
+          cephObjectStores: []
