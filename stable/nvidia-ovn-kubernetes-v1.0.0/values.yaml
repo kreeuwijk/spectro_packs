@@ -5,7 +5,7 @@ charts:
 
     # -- list of dependent subcharts that need to be installed for the given deployment mode, these subcharts haven't been tested yet.
     tags:
-      ovn-kubernetes-resource-injector: true
+      ovn-kubernetes-resource-injector: false
       ovn-ipsec: false
       ovnkube-db: false
       ovnkube-db-raft: false
@@ -18,7 +18,7 @@ charts:
       ovnkube-single-node-zone: true
 
     # -- Endpoint of Kubernetes api server
-    k8sAPIServer: https://172.25.0.2:6443
+    k8sAPIServer: "https://{{ .spectro.system.cluster.kubevip }}:6443"
     # -- IP range for Kubernetes pods, /14 is the top level range, under which each /23 range will be assigned to a node
     podNetwork: 100.64.0.0/18
     # -- A comma-separated set of CIDR notation IP ranges from which k8s assigns service cluster IPs. This should be the same as the value provided for kube-apiserver "--service-cluster-ip-range" option
@@ -29,7 +29,7 @@ charts:
     skipCallToK8s: false
     # -- Adds permissions to the service account that is going to be used by the DPU component
     dpuServiceAccountName: ovn-dpu
-    dpuServiceAccountNamespace: ovn-kubernetes
+    dpuServiceAccountNamespace: dpf-operator-system
 
     global:
       # -- The net device to be used for management port, will be renamed to ovn-k8s-mp0 and used to allow host network services and pods to access k8s pod and service networks
@@ -157,6 +157,7 @@ charts:
       nodeMgmtPortNetdev: ""
       # -- Separate log file for libovsdb client 
       libovsdbClientLogFile: ""
+      #imagePullSecretName: "dpf-pull-secret"
       image:
         # -- Image repository for ovn-kubernetes components
         repository: ghcr.io/nvidia/ovn-kubernetes
@@ -174,14 +175,15 @@ charts:
 
     # User must specify both of them
     ovnkube-node-dpu-host:
-      nodeMgmtPortNetdev: "ens1f0v0"
-      gatewayOpts: "--gateway-interface=ens1f0np0"
+      nodeMgmtPortNetdev: "ens1f0v0" #$DPU_P0_VF1
+      gatewayOpts: "--gateway-interface=ens1f0np0" #$DPU_P0
 
     ovnkube-identity:
         # -- number of ovnube-identity pods, co-located with kube-apiserver process, so need to be the same number of control plane nodes
         replicas: 1
 
     ovn-kubernetes-resource-injector:
+      resourceName: nvidia.com/bf3-p0-vfs
       controllerManager:
         webhook:
           command:
