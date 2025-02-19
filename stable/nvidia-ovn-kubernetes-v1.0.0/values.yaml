@@ -1,5 +1,5 @@
 charts:
-  ovn-kubernetes:
+  ovn-kubernetes-chart:
     # Values for ovn-kubernetes with single-node zone interconnect
     # Requires: ovnkube-node-dpu, ovnkube-node, ovnkube-control-plane
 
@@ -18,7 +18,7 @@ charts:
       ovnkube-single-node-zone: true
 
     # -- Endpoint of Kubernetes api server
-    k8sAPIServer: "https://1.2.3.4:6443"
+    k8sAPIServer: "https://{{ .spectro.system.cluster.kubevip }}:6443"
     # -- IP range for Kubernetes pods, /14 is the top level range, under which each /23 range will be assigned to a node
     podNetwork: 100.64.0.0/18
     # -- A comma-separated set of CIDR notation IP ranges from which k8s assigns service cluster IPs. This should be the same as the value provided for kube-apiserver "--service-cluster-ip-range" option
