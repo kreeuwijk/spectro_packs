@@ -171,8 +171,8 @@ charts:
 
     # User must specify both of them
     ovnkube-node-dpu-host:
-      nodeMgmtPortNetdev: "ens1f0v0" #$DPU_P0_VF1
-      gatewayOpts: "--gateway-interface=ens1f0np0" #$DPU_P0
+      nodeMgmtPortNetdev: "ens1f0v0"
+      gatewayOpts: "--gateway-interface=ens1f0np0"
 
     ovnkube-identity:
         # -- number of ovnube-identity pods, co-located with kube-apiserver process, so need to be the same number of control plane nodes
