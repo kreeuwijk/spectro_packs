@@ -1,0 +1,31 @@
+apiVersion: v2
+appVersion: 0.1.0
+dependencies:
+- condition: argo-cd.enabled
+  name: argo-cd
+  version: 7.6.8
+- condition: node-feature-discovery.enabled
+  name: node-feature-discovery
+  version: 0.16.5
+- condition: kube-state-metrics.enabled
+  name: kube-state-metrics
+  version: 5.25.1
+- condition: grafana.enabled
+  name: grafana
+  version: 8.4.6
+- condition: prometheus.enabled
+  name: prometheus
+  version: 25.26.0
+- condition: kamaji-etcd.enabled
+  name: kamaji-etcd
+  version: 0.9.0
+- condition: kamaji.enabled
+  name: kamaji
+  version: 1.0.0
+- condition: maintenance-operator-chart.enabled
+  name: maintenance-operator-chart
+  version: 0.1.1
+description: DPF Operator manages the lifecycle of a DOCA Platform Framework system.
+name: dpf-operator
+type: application
+version: v24.10.0
