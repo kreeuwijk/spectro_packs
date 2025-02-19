@@ -1,0 +1,12 @@
+{
+  "cloudTypes": [
+    "edge-native"
+  ],
+  "displayName": "nvidia-ovn-kubernetes",
+  "kubeManifests": [
+    "manifests/ns.yaml"
+  ],
+  "layer": "cni",
+  "name": "cni-nvidia-ovn-kubedummy",
+  "version": "24.10.0"
+}
