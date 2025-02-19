@@ -2,7 +2,7 @@
   "cloudTypes": [
     "edge-native"
   ],
-  "displayName": "nvidia-ovn-kubernetes",
+  "displayName": "nvidia-ovn-kubedummy",
   "kubeManifests": [
     "manifests/ns.yaml"
   ],
