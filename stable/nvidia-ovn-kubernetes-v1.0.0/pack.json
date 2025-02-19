@@ -1,0 +1,12 @@
+{
+  "cloudTypes": [
+    "edge-native"
+  ],
+  "displayName": "nvidia-ovn-kubernetes",
+  "charts": [
+    "charts/ovn-kubernetes-chart-v24.10.0.tgz"
+  ],
+  "layer": "cni",
+  "name": "cni-nvidia-ovn-kubernetes",
+  "version": "24.10.0"
+}
