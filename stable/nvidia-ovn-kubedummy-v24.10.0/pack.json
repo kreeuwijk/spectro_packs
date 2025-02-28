@@ -2,11 +2,11 @@
   "cloudTypes": [
     "edge-native"
   ],
-  "displayName": "nvidia-ovn-kubedummy",
+  "displayName": "nvidia-ovn-kubernetesdummy",
   "kubeManifests": [
     "manifests/ns.yaml"
   ],
   "layer": "cni",
-  "name": "cni-nvidia-ovn-kubedummy",
+  "name": "cni-nvidia-ovn-kubernetesdummy",
   "version": "24.10.0"
 }
