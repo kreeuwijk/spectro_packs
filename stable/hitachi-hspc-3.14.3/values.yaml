@@ -50,10 +50,10 @@ charts:
         # The default is "Disabled", and If "Disabled" is specified, adaptive data reduction is disabled. For a storage system where
         # the compression accelerator module is installed, if you specify "Compression" or "CompressionDeduplication" for storageEfficiency,
         # the compression function using the compression accelerator module is automatically activated.
-        storageEfficiency: "CompressionDeduplication"
+        storageEfficiency: "Disabled"
         # Execution mode of adaptive data reduction. You can specify this parameter when storageEfficiency is "Compression" or "CompressionDeduplication",
         # and "Inline" and "PostProcess" are supported for the parameter. If the storageEfficiencyMode field is not specified,
         # adaptive data reduction runs in the default execution mode, which depends on the storage system model.
-        storageEfficiencyMode: "PostProcess"
+        #storageEfficiencyMode: "PostProcess"
         # Filesystem type. ext4 and xfs are supported. If the csi.storage.k8s.io/fstype field is not specified, ext4 is set.
         csi.storage.k8s.io/fstype: ext4
