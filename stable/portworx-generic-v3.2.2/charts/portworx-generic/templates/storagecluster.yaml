@@ -9,9 +9,6 @@ metadata:
   namespace: {{ .Values.storageCluster.namespace }}
   annotations:
     portworx.io/install-source: "https://install.portworx.com/?operator=true"
-    {{- if eq .Values.license.type "essentials" }}
-    portworx.io/misc-args: "--oem esse"
-    {{- end }}
     {{- if .Values.storageCluster.annotations }}
 {{ toYaml .Values.storageCluster.annotations | indent 4 }}
     {{- end }}

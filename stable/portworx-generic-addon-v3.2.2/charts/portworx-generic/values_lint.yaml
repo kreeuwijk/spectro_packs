@@ -1,16 +1,8 @@
 license:
-  # Valid options for "type" are: essentials, saas, enterprise
+  # Valid options for "type" are: saas, enterprise
   # If you want to deploy the PX Enterprise Trial version, or need manual offline activation,
   # select the "enterprise" type and set "activateLicense" to false.
-  type: essentials
-  # The next block only gets used if the type is set to "essentials"
-  essentials:
-    # Base64-decoded value of the px-essen-user-id value in the px-essential secret
-    # Find your Essential Entitlement ID at https://central.portworx.com/profile
-    userId: 1234abcd-12ab-12ab-12ab-123456abcdef
-    # Base64-decoded value of the px-osb-endpoint value in the px-essential secret
-    # Leave at the default value unless there are special circumstances
-    endpoint: https://pxessentials.portworx.com/osb/billing/v1/register
+  type: enterprise
   # The next block only gets used if the type is set to "saas"
   saas:
     key: <PAY-AS-YOU-GO-KEY>

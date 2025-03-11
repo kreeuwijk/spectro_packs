@@ -1,35 +1,14 @@
 presets:
-  - name: "px-essentials"
-    displayName: "PX Essentials"
-    group: "License Models"
-    remove:
-    - "charts.portworx-generic.license.saas"
-    - "charts.portworx-generic.license.enterprise"
-    add: |
-      charts:
-        portworx-generic:
-          license:
-            # Valid options for "type" are: essentials, saas, enterprise
-            type: essentials
-            essentials:
-              # Base64-decoded value of the px-essen-user-id value in the px-essential secret
-              # Find your Essential Entitlement ID at https://central.portworx.com/profile
-              userId: 1234abcd-12ab-12ab-12ab-123456abcdef
-              # Base64-decoded value of the px-osb-endpoint value in the px-essential secret
-              # Leave at the default value unless there are special circumstances
-              endpoint: https://pxessentials.portworx.com/osb/billing/v1/register
-
   - name: "px-enterprise-saas"
     displayName: "PX Enterprise SaaS PAYG"
     group: "License Models"
     remove:
-    - "charts.portworx-generic.license.essentials"
     - "charts.portworx-generic.license.enterprise"
     add: |
       charts:
         portworx-generic:
           license:
-            # Valid options for "type" are: essentials, saas, enterprise
+            # Valid options for "type" are: saas, enterprise
             type: saas
             saas:
               key: <PAY-AS-YOU-GO-KEY>
@@ -38,13 +17,12 @@ presets:
     displayName: "PX Enterprise"
     group: "License Models"
     remove:
-    - "charts.portworx-generic.license.essentials"
     - "charts.portworx-generic.license.saas"
     add: |
       charts:
         portworx-generic:
           license:
-            # Valid options for "type" are: essentials, saas, enterprise
+            # Valid options for "type" are: saas, enterprise
             # If you want to deploy the PX Enterprise Trial version, or need manual offline activation,
             # select the "enterprise" type and set "activateLicense" to false.
             type: enterprise
@@ -73,7 +51,7 @@ presets:
           storageCluster:
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: docker.io/portworx/oci-monitor:3.2.0
+              image: docker.io/portworx/oci-monitor:3.2.2
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -128,7 +106,7 @@ presets:
               portworx.io/is-eks: "true"
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: docker.io/portworx/oci-monitor:3.2.0
+              image: docker.io/portworx/oci-monitor:3.2.2
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -143,6 +121,7 @@ presets:
                 - type=gp3,size=150
                 kvdbDeviceSpec: type=gp3,size=150
                 journalDeviceSpec: auto
+                provider: aws
               secretsProvider: k8s
               stork:
                 enabled: true
@@ -181,7 +160,7 @@ presets:
               portworx.io/is-aks: "true"
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: docker.io/portworx/oci-monitor:3.2.0
+              image: docker.io/portworx/oci-monitor:3.2.2
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -196,6 +175,7 @@ presets:
                 - type=Premium_LRS,size=150
                 kvdbDeviceSpec: type=Premium_LRS,size=150
                 journalDeviceSpec: auto
+                provider: azure
               secretsProvider: k8s
               stork:
                 enabled: true
@@ -255,7 +235,7 @@ presets:
               portworx.io/is-gke: "true"
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: docker.io/portworx/oci-monitor:3.2.0
+              image: docker.io/portworx/oci-monitor:3.2.2
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -270,6 +250,7 @@ presets:
                 - type=pd-standard,size=150
                 kvdbDeviceSpec: type=pd-standard,size=150
                 journalDeviceSpec: auto
+                provider: gce
               secretsProvider: k8s
               stork:
                 enabled: true
@@ -306,7 +287,7 @@ presets:
           storageCluster:
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: docker.io/portworx/oci-monitor:3.2.0
+              image: docker.io/portworx/oci-monitor:3.2.2
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -321,6 +302,7 @@ presets:
                 - type=lazyzeroedthick,size=150
                 kvdbDeviceSpec: type=lazyzeroedthick,size=32
                 journalDeviceSpec: auto
+                provider: vsphere
               secretsProvider: k8s
               stork:
                 enabled: true
@@ -382,7 +364,7 @@ presets:
           storageCluster:
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: docker.io/portworx/oci-monitor:3.2.0
+              image: docker.io/portworx/oci-monitor:3.2.2
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -397,6 +379,7 @@ presets:
                 - size=150
                 kvdbDeviceSpec: size=32
                 journalDeviceSpec: auto
+                provider: pure
             # network:
             #  dataInterface: eth0
             #  mgmtInterface: eth1
