@@ -85,6 +85,11 @@ charts:
         tolerations:
           - key: node.kubernetes.io/not-ready
             operator: Exists
+        extraEnvs:
+          - name: "KUBERNETES_SERVICE_HOST"
+            value: "{{ .spectro.system.cluster.kubevip }}"
+          - name: "KUBERNETES_SERVICE_PORT"
+            value: "6443"
         config:
           sources:
             pci:
@@ -153,6 +158,8 @@ charts:
       backoffLimit: 6
     kamaji:
       enabled: true
+      persistentVolumeClaim:
+        storageClassName: spectro-storage-class
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -323,6 +330,7 @@ charts:
 
     ## maintenance-operator chart configuration
     maintenance-operator-chart:
+      fullnameOverride: maintenance-operator
       enabled: true
       operatorConfig:
         maxParallelOperations: 60%
