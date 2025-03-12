@@ -45,7 +45,7 @@ charts:
       # -- This allows ovnkube-node to run without SYS_ADMIN capability, by performing interface setup in the CNI plugin
       unprivilegedMode: false
       # -- The v4 join subnet used for assigning join switch IPv4 addresses
-      v4JoinSubnet: "100.68.0.0/16"
+      v4JoinSubnet: "100.64.0.0/16"
       # -- The v4 masquerade subnet used for assigning masquerade IPv4 addresses
       v4MasqueradeSubnet: "169.254.0.0/17"
       # -- The v4 subnet for transit switch
