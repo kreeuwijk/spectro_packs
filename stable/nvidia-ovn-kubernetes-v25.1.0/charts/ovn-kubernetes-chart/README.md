@@ -202,7 +202,7 @@ false
 			<td>global.dpuImage.tag</td>
 			<td>string</td>
 			<td><pre lang="json">
-"v24.10.0"
+"v25.1.0"
 </pre>
 </td>
 			<td>Specify image tag to run</td>
@@ -490,7 +490,7 @@ false
 			<td>global.image.tag</td>
 			<td>string</td>
 			<td><pre lang="json">
-"v24.10.0"
+"v25.1.0"
 </pre>
 </td>
 			<td>Specify image tag to run</td>
@@ -766,7 +766,7 @@ false
 			<td>ovn-kubernetes-resource-injector.controllerManager.webhook.image.tag</td>
 			<td>string</td>
 			<td><pre lang="json">
-"v24.10.0"
+"v25.1.0"
 </pre>
 </td>
 			<td></td>

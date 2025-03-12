@@ -104,9 +104,6 @@ global:
   lFlowCacheLimit: ""
   # -- Maximum size of the logical flow cache (in KB) ovn-controller may create when the logical flow cache is enabled
   lFlowCacheLimitKb: ""
-  # -- Configure to use the IPAMClaims CRD feature with ovn-kubernetes, thus granting persistent IPs across restarts / migration for KubeVirt VMs
-  # @default -- true
-  enablePersistentIPs: false
   # -- Configure to use DNSNameResolver feature with ovn-kubernetes
   enableDNSNameResolver: false
   # -- Whether to disable SNAT of egress traffic in namespaces annotated with routing-external-gws
@@ -152,21 +149,20 @@ global:
   # -- ovn-controller wait time in ms before clearing OpenFlow rules during start up
   # @default 0
   ofctrlWaitBeforeClear: ""
-  nodeMgmtPortNetdev: ""
   # -- Separate log file for libovsdb client 
   libovsdbClientLogFile: ""
   image:
     # -- Image repository for ovn-kubernetes components
     repository: ghcr.io/nvidia/ovn-kubernetes
     # -- Specify image tag to run
-    tag: v24.10.0
+    tag: v25.1.0
     # -- Image pull policy
     pullPolicy: IfNotPresent
   dpuImage:
     # -- Image repository for ovn-kubernetes components
     repository: ghcr.io/nvidia/ovn-kubernetes
     # -- Specify image tag to run
-    tag: v24.10.0
+    tag: v25.1.0
     # -- Image pull policy
     pullPolicy: IfNotPresent
 
@@ -186,7 +182,7 @@ ovn-kubernetes-resource-injector:
       - /ovnkubernetesresourceinjector
       image:
         repository: ghcr.io/nvidia/ovn-kubernetes
-        tag: v24.10.0
+        tag: v25.1.0
 
 # -- prometheus monitoring related fields
 monitoring:

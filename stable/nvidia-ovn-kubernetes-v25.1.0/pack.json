@@ -4,9 +4,9 @@
   ],
   "displayName": "nvidia-ovn-kubernetes",
   "charts": [
-    "charts/ovn-kubernetes-chart-v24.10.0.tgz"
+    "charts/ovn-kubernetes-chart-v25.1.0.tgz"
   ],
   "layer": "cni",
   "name": "cni-nvidia-ovn-kubernetes",
-  "version": "24.10.0"
+  "version": "25.1.0"
 }
