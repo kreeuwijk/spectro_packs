@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ .Release.Name }}-kamaji-etcd-defrag-job
+  name: dpf-operator-kamaji-etcd-defrag-job
   namespace: {{ .Release.Namespace }}
 spec:
   schedule: {{ index .Values "kamaji-etcd-defrag" "schedule" }}

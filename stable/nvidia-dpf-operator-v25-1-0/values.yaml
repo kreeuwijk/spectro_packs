@@ -6,7 +6,6 @@ pack:
 charts:
   dpf-operator:
     ## dpf-operator configuration.
-    fullnameOverride: dpf-operator
     controllerManager:
       containerSecurityContext:
         allowPrivilegeEscalation: false
