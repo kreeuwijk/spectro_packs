@@ -121,6 +121,8 @@ charts:
     ## kamaji configuration.
     kamaji-etcd:
       enabled: true
+      persistentVolumeClaim:
+        storageClassName: spectro-storage-class
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -158,8 +160,6 @@ charts:
       backoffLimit: 6
     kamaji:
       enabled: true
-      persistentVolumeClaim:
-        storageClassName: spectro-storage-class
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
