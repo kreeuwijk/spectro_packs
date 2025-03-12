@@ -14,7 +14,7 @@ charts:
           - ALL
       image:
         repository: ghcr.io/nvidia/dpf-system
-        tag: v24.10.0
+        tag: v25.1.0
       replicas: 1
       serviceAccount:
         annotations: {}
@@ -116,8 +116,6 @@ charts:
     ## kamaji configuration.
     kamaji-etcd:
       enabled: true
-      ## Disable etc defragmentation job.
-      autoCompactionRetention: 0
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -140,6 +138,19 @@ charts:
         annotations:
           helm.sh/resource-policy: keep
         name: default
+    ## Kamaji etcd-defrag configuration.
+    kamaji-etcd-defrag:
+      enabled: true
+      ## The schedule for the etcd-defrag job.
+      schedule: 0 0 * * *
+      image: ghcr.io/ahrtr/etcd-defrag:v0.22.0
+      ## The defrag rule for the etcd-defrag job.
+      ## See: https://github.com/ahrtr/etcd-defrag?tab=readme-ov-file#defragmentation-rule
+      defragRule: "dbQuotaUsage > 0.8 || dbSize - dbSizeInUse > 200*1024*1024"
+      ## # Keep only the X recent successful jobs.
+      successfulJobsHistoryLimit: 3
+      ## Limit the number of retries on failure
+      backoffLimit: 6
     kamaji:
       enabled: true
       affinity:
