@@ -1,0 +1,13 @@
+{
+  "addonType": "system app",
+  "cloudTypes": [
+    "edge-native"
+  ],
+  "displayName": "nvidia-dpf-operator",
+  "charts": [
+    "charts/dpf-operator-v25.1.0.tgz"
+  ],
+  "layer": "addon",
+  "name": "nvidia-dpf-operator",
+  "version": "25.1.0"
+}
