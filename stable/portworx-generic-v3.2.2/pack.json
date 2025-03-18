@@ -6,6 +6,7 @@
   },
   "cloudTypes": [
     "aws",
+    "aks",
     "azure",
     "gcp",
     "edge",
