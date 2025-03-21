@@ -132,9 +132,9 @@ charts:
       reclaimPolicy: Delete # Delete or Retain
       volumeBindingMode: WaitForFirstConsumer # WaitForFirstConsumer or Immediate
       allowVolumeExpansion: true
-      parameters:
-        repl: "2"
-        io_profile: "auto_journal"
+      parameters: {}
+        # repl: "2"
+        # io_profile: "auto_journal"
         # nodiscard: "true"
         # priority_io: "high"
         # sharedv4: true
