@@ -1,18 +1,4 @@
 presets:
-  - name: "px-enterprise-saas"
-    displayName: "PX Enterprise SaaS PAYG"
-    group: "License Models"
-    remove:
-    - "charts.portworx-generic.license.enterprise"
-    add: |
-      charts:
-        portworx-generic:
-          license:
-            # Valid options for "type" are: saas, enterprise
-            type: saas
-            saas:
-              key: <PAY-AS-YOU-GO-KEY>
-
   - name: "px-enterprise"
     displayName: "PX Enterprise"
     group: "License Models"
@@ -22,7 +8,7 @@ presets:
       charts:
         portworx-generic:
           license:
-            # Valid options for "type" are: saas, enterprise
+            # Valid options for "type" are: enterprise, saas, csi
             # If you want to deploy the PX Enterprise Trial version, or need manual offline activation,
             # select the "enterprise" type and set "activateLicense" to false.
             type: enterprise
@@ -37,12 +23,39 @@ presets:
               #   - feature1
               #   - feature2
 
+  - name: "px-enterprise-saas"
+    displayName: "PX Enterprise SaaS PAYG"
+    group: "License Models"
+    remove:
+    - "charts.portworx-generic.license.enterprise"
+    add: |
+      charts:
+        portworx-generic:
+          license:
+            # Valid options for "type" are: enterprise, saas, csi
+            type: saas
+            saas:
+              key: <PAY-AS-YOU-GO-KEY>
+
+  - name: "px-csi"
+    displayName: "PX CSI (Pure Storage)"
+    group: "License Models"
+    remove:
+    - "charts.portworx-generic.license.enterprise"
+    add: |
+      charts:
+        portworx-generic:
+          license:
+            # Valid options for "type" are: enterprise, saas, csi
+            type: csi
+
   - name: "px-spec-existing-disks"
     displayName: "Use existing disks (generic)"
     group: "Storagecluster Specs"
     remove:
     - "charts.portworx-generic.storageCluster.annotations"
     - "charts.portworx-generic.storageCluster.spec"
+    - "charts.portworx-generic.storageClass.parameters"
     - "charts.portworx-generic.azureSecret"
     - "charts.portworx-generic.vsphereSecret"
     add: |
@@ -89,6 +102,9 @@ presets:
                 prometheus:
                   enabled: false
                   exportMetrics: true
+          storageClass:
+            parameters:
+              repl: 2
 
   - name: "px-spec-aws"
     displayName: "AWS Cloud Storage for EKS"
@@ -96,6 +112,7 @@ presets:
     remove:
     - "charts.portworx-generic.storageCluster.annotations"
     - "charts.portworx-generic.storageCluster.spec"
+    - "charts.portworx-generic.storageClass.parameters"
     - "charts.portworx-generic.azureSecret"
     - "charts.portworx-generic.vsphereSecret"
     add: |
@@ -144,6 +161,9 @@ presets:
                 prometheus:
                   enabled: false
                   exportMetrics: true
+          storageClass:
+            parameters:
+              repl: 2
 
   - name: "px-spec-azure"
     displayName: "Azure Cloud Storage for AKS"
@@ -151,6 +171,7 @@ presets:
     remove:
     - "charts.portworx-generic.storageCluster.annotations"
     - "charts.portworx-generic.storageCluster.spec"
+    - "charts.portworx-generic.storageClass.parameters"
     - "charts.portworx-generic.vsphereSecret"
     add: |
       charts:
@@ -218,6 +239,9 @@ presets:
             tenantId: "your_azure_tenant_id"
             clientId: "your_azure_client_id"
             clientSecret: "your_client_secret"
+          storageClass:
+            parameters:
+              repl: 2
 
   - name: "px-spec-google"
     displayName: "Google Cloud Storage for GKE"
@@ -225,6 +249,7 @@ presets:
     remove:
     - "charts.portworx-generic.storageCluster.annotations"
     - "charts.portworx-generic.storageCluster.spec"
+    - "charts.portworx-generic.storageClass.parameters"
     - "charts.portworx-generic.azureSecret"
     - "charts.portworx-generic.vsphereSecret"
     add: |
@@ -273,6 +298,9 @@ presets:
                 prometheus:
                   enabled: false
                   exportMetrics: true
+          storageClass:
+            parameters:
+              repl: 2
 
   - name: "px-spec-vmware"
     displayName: "VMware vSphere Datastores"
@@ -280,6 +308,7 @@ presets:
     remove:
     - "charts.portworx-generic.storageCluster.annotations"
     - "charts.portworx-generic.storageCluster.spec"
+    - "charts.portworx-generic.storageClass.parameters"
     - "charts.portworx-generic.azureSecret"
     add: |
       charts:
@@ -349,13 +378,17 @@ presets:
           vsphereSecret:
             user: "username_for_vCenter_here"
             password: "your_password"
+          storageClass:
+            parameters:
+              repl: 2
 
   - name: "px-spec-flasharray"
-    displayName: "Pure Storage Flash Array"
+    displayName: "Pure Storage FlashArray"
     group: "Storagecluster Specs"
     remove:
     - "charts.portworx-generic.storageCluster.annotations"
     - "charts.portworx-generic.storageCluster.spec"
+    - "charts.portworx-generic.storageClass.parameters"
     - "charts.portworx-generic.azureSecret"
     - "charts.portworx-generic.vsphereSecret"
     add: |
@@ -408,6 +441,53 @@ presets:
               env:
               - name: PURE_FLASHARRAY_SAN_TYPE
                 value: "ISCSI" # or "FC"
+          storageClass:
+            parameters:
+              repl: 2
+
+  - name: "px-spec-flasharray-csi"
+    displayName: "Pure Storage FlashArray (CSI mode)"
+    group: "Storagecluster Specs"
+    remove:
+    - "charts.portworx-generic.storageCluster.annotations"
+    - "charts.portworx-generic.storageCluster.spec"
+    - "charts.portworx-generic.storageClass.parameters"
+    - "charts.portworx-generic.azureSecret"
+    - "charts.portworx-generic.vsphereSecret"
+    add: |
+      charts:
+        portworx-generic:
+          storageCluster:
+            annotations:
+              portworx.io/misc-args: "--oem px-csi"
+            spec:
+              # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
+              image: portworx/oci-monitor:25.2.0
+              imagePullPolicy: Always
+              deleteStrategy:
+                type: UninstallAndWipe
+              kvdb:
+                internal: true
+              cloudStorage:
+                kvdbDeviceSpec: size=32
+              stork:
+                enabled: false
+              csi:
+                enabled: true
+                #topology:
+                #  enabled: true
+              monitoring:
+                telemetry:
+                  enabled: true
+                prometheus:
+                  enabled: false
+                  exportMetrics: true
+              env:
+              - name: PURE_FLASHARRAY_SAN_TYPE
+                value: "ISCSI" # or "FC"
+          storageClass:
+            parameters:
+              backend: "pure_block"
 
   - name: "px-internal-kvdb"
     displayName: "Use internal Kvdb"
