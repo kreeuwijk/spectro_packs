@@ -42,6 +42,7 @@ presets:
     group: "License Models"
     remove:
     - "charts.portworx-generic.license.enterprise"
+    - "charts.portworx-generic.license.saas"
     add: |
       charts:
         portworx-generic:
