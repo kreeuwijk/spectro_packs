@@ -8,5 +8,5 @@
   ],
   "layer": "cni",
   "name": "cni-nvidia-ovn-kubernetesdummy",
-  "version": "24.10.0"
+  "version": "25.1.0"
 }
