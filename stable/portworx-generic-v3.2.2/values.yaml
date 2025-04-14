@@ -1,4 +1,4 @@
-# spectrocloud.com/enabled-presets: License Models:px-enterprise
+# spectrocloud.com/enabled-presets: License Models:px-enterprise,Node selection:px-deploy-worker-only
 pack:
   content:
     images:

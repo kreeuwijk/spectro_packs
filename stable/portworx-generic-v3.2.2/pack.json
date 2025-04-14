@@ -6,15 +6,14 @@
   },
   "cloudTypes": [
     "aws",
-    "aks",
+    "eks",
     "azure",
+    "aks",
     "gcp",
-    "edge",
+    "gke",
     "edge-native",
     "maas",
     "openstack",
-    "eks",
-    "tke",
     "vsphere",
     "custom"
   ],
