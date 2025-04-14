@@ -1,4 +1,4 @@
-# spectrocloud.com/enabled-presets: License Models:px-enterprise,Node selection:px-deploy-worker-only
+# spectrocloud.com/enabled-presets: License Models:px-enterprise,Node selection:px-deploy-worker-only,Palette Mode:px-normal-mode
 pack:
   content:
     images:
@@ -61,7 +61,7 @@ charts:
       namespace: portworx
       # annotations:
       #   If you need additional annotations, specify them here
-      spec: {}
+      spec:
         # Select a preset from the pane on the right, or use the Portworx Spec Builder to define a custom configuration and
         # then paste that spec section here. (Spec Builder: https://central.portworx.com/specGen/wizard)
         # ### Example spec

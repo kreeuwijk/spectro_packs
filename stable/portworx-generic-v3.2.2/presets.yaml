@@ -54,9 +54,9 @@ presets:
     displayName: Run on worker nodes only
     group: Node selection
     remove:
-    - charts.portworx-generic.storageCluster.annotations.portworx\.io/run-on-master
-    - charts.portworx-generic.storageCluster.annotations.portworx\.io/pvc-controller-port
-    - charts.portworx-generic.storageCluster.annotations.portworx\.io/pvc-controller-secure-port
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io\/run-on-master
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io\/pvc-controller-port
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io\/pvc-controller-secure-port
     - charts.portworx-generic.storageCluster.spec.placement
     add: ""
 
@@ -82,6 +82,32 @@ presets:
                         operator: NotIn
                         values:
                         - "false"
+
+  - name: px-normal-mode
+    displayName: This is a CAPI or Appliance mode cluster
+    group: Palette Mode
+    remove:
+    - charts.portworx-generic.storageCluster.spec.volumes
+    add: ""
+
+  - name: px-agent-mode
+    displayName: This is an Agent mode cluster
+    group: Palette Mode
+    remove: []
+    add: |
+      charts:
+        portworx-generic:
+          storageCluster:
+            spec:
+              volumes:
+                - hostPath:
+                    path: /var/lib/spectro/containerd
+                  mountPath: /var/lib/spectro/containerd
+                  name: custom-var-containerd
+                - hostPath:
+                    path: /run/spectro/containerd/containerd.sock
+                  mountPath: /run/containerd/containerd.sock
+                  name: custom-containerd-sock
 
   - name: px-spec-existing-disks
     displayName: Use existing disks (generic)
