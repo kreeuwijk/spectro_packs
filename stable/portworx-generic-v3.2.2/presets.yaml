@@ -1,9 +1,9 @@
 presets:
-  - name: "px-enterprise"
-    displayName: "PX Enterprise"
-    group: "License Models"
+  - name: px-enterprise
+    displayName: PX Enterprise
+    group: License Models
     remove:
-    - "charts.portworx-generic.license.saas"
+    - charts.portworx-generic.license.saas
     add: |
       charts:
         portworx-generic:
@@ -23,11 +23,11 @@ presets:
               #   - feature1
               #   - feature2
 
-  - name: "px-enterprise-saas"
-    displayName: "PX Enterprise SaaS PAYG"
-    group: "License Models"
+  - name: px-enterprise-saas
+    displayName: PX Enterprise SaaS PAYG
+    group: License Models
     remove:
-    - "charts.portworx-generic.license.enterprise"
+    - charts.portworx-generic.license.enterprise
     add: |
       charts:
         portworx-generic:
@@ -37,12 +37,12 @@ presets:
             saas:
               key: <PAY-AS-YOU-GO-KEY>
 
-  - name: "px-csi"
-    displayName: "PX CSI (Pure Storage)"
-    group: "License Models"
+  - name: px-csi
+    displayName: PX CSI (Pure Storage)
+    group: License Models
     remove:
-    - "charts.portworx-generic.license.enterprise"
-    - "charts.portworx-generic.license.saas"
+    - charts.portworx-generic.license.enterprise
+    - charts.portworx-generic.license.saas
     add: |
       charts:
         portworx-generic:
@@ -50,9 +50,9 @@ presets:
             # Valid options for "type" are: enterprise, saas, csi
             type: csi
 
-  - name: "px-deploy-worker-only"
-    displayName: "Run on worker nodes only"
-    group: "Node selection"
+  - name: px-deploy-worker-only
+    displayName: Run on worker nodes only
+    group: Node selection
     remove:
     - charts.portworx-generic.storageCluster.annotations.portworx\.io/run-on-master
     - charts.portworx-generic.storageCluster.annotations.portworx\.io/pvc-controller-port
@@ -60,9 +60,9 @@ presets:
     - charts.portworx-generic.storageCluster.spec.placement
     add: ""
 
-  - name: "px-deploy-all-nodes"
-    displayName: "Run on control plane and worker nodes"
-    group: "Node selection"
+  - name: px-deploy-all-nodes
+    displayName: Run on control plane and worker nodes
+    group: Node selection
     remove: []
     add: |
       charts:
@@ -72,26 +72,32 @@ presets:
               portworx.io/run-on-master: "true"
               portworx.io/pvc-controller-port: "10261"
               portworx.io/pvc-controller-secure-port: "10262"
-      spec:
-        placement:
-          nodeAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              nodeSelectorTerms:
-              - matchExpressions:
-                - key: px/enabled
-                  operator: NotIn
-                  values:
-                  - "false"
+            spec:
+              placement:
+                nodeAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    nodeSelectorTerms:
+                    - matchExpressions:
+                      - key: px/enabled
+                        operator: NotIn
+                        values:
+                        - "false"
 
-  - name: "px-spec-existing-disks"
-    displayName: "Use existing disks (generic)"
-    group: "Storagecluster Specs"
+  - name: px-spec-existing-disks
+    displayName: Use existing disks (generic)
+    group: Storagecluster Specs
     remove:
-    - "charts.portworx-generic.storageCluster.annotations"
-    - "charts.portworx-generic.storageCluster.spec"
-    - "charts.portworx-generic.storageClass.parameters"
-    - "charts.portworx-generic.azureSecret"
-    - "charts.portworx-generic.vsphereSecret"
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-eks
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-aks
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-gke
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/misc-args
+    - charts.portworx-generic.storageCluster.spec.autopilot
+    - charts.portworx-generic.storageCluster.spec.env
+    - charts.portworx-generic.storageCluster.spec.storage
+    - charts.portworx-generic.storageCluster.spec.cloudStorage
+    - charts.portworx-generic.storageClass.parameters
+    - charts.portworx-generic.azureSecret
+    - charts.portworx-generic.vsphereSecret
     add: |
       charts:
         portworx-generic:
@@ -140,15 +146,21 @@ presets:
             parameters:
               repl: 2
 
-  - name: "px-spec-aws"
-    displayName: "AWS Cloud Storage for EKS"
-    group: "Storagecluster Specs"
+  - name: px-spec-aws
+    displayName: AWS Cloud Storage for EKS
+    group: Storagecluster Specs
     remove:
-    - "charts.portworx-generic.storageCluster.annotations"
-    - "charts.portworx-generic.storageCluster.spec"
-    - "charts.portworx-generic.storageClass.parameters"
-    - "charts.portworx-generic.azureSecret"
-    - "charts.portworx-generic.vsphereSecret"
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-eks
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-aks
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-gke
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/misc-args
+    - charts.portworx-generic.storageCluster.spec.autopilot
+    - charts.portworx-generic.storageCluster.spec.env
+    - charts.portworx-generic.storageCluster.spec.storage
+    - charts.portworx-generic.storageCluster.spec.cloudStorage
+    - charts.portworx-generic.storageClass.parameters
+    - charts.portworx-generic.azureSecret
+    - charts.portworx-generic.vsphereSecret
     add: |
       charts:
         portworx-generic:
@@ -199,14 +211,20 @@ presets:
             parameters:
               repl: 2
 
-  - name: "px-spec-azure"
-    displayName: "Azure Cloud Storage for AKS"
-    group: "Storagecluster Specs"
+  - name: px-spec-azure
+    displayName: Azure Cloud Storage for AKS
+    group: Storagecluster Specs
     remove:
-    - "charts.portworx-generic.storageCluster.annotations"
-    - "charts.portworx-generic.storageCluster.spec"
-    - "charts.portworx-generic.storageClass.parameters"
-    - "charts.portworx-generic.vsphereSecret"
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-eks
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-aks
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-gke
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/misc-args
+    - charts.portworx-generic.storageCluster.spec.autopilot
+    - charts.portworx-generic.storageCluster.spec.env
+    - charts.portworx-generic.storageCluster.spec.storage
+    - charts.portworx-generic.storageCluster.spec.cloudStorage
+    - charts.portworx-generic.storageClass.parameters
+    - charts.portworx-generic.vsphereSecret
     add: |
       charts:
         portworx-generic:
@@ -277,15 +295,21 @@ presets:
             parameters:
               repl: 2
 
-  - name: "px-spec-google"
-    displayName: "Google Cloud Storage for GKE"
-    group: "Storagecluster Specs"
+  - name: px-spec-google
+    displayName: Google Cloud Storage for GKE
+    group: Storagecluster Specs
     remove:
-    - "charts.portworx-generic.storageCluster.annotations"
-    - "charts.portworx-generic.storageCluster.spec"
-    - "charts.portworx-generic.storageClass.parameters"
-    - "charts.portworx-generic.azureSecret"
-    - "charts.portworx-generic.vsphereSecret"
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-eks
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-aks
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-gke
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/misc-args
+    - charts.portworx-generic.storageCluster.spec.autopilot
+    - charts.portworx-generic.storageCluster.spec.env
+    - charts.portworx-generic.storageCluster.spec.storage
+    - charts.portworx-generic.storageCluster.spec.cloudStorage
+    - charts.portworx-generic.storageClass.parameters
+    - charts.portworx-generic.azureSecret
+    - charts.portworx-generic.vsphereSecret
     add: |
       charts:
         portworx-generic:
@@ -336,14 +360,20 @@ presets:
             parameters:
               repl: 2
 
-  - name: "px-spec-vmware"
-    displayName: "VMware vSphere Datastores"
-    group: "Storagecluster Specs"
+  - name: px-spec-vmware
+    displayName: VMware vSphere Datastores
+    group: Storagecluster Specs
     remove:
-    - "charts.portworx-generic.storageCluster.annotations"
-    - "charts.portworx-generic.storageCluster.spec"
-    - "charts.portworx-generic.storageClass.parameters"
-    - "charts.portworx-generic.azureSecret"
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-eks
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-aks
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-gke
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/misc-args
+    - charts.portworx-generic.storageCluster.spec.autopilot
+    - charts.portworx-generic.storageCluster.spec.env
+    - charts.portworx-generic.storageCluster.spec.storage
+    - charts.portworx-generic.storageCluster.spec.cloudStorage
+    - charts.portworx-generic.storageClass.parameters
+    - charts.portworx-generic.azureSecret
     add: |
       charts:
         portworx-generic:
@@ -416,15 +446,21 @@ presets:
             parameters:
               repl: 2
 
-  - name: "px-spec-flasharray"
-    displayName: "Pure Storage FlashArray"
-    group: "Storagecluster Specs"
+  - name: px-spec-flasharray
+    displayName: Pure Storage FlashArray
+    group: Storagecluster Specs
     remove:
-    - "charts.portworx-generic.storageCluster.annotations"
-    - "charts.portworx-generic.storageCluster.spec"
-    - "charts.portworx-generic.storageClass.parameters"
-    - "charts.portworx-generic.azureSecret"
-    - "charts.portworx-generic.vsphereSecret"
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-eks
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-aks
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-gke
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/misc-args
+    - charts.portworx-generic.storageCluster.spec.autopilot
+    - charts.portworx-generic.storageCluster.spec.env
+    - charts.portworx-generic.storageCluster.spec.storage
+    - charts.portworx-generic.storageCluster.spec.cloudStorage
+    - charts.portworx-generic.storageClass.parameters
+    - charts.portworx-generic.azureSecret
+    - charts.portworx-generic.vsphereSecret
     add: |
       charts:
         portworx-generic:
@@ -479,15 +515,23 @@ presets:
             parameters:
               repl: 2
 
-  - name: "px-spec-flasharray-csi"
-    displayName: "Pure Storage FlashArray (CSI mode)"
-    group: "Storagecluster Specs"
+  - name: px-spec-flasharray-csi
+    displayName: Pure Storage FlashArray (CSI mode)
+    group: Storagecluster Specs
     remove:
-    - "charts.portworx-generic.storageCluster.annotations"
-    - "charts.portworx-generic.storageCluster.spec"
-    - "charts.portworx-generic.storageClass.parameters"
-    - "charts.portworx-generic.azureSecret"
-    - "charts.portworx-generic.vsphereSecret"
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-eks
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-aks
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/is-gke
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/misc-args
+    - charts.portworx-generic.storageCluster.spec.autopilot
+    - charts.portworx-generic.storageCluster.spec.env
+    - charts.portworx-generic.storageCluster.spec.runtimeOptions
+    - charts.portworx-generic.storageCluster.spec.secretsProvider
+    - charts.portworx-generic.storageCluster.spec.storage
+    - charts.portworx-generic.storageCluster.spec.cloudStorage
+    - charts.portworx-generic.storageClass.parameters
+    - charts.portworx-generic.azureSecret
+    - charts.portworx-generic.vsphereSecret
     add: |
       charts:
         portworx-generic:
@@ -523,9 +567,9 @@ presets:
             parameters:
               backend: "pure_block"
 
-  - name: "px-internal-kvdb"
-    displayName: "Use internal Kvdb"
-    group: "Kvdb and Etcd"
+  - name: px-internal-kvdb
+    displayName: Use internal Kvdb
+    group: Kvdb and Etcd
     remove:
       - charts.portworx-generic.externalKvdb
       - charts.portworx-generic.storageCluster.spec.kvdb.endpoints
@@ -538,9 +582,9 @@ presets:
               kvdb:
                 internal: true
 
-  - name: "px-external-kvdb"
-    displayName: "Use external Kvdb over HTTP"
-    group: "Kvdb and Etcd"
+  - name: px-external-kvdb
+    displayName: Use external Kvdb over HTTP
+    group: Kvdb and Etcd
     remove:
     - charts.portworx-generic.storageCluster.spec.kvdb.internal
     - charts.portworx-generic.externalKvdb.cacert
@@ -557,9 +601,9 @@ presets:
           externalKvdb:
             useCertsForSSL: false
 
-  - name: "px-external-kvdb-ssl"
-    displayName: "Use external Kvdb over SSL"
-    group: "Kvdb and Etcd"
+  - name: px-external-kvdb-ssl
+    displayName: Use external Kvdb over SSL
+    group: Kvdb and Etcd
     remove:
     - charts.portworx-generic.storageCluster.spec.kvdb.internal
     add: |
@@ -598,9 +642,9 @@ presets:
               WsqUCBt5+DnOaDyvMkokP+T5tj/2LXemuIi4Q5nrOmw/WwVGGGs=
               -----END RSA PRIVATE KEY-----
 
-  - name: "px-enable-proxy"
-    displayName: "Use Proxy server for HTTP(S)"
-    group: "HTTP(S) Proxy"
+  - name: px-enable-proxy
+    displayName: Use Proxy server for HTTP(S)
+    group: HTTP(S) Proxy
     remove: []
     add: |
       charts:
