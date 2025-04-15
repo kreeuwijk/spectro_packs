@@ -1,3 +1,10 @@
+pack:
+  content:
+    images: []
+  namespaceLabels:
+    "ovn-host-network": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=v{{ .spectro.system.kubernetes.version | substr 0 4 }}"
+    "ovn-kubernetes": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=v{{ .spectro.system.kubernetes.version | substr 0 4 }}"
+
 charts:
   ovn-kubernetes:
     # Values for ovn-kubernetes with multi-node zone interconnect
