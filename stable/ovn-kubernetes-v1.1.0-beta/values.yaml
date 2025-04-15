@@ -4,9 +4,8 @@ pack:
 
 charts:
   ovn-kubernetes:
-    # Values for ovn-kubernetes with multi-node zone interconnect
-    # Requires: ovnkube-control-plane, ovnkube-zone-controller, ovnkube-node
-    # enableOvnKubeIdentity need to be false 
+    # Values for ovn-kubernetes with single-node zone interconnect
+    # Requires: ovnkube-single-node-zone, ovnkube-control-plane
 
     # -- list of dependent subcharts that need to be installed for the given deployment mode, these subcharts haven't been tested yet.
     tags:
@@ -14,12 +13,13 @@ charts:
       ovnkube-db: false
       ovnkube-db-raft: false
       ovnkube-master: false
+      ovnkube-node: false
       ovnkube-node-dpu: false
       ovnkube-node-dpu-host: false
-      ovnkube-single-node-zone: false
+      ovnkube-zone-controller: false
 
     # -- Endpoint of Kubernetes api server ("auto" or "https://ip:port")
-    k8sAPIServer: auto
+    k8sAPIServer: https://172.25.0.2:6443
     # -- IP range for Kubernetes pods, /14 is the top level range, under which each /23 range will be assigned to a node
     podNetwork: 10.244.0.0/16/24
     # -- A comma-separated set of CIDR notation IP ranges from which k8s assigns service cluster IPs. This should be the same as the value provided for kube-apiserver "--service-cluster-ip-range" option
@@ -55,7 +55,7 @@ charts:
       # -- The v6 subnet for transit switch
       v6TransitSwitchSubnet: "fd97::/64"
       # -- Whether or not enable ovnkube identity webhook
-      enableOvnKubeIdentity: false
+      enableOvnKubeIdentity: true
       # -- Indicate if ovnkube run master and node in one process
       enableCompactMode: false
       # -- Whether or not to enable hybrid overlay functionality
@@ -104,6 +104,9 @@ charts:
       lFlowCacheLimit: ""
       # -- Maximum size of the logical flow cache (in KB) ovn-controller may create when the logical flow cache is enabled
       lFlowCacheLimitKb: ""
+      # -- Configure to use the IPAMClaims CRD feature with ovn-kubernetes, thus granting persistent IPs across restarts / migration for KubeVirt VMs
+      # @default -- true
+      enablePersistentIPs: true
       # -- Configure to use DNSNameResolver feature with ovn-kubernetes
       enableDNSNameResolver: false
       # -- Whether to disable SNAT of egress traffic in namespaces annotated with routing-external-gws
