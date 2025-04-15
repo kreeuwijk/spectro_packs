@@ -54,9 +54,9 @@ presets:
     displayName: Run on worker nodes only
     group: Node selection
     remove:
-    - charts.portworx-generic.storageCluster.annotations."[portworx.io/run-on-master]"
-    - charts.portworx-generic.storageCluster.annotations."[portworx.io/pvc-controller-port]"
-    - charts.portworx-generic.storageCluster.annotations."[portworx.io/pvc-controller-secure-port]"
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/run-on-master
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/pvc-controller-port
+    - charts.portworx-generic.storageCluster.annotations.portworx\.io/pvc-controller-secure-port
     - charts.portworx-generic.storageCluster.spec.placement
     add: ""
 
