@@ -81,3 +81,17 @@ Create dockerconfigjson to access container registry
 {{- define "dockerconfigjson" -}}
 {{- printf "{\"auths\": {\"%s\": {\"auth\": \"%s\"}}}" .registry .auth }}
 {{- end }}
+
+{{/*
+Enable automatic lookup of k8sAPIServer from the cluster-info ConfigMap (kubeadm-based clusters only)
+*/}}
+{{- define "k8sAPIServer" }}
+  {{- if and (eq .Values.k8sAPIServer "auto") (lookup "v1" "ConfigMap" "kube-public" "cluster-info") }}
+    {{- $configmap := (lookup "v1" "ConfigMap" "kube-public" "cluster-info") }}
+    {{- $kubeconfig := get $configmap.data "kubeconfig" }}
+    {{- $k8sServer := get ($kubeconfig | fromYaml) "clusters" | mustFirst | dig "cluster" "server" "" }}
+    {{- $k8sServer | quote }}
+  {{- else }}
+    {{- .Values.k8sAPIServer | quote }}
+  {{- end }}
+{{- end }}

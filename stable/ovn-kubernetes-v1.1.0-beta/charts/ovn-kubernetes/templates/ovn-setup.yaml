@@ -13,6 +13,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: ovn-kubernetes
+  labels:
+    pod-security.kubernetes.io/enforce: privileged
 {{- end }}
 
 ---
@@ -46,7 +48,7 @@ metadata:
 data:
   net_cidr:      {{ .Values.podNetwork }}
   svc_cidr:      {{ .Values.serviceNetwork }}
-  k8s_apiserver: {{ .Values.k8sAPIServer }}
+  k8s_apiserver: {{ include "k8sAPIServer" . }}
   mtu:           {{ .Values.mtu | default 1500 | quote }}
   host_network_namespace: {{ $hostNetworkNamespace }}
 
@@ -62,6 +64,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: {{ $hostNetworkNamespace }}
+  labels:
+    pod-security.kubernetes.io/enforce: privileged
 {{- end }}
 
 {{- if (and .Values.global.dockerConfigSecret .Values.global.dockerConfigSecret.create) }}
