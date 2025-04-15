@@ -104,9 +104,6 @@ charts:
       lFlowCacheLimit: ""
       # -- Maximum size of the logical flow cache (in KB) ovn-controller may create when the logical flow cache is enabled
       lFlowCacheLimitKb: ""
-      # -- Configure to use the IPAMClaims CRD feature with ovn-kubernetes, thus granting persistent IPs across restarts / migration for KubeVirt VMs
-      # @default -- true
-      enablePersistentIPs: true
       # -- Configure to use DNSNameResolver feature with ovn-kubernetes
       enableDNSNameResolver: false
       # -- Whether to disable SNAT of egress traffic in namespaces annotated with routing-external-gws
