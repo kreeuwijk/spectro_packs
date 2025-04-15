@@ -17,9 +17,10 @@ charts:
       ovnkube-node-dpu: false
       ovnkube-node-dpu-host: false
       ovnkube-zone-controller: false
+      ovnkube-single-node-zone: true
 
     # -- Endpoint of Kubernetes api server ("auto" or "https://ip:port")
-    k8sAPIServer: https://172.25.0.2:6443
+    k8sAPIServer: auto
     # -- IP range for Kubernetes pods, /14 is the top level range, under which each /23 range will be assigned to a node
     podNetwork: 10.244.0.0/16/24
     # -- A comma-separated set of CIDR notation IP ranges from which k8s assigns service cluster IPs. This should be the same as the value provided for kube-apiserver "--service-cluster-ip-range" option
