@@ -1,0 +1,60 @@
+apiVersion: v2
+name: ovn-kubernetes
+description: Helm chart to deploy ovn-kubernetes cni
+type: application
+version: 1.1.0-beta
+appVersion: "1.1.0-beta"
+home: https://ovn-kubernetes.io/
+icon: https://www.ovn.org/images/ovn-logo.png
+sources:
+  - https://github.com/ovn-org/ovn-kubernetes
+  - https://github.com/ovn-org/ovn
+dependencies:
+  - name: ovn-ipsec
+    version: 1.1.0-beta
+    tags:
+      - ovn-ipsec
+  - name: ovnkube-control-plane
+    version: 1.1.0-beta
+    tags:
+      - ovnkube-control-plane
+  - name: ovnkube-db
+    version: 1.1.0-beta
+    tags:
+      - ovnkube-db
+  - name: ovnkube-db-raft
+    version: 1.1.0-beta
+    tags:
+      - ovnkube-db-raft
+  - name: ovnkube-identity
+    version: 1.1.0-beta
+    tags:
+      - ovnkube-identity
+  - name: ovnkube-master
+    version: 1.1.0-beta
+    tags:
+      - ovnkube-master
+  - name: ovnkube-node
+    version: 1.1.0-beta
+    tags:
+      - ovnkube-node
+  - name: ovnkube-node-dpu
+    version: 1.1.0-beta
+    tags:
+      - ovnkube-node-dpu
+  - name: ovnkube-node-dpu-host
+    version: 1.1.0-beta
+    tags:
+      - ovnkube-node-dpu-host
+  - name: ovnkube-single-node-zone
+    version: 1.1.0-beta
+    tags:
+      - ovnkube-single-node-zone
+  - name: ovnkube-zone-controller
+    version: 1.1.0-beta
+    tags:
+      - ovnkube-zone-controller
+  - name: ovs-node
+    version: 1.1.0-beta
+    tags:
+      - ovs-node

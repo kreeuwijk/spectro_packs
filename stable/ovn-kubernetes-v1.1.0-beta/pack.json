@@ -1,0 +1,13 @@
+{
+  "cloudTypes": [
+    "edge-native",
+    "maas"
+  ],
+  "displayName": "ovn-kubernetes",
+  "charts": [
+    "charts/ovn-kubernetes-1.1.0-beta.tgz"
+  ],
+  "layer": "cni",
+  "name": "cni-ovn-kubernetes",
+  "version": "1.1.0-beta"
+}
