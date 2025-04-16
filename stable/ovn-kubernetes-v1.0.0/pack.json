@@ -1,7 +1,6 @@
 {
   "cloudTypes": [
-    "edge-native",
-    "maas"
+    "edge-native"
   ],
   "displayName": "ovn-kubernetes",
   "charts": [
