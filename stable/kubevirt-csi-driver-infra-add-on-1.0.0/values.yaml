@@ -15,4 +15,5 @@ charts:
       # Namespaces in which to deploy the Kubevirt CSI service account on the host VMO cluster.
       # Kubernetes clusters on VMs in these namespaces will be able to use the Kubevirt CSI Driver.
       namespaces:
+      - default
       - virtual-machines
