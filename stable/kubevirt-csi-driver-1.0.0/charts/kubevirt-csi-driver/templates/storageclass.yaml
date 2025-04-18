@@ -1,25 +1,27 @@
+{{- range .Values.deployment.storageClasses }}
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: kubevirt
   annotations:
-  {{- if .Values.storageClass.annotations }}
-{{ toYaml .Values.storageClass.annotations | indent 4 }}
+  {{- if .annotations }}
+{{ toYaml .annotations | indent 4 }}
   {{- end }}
-  {{- if .Values.storageClass.isDefaultStorageClass }}
-    storageclass.kubernetes.io/is-default-class: {{ .Values.storageClass.isDefaultStorageClass | quote }}
+  {{- if .isDefaultStorageClass }}
+    storageclass.kubernetes.io/is-default-class: {{ .isDefaultStorageClass | quote }}
   {{- end }}
 provisioner: csi.kubevirt.io
 parameters:
-  {{- range $key, $value := .Values.storageClass.parameters }}
+  {{- range $key, $value := .parameters }}
   {{ $key }}: {{ $value | quote }}
   {{- end}}
-{{- if .Values.storageClass.allowVolumeExpansion }}
-allowVolumeExpansion: {{ .Values.storageClass.allowVolumeExpansion }}
+{{- if .allowVolumeExpansion }}
+allowVolumeExpansion: {{ .allowVolumeExpansion }}
 {{- end}}
-{{- if .Values.storageClass.reclaimPolicy }}
-reclaimPolicy: {{ .Values.storageClass.reclaimPolicy }}
+{{- if .reclaimPolicy }}
+reclaimPolicy: {{ .reclaimPolicy }}
 {{- end}}
-{{- if .Values.storageClass.volumeBindingMode }}
-volumeBindingMode: {{ .Values.storageClass.volumeBindingMode }}
+{{- if .volumeBindingMode }}
+volumeBindingMode: {{ .volumeBindingMode }}
+{{- end}}
 {{- end}}
