@@ -1,4 +1,5 @@
 {
+  "addonType":"system app",
   "annotations": {
     "docsURL": "",
     "prerequisitesRequired": "true",
@@ -12,7 +13,7 @@
   "charts": [
     "charts/kubevirt-csi-driver-1.0.0.tgz"
   ],
-  "layer": "csi",
+  "layer": "addon",
   "name": "kubevirt-csi-driver",
   "version": "1.0.0",
   "constraints": {
