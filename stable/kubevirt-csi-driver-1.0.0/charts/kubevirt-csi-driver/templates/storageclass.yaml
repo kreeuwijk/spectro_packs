@@ -2,7 +2,7 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: {{ . | quote }}
+  name: {{ .name | quote }}
   annotations:
   {{- if .annotations }}
 {{ toYaml .annotations | indent 4 }}
