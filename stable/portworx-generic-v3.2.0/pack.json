@@ -1,6 +1,6 @@
 {
   "annotations": {
-    "docsURL": "https://docs.spectrocloud.com/integrations/portworx",
+    "docsURL": "",
     "prerequisitesRequired": "true",
     "source": "spectrocloud"
   },

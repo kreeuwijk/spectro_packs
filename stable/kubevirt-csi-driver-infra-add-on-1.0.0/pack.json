@@ -1,6 +1,7 @@
 {
   "addonType":"system app",
   "annotations": {
+    "docsURL": "",
     "prerequisitesRequired": "true",
     "source": "community",
     "contributor": "spectrocloud"
