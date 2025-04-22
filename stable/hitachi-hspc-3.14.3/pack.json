@@ -1,7 +1,5 @@
 {
   "annotations": {
-    "docsURL": "https://docs.spectrocloud.com/integrations/packs/?pack=csi-hitachi-hspc&version=3.14.3",
-    "prerequisitesRequired": "true",
     "source": "community",
     "contributor": "spectrocloud"
   },

@@ -1,8 +1,6 @@
 {
   "addonType":"system app",
   "annotations": {
-    "docsURL": "https://docs.spectrocloud.com/integrations/portworx",
-    "prerequisitesRequired": "true",
     "source": "spectrocloud"
   },
   "cloudTypes": [
