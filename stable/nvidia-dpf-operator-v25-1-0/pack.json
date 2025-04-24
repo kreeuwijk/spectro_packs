@@ -3,7 +3,7 @@
   "cloudTypes": [
     "edge-native"
   ],
-  "displayName": "nvidia-dpf-operator",
+  "displayName": "Nvidia DPF Operator",
   "charts": [
     "charts/dpf-operator-v25.1.0.tgz"
   ],

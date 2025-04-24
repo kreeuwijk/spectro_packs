@@ -2,7 +2,7 @@
   "cloudTypes": [
     "edge-native"
   ],
-  "displayName": "nvidia-ovn-kubernetes",
+  "displayName": "Nvidia OVN-Kubernetes",
   "charts": [
     "charts/ovn-kubernetes-chart-v24.10.0.tgz"
   ],
