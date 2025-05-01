@@ -11,7 +11,8 @@
     "maas",
     "openstack",
     "edge-native",
-    "azure"
+    "azure",
+    "aks"
   ],
   "displayName": "Cilium",
   "charts": [
