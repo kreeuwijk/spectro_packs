@@ -21,7 +21,7 @@ spec:
       containers:
       - name: portworx-operator
         imagePullPolicy: Always
-        image: docker.io/portworx/px-operator:24.2.3
+        image: docker.io/portworx/px-operator:24.2.4
         command:
         - /operator
         - --verbose

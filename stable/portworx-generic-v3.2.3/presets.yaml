@@ -130,7 +130,7 @@ presets:
           storageCluster:
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: docker.io/portworx/oci-monitor:3.2.2
+              image: docker.io/portworx/oci-monitor:3.2.3
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -195,7 +195,7 @@ presets:
               portworx.io/is-eks: "true"
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: docker.io/portworx/oci-monitor:3.2.2
+              image: docker.io/portworx/oci-monitor:3.2.3
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -259,7 +259,7 @@ presets:
               portworx.io/is-aks: "true"
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: docker.io/portworx/oci-monitor:3.2.2
+              image: docker.io/portworx/oci-monitor:3.2.3
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -344,7 +344,7 @@ presets:
               portworx.io/is-gke: "true"
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: docker.io/portworx/oci-monitor:3.2.2
+              image: docker.io/portworx/oci-monitor:3.2.3
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -406,7 +406,7 @@ presets:
           storageCluster:
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: docker.io/portworx/oci-monitor:3.2.2
+              image: docker.io/portworx/oci-monitor:3.2.3
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -493,7 +493,7 @@ presets:
           storageCluster:
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: docker.io/portworx/oci-monitor:3.2.2
+              image: docker.io/portworx/oci-monitor:3.2.3
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -566,7 +566,7 @@ presets:
               portworx.io/misc-args: "--oem px-csi"
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: portworx/oci-monitor:25.2.0
+              image: portworx/oci-monitor:25.4.0
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe

@@ -2,17 +2,18 @@
 pack:
   content:
     images:
-      # From https://install.portworx.com/3.2.2/air-gapped
+      # From https://install.portworx.com/3.2.3/air-gapped
       - image: docker.io/nginxinc/nginx-unprivileged:1.27-alpine3.20-slim
       - image: docker.io/portworx/autopilot:1.3.16
-      - image: docker.io/portworx/oci-monitor:3.2.2
+      - image: docker.io/portworx/oci-monitor:3.2.3
+      - image: docker.io/portworx/oci-monitor:25.4.0
       - image: docker.io/portworx/portworx-dynamic-plugin:1.1.3
-      - image: docker.io/portworx/px-enterprise:3.2.2
-      - image: docker.io/portworx/px-operator:24.2.3
+      - image: docker.io/portworx/px-enterprise:3.2.3
+      - image: docker.io/portworx/px-operator:24.2.4
       - image: docker.io/portworx/log-upload:px-1.1.40
       - image: docker.io/portworx/realtime-metrics:1.0.31
-      - image: docker.io/openstorage/cmdexecutor:25.2.0
-      - image: docker.io/openstorage/stork:25.1.0
+      - image: docker.io/openstorage/cmdexecutor:25.2.2
+      - image: docker.io/openstorage/stork:25.2.2
       - image: docker.io/purestorage/ccm-go:1.2.2
       - image: docker.io/purestorage/telemetry-envoy:1.1.16
       - image: registry.k8s.io/kube-controller-manager-amd64:v1.23.12
@@ -20,7 +21,7 @@ pack:
       - image: registry.k8s.io/kube-scheduler-amd64:v1.23.12
       - image: registry.k8s.io/pause:3.1
       - image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.12.0
-      - image: registry.k8s.io/sig-storage/csi-provisioner:v3.6.1
+      - image: registry.k8s.io/sig-storage/csi-provisioner:v5.1.0
       - image: registry.k8s.io/sig-storage/csi-resizer:v1.12.0
       - image: registry.k8s.io/sig-storage/csi-snapshotter:v8.1.0
       - image: registry.k8s.io/sig-storage/snapshot-controller:v8.1.0
@@ -65,7 +66,7 @@ charts:
         # Select a preset from the pane on the right, or use the Portworx Spec Builder to define a custom configuration and
         # then paste that spec section here. (Spec Builder: https://central.portworx.com/specGen/wizard)
         # ### Example spec
-        # image: portworx/oci-monitor:3.2.2
+        # image: portworx/oci-monitor:3.2.3
         # imagePullPolicy: Always
         # deleteStrategy:
         #   type: UninstallAndWipe
