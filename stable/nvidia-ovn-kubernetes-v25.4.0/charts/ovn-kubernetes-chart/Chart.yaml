@@ -1,72 +1,16 @@
+annotations:
+  commit: cc0dbc24fc50dd345214e5b8b8523f437b629064
+  created: "2025-05-19T15:31:35+00:00"
+  dpfVersion: v25.4.0
 apiVersion: v2
 appVersion: 1.0.0
 dependencies:
-- name: ovn-ipsec
+- condition: ovn-kubernetes-resource-injector.enabled
+  name: ovn-kubernetes-resource-injector
   repository: ""
-  tags:
-  - ovn-ipsec
   version: 1.0.0
-- name: ovnkube-control-plane
-  repository: ""
-  tags:
-  - ovnkube-control-plane
-  version: 1.0.0
-- name: ovnkube-db
-  repository: ""
-  tags:
-  - ovnkube-db
-  version: 1.0.0
-- name: ovnkube-db-raft
-  repository: ""
-  tags:
-  - ovnkube-db-raft
-  version: 1.0.0
-- name: ovnkube-identity
-  repository: ""
-  tags:
-  - ovnkube-identity
-  version: 1.0.0
-- name: ovnkube-master
-  repository: ""
-  tags:
-  - ovnkube-master
-  version: 1.0.0
-- name: ovnkube-node
-  repository: ""
-  tags:
-  - ovnkube-node
-  version: 1.0.0
-- name: ovnkube-node-dpu
-  repository: ""
-  tags:
-  - ovnkube-node-dpu
-  version: 1.0.0
-- name: ovnkube-node-dpu-host
-  repository: ""
-  tags:
-  - ovnkube-node-dpu-host
-  version: 1.0.0
-- name: ovnkube-single-node-zone
-  repository: ""
-  tags:
-  - ovnkube-single-node-zone
-  version: 1.0.0
-- name: ovnkube-zone-controller
-  repository: ""
-  tags:
-  - ovnkube-zone-controller
-  version: 1.0.0
-- name: ovs-node
-  repository: ""
-  tags:
-  - ovs-node
-  version: 1.0.0
-- name: ovn-kubernetes-resource-injector
-  repository: ""
-  tags:
-  - ovn-kubernetes-resource-injector
-  version: 1.0.0
-description: Helm chart to deploy ovn-kubernetes cni
+description: Helm chart to deploy ovn-kubernetes in the NVIDIA DOCA Platform Framework
+  (DPF) context
 home: https://ovn-kubernetes.io/
 icon: https://www.ovn.org/images/ovn-logo.png
 name: ovn-kubernetes-chart
@@ -74,4 +18,4 @@ sources:
 - https://github.com/ovn-org/ovn-kubernetes
 - https://github.com/ovn-org/ovn
 type: application
-version: v25.1.0
+version: v25.4.0

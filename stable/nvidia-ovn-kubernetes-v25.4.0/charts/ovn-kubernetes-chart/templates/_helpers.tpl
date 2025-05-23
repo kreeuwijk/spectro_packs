@@ -1,83 +1,51 @@
 {{/*
-Check if namespace spec is needed or not
-- if namespace doesn't exist, return "true"
-- if namespace exists but not managed by Helm, return "true", otherwise the namespace will be deleted
+Expand the name of the chart.
 */}}
-{{- define "needNamespace" -}}
-{{- $ns := lookup "v1" "Namespace" "" . }}
-{{- if not $ns }}
-{{- print "true" }}
+{{- define "ovn-kubernetes.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 50 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+Create a default fully qualified app name.
+We truncate at 40 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
+*/}}
+{{- define "ovn-kubernetes.fullname" -}}
+{{- if .Values.fullnameOverride }}
+{{- .Values.fullnameOverride | trunc 40 | trimSuffix "-" }}
 {{- else }}
-{{- $managedBy := get $ns.metadata.labels "app.kubernetes.io/managed-by" }}
-  {{- if eq $managedBy "Helm" }}
-    {{- print "true" }}
-  {{- else }}
-    {{- print "false" }}
-  {{- end }}
-{{- end }}
-{{- end }}
-
-{{/*
-Generate image
-*/}}
-{{- define "getImage" -}}
-  {{- $image := "" }}
-  {{- if and (ne .Values.global.image.repository "") (ne .Values.global.image.tag "") }}
-    {{- $image = printf "%s:%s" .Values.global.image.repository .Values.global.image.tag }}
-  {{- else if and (ne .Values.image.repository "") (ne .Values.image.tag "") }}
-    {{- $image = printf "%s:%s" .Values.image.repository .Values.image.tag }}
-  {{- end }}
-    {{- if eq $image "" }}
-      {{ fail "image not found" }}
-    {{- else }}
-      {{- print $image }}
-    {{- end }}
-{{- end }}
-
-{{/*
-Generate DPU image
-*/}}
-{{- define "getDPUImage" -}}
-  {{- $image := "" }}
-  {{- if and (ne .Values.global.dpuImage.repository "") (ne .Values.global.dpuImage.tag "") }}
-    {{- $image = printf "%s:%s" .Values.global.dpuImage.repository .Values.global.dpuImage.tag }}
-  {{- else if and (ne .Values.dpuImage.repository "") (ne .Values.dpuImage.tag "") }}
-    {{- $image = printf "%s:%s" .Values.dpuImage.repository .Values.dpuImage.tag }}
-  {{- end }}
-    {{- if eq $image "" }}
-      {{ fail "dpu image not found" }}
-    {{- else }}
-      {{- print $image }}
-    {{- end }}
-{{- end }}
-
-{{/*
-Output "yes" if enableSsl is true, otherwise "no"
-*/}}
-{{- define "isSslEnabled" -}}
-{{- $sslEnabled := hasKey .Values.global "enableSsl" | ternary .Values.global.enableSsl false }}
-{{- if eq $sslEnabled true }}
-  {{- print "yes" }}
+{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 40 | trimSuffix "-" }}
 {{- else }}
-  {{- print "no" }}
+{{- printf "%s-%s" .Release.Name $name | trunc 40 | trimSuffix "-" }}
 {{- end }}
-{{- end }}
-
-{{/*
-Output "yes" if unprivilegedMode is true, otherwise "no"
-*/}}
-{{- define "isUnprivilegedMode" -}}
-{{- $unprivilegedMode := hasKey .Values.global "unprivilegedMode" | ternary .Values.global.unprivilegedMode false }}
-{{- if eq $unprivilegedMode true }}
-  {{- print "yes" }}
-{{- else }}
-  {{- print "no" }}
 {{- end }}
 {{- end }}
 
 {{/*
-Create dockerconfigjson to access container registry
+Create chart name and version as used by the chart label.
 */}}
-{{- define "dockerconfigjson" -}}
-{{- printf "{\"auths\": {\"%s\": {\"auth\": \"%s\"}}}" .registry .auth }}
+{{- define "ovn-kubernetes.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 50 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+Common labels
+*/}}
+{{- define "ovn-kubernetes.labels" -}}
+helm.sh/chart: {{ include "ovn-kubernetes.chart" . }}
+{{ include "ovn-kubernetes.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Selector labels
+*/}}
+{{- define "ovn-kubernetes.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "ovn-kubernetes.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
