@@ -1,0 +1,14 @@
+logLevel: 4
+logFileMaxSize: 100
+logFileMaxBackups: 5
+logFileMaxAge: 5
+ovnControllerLogLevel: "-vconsole:info"
+kubernetesSecretName: ""
+vtepCIDR: ""
+hostCIDR: ""
+ipamPool: ""
+ipamPoolType: ""
+ipamVTEPIPIndex: nil
+ipamPFIPIndex: nil
+externalDHCP: false
+gatewayDiscoveryNetwork: "169.254.99.100/32"

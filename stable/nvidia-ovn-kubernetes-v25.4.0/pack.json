@@ -3,10 +3,10 @@
     "edge-native"
   ],
   "displayName": "Nvidia OVN-Kubernetes",
-  "kubeManifests": [
-    "manifests/ns.yaml"
+  "charts": [
+    "charts/ovn-kubernetes-chart-v25.1.0.tgz"
   ],
   "layer": "cni",
-  "name": "cni-nvidia-ovn-kubernetesdummy",
+  "name": "cni-nvidia-ovn-kubernetes",
   "version": "25.1.0"
 }
