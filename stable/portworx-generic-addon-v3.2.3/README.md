@@ -1,4 +1,4 @@
-# Portworx-Generic-Addon 
+# Portworx-Generic-addon 
 A Kubernetes data-services platform designed to provide persistent storage, data protection, disaster recovery, and other capabilities for containerized applications. 
 
 ## Prerequisites
@@ -12,7 +12,7 @@ A Kubernetes data-services platform designed to provide persistent storage, data
   - Amazon Elastic Kubernetes Service (EKS)
   - Microsoft Azure
   - Azure Kubernetes Service (AKS)
-  - Googe Cloud Platform
+  - Google Cloud Platform
   - Google Kubernetes Engine (GKE)
   - VMware vSphere
   - Canonical MAAS
@@ -23,7 +23,7 @@ A Kubernetes data-services platform designed to provide persistent storage, data
 To create a `StorageClass` of your choice, use the pack's values.yaml `charts.portworx-generic.storageClass` parameter section. To make a storageClass as a default storageClass, set the parameter `charts.portworx-generic.storageClass.isDefaultStorageClass` to `true` in `charts.portworx-generic.storageClass` section of pack's values.yaml. By default, the storageClass `spectro-storage-class` is created and used as the default storageClass.
 
 ## Licensing
-License of type `Portworx Essentials` has reached end of life. So this software (any version) using that license stops working on 1st May 2025. 
+License of type `Portworx Essentials` has reached end of life. So this software (any version) using that license stops working on May 1, 2025.
 This pack also supports `Portworx CSI` license, to be used with Kubevirt
 The default option is `Portworx Enterprise` license, which runs in 30-day trial mode when no license is provided. 
 
