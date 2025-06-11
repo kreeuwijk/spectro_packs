@@ -622,7 +622,7 @@ presets:
                 # PowerMax:   powermax-creds
                 # PowerScale: isilon-creds
                 name: powermax-creds
-                value:
+                value: |
                   storageArrays:
                     - storageArrayId: "000000000001" # must be a string, not a number
                       primaryEndpoint: https://primary-1.unisphe.re:8443
