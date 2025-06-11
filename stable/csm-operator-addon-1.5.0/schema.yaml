@@ -1,2 +1,0 @@
-charts.csm-operator.csm.config.secret.value.password:
-  schema: '{{ format "${password}" | hints "Specify the password" }}'
