@@ -14,7 +14,7 @@ metadata:
   namespace: {{ .Values.csm.namespace }}
 spec:
   secretName: csirevproxy-tls-secret
-  commonName: powermax-reverseproxy
+  commonName: csipowermax-reverseproxy
   duration: 2160h # 90d
   renewBefore: 360h # 15d
   subject:
@@ -29,9 +29,11 @@ spec:
     - server auth
     - client auth
   dnsNames:
-    - powermax-reverseproxy
-    - powermax-reverseproxy.powermax.svc.cluster.local
+    - csipowermax-reverseproxy
+    - csipowermax-reverseproxy.powermax.svc.cluster.local
     - reverseproxy
+  ipAddresses:
+    - 0.0.0.0
   issuerRef:
     name: selfsigned-issuer
     kind: Issuer

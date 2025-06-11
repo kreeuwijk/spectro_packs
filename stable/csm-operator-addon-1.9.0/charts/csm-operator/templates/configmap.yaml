@@ -6,5 +6,5 @@ metadata:
   namespace: {{ .Values.csm.namespace }}
 data:
   config.yaml: |-
-{{ toYaml .Values.reverseProxyConfig | indent 4 }}
+{{ toYaml .Values.csm.config.reverseProxyConfig | indent 4 }}
 {{- end }}
