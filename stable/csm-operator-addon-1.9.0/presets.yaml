@@ -624,7 +624,7 @@ presets:
                 name: powermax-creds
                 value:
                   storageArrays:
-                    - storageArrayId: "000000000001"
+                    - storageArrayId: '000000000001'
                       primaryEndpoint: https://primary-1.unisphe.re:8443
                       backupEndpoint: https://backup-1.unisphe.re:8443
                   managementServers:
