@@ -1,0 +1,243 @@
+presets:
+  - name: "ipam-kubernetes"
+    displayName: "Kubernetes"
+    group: "IPAM mode"
+    remove:
+    - "charts.cilium.ipam.mode"
+    - "charts.cilium.ipam.operator"
+    add: |
+      charts:
+        cilium:
+          ipam:
+            mode: kubernetes
+
+  - name: "ipam-clusterpool"
+    displayName: "Cluster pool"
+    group: "IPAM mode"
+    remove:
+    - "charts.cilium.ipam.mode"
+    - "charts.cilium.ipam.operator"
+    add: |
+      charts:
+        cilium:
+          ipam:
+            mode: "cluster-pool"
+            operator:
+              # -- IPv4 CIDR list range to delegate to individual nodes for IPAM.
+              clusterPoolIPv4PodCIDRList: ["100.64.0.0/18"]
+              # -- IPv4 CIDR mask size to delegate to individual nodes for IPAM.
+              clusterPoolIPv4MaskSize: 24
+              # -- IPv6 CIDR list range to delegate to individual nodes for IPAM.
+              clusterPoolIPv6PodCIDRList: ["fd00::/104"]
+              # -- IPv6 CIDR mask size to delegate to individual nodes for IPAM.
+              clusterPoolIPv6MaskSize: 120
+              # -- IP pools to auto-create in multi-pool IPAM mode.
+              autoCreateCiliumPodIPPools: {}
+                # default:
+                #   ipv4:
+                #     cidrs:
+                #       - 10.10.0.0/8
+                #     maskSize: 24
+                # other:
+                #   ipv6:
+                #     cidrs:
+                #       - fd00:100::/80
+                #     maskSize: 96
+              # -- The maximum burst size when rate limiting access to external APIs.
+              # Also known as the token bucket capacity.
+              # @default -- `20`
+              externalAPILimitBurstSize: ~
+              # -- The maximum queries per second when rate limiting access to
+              # external APIs. Also known as the bucket refill rate, which is used to
+              # refill the bucket up to the burst size capacity.
+              # @default -- `4.0`
+              externalAPILimitQPS: ~
+
+  - name: "op-single-node"
+    displayName: "For 1-node cluster"
+    group: "Cilium Operator"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          operator:
+            replicas: 1
+
+  - name: "op-multi-node"
+    displayName: "For multi-node cluster"
+    group: "Cilium Operator"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          operator:
+            replicas: 2
+
+  - name: "ebpf-kubeproxy"
+    displayName: "Do not replace kube-proxy"
+    group: "Kube-proxy replacement"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          k8sServiceHost: ""
+          k8sServicePort: ""
+          kubeProxyReplacement: "false"
+
+  - name: "ebpf-kubeproxy-free"
+    displayName: "Replace kube-proxy with eBPF"
+    group: "Kube-proxy replacement"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          k8sServiceHost: "auto"
+          k8sServicePort: ""
+          kubeProxyReplacement: "true"
+
+  - name: "podnw-vxlan"
+    displayName: "Use VXLAN overlay"
+    group: "Pod networking"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          routingMode: ""
+          tunnelprotocol: ""
+          bpf:
+            masquerade: ~
+
+  - name: "podnw-geneve"
+    displayName: "Use Geneve overlay"
+    group: "Pod networking"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          routingMode: ""
+          tunnelprotocol: "geneve"
+          bpf:
+            masquerade: ~
+
+  - name: "podnw-native"
+    displayName: "Use eBPF native routing"
+    group: "Pod networking"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          kubeProxyReplacementHealthzBindAddr: "0.0.0.0:10256"
+          autoDirectNodeRoutes: true
+          ipv4NativeRoutingCIDR: "100.64.0.0/17"
+          routingMode: "native"
+          bpf:
+            masquerade: true
+
+  - name: "vmo-enable"
+    displayName: "Enable"
+    group: "VMO Compatibility"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          cni:
+            exclusive: false
+          socketLB:
+            hostNamespaceOnly: true
+
+  - name: "vmo-disable"
+    displayName: "Disable"
+    group: "VMO Compatibility"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          cni:
+            exclusive: true
+          socketLB:
+            hostNamespaceOnly: false
+
+  - name: "vmo-auto"
+    displayName: "Autodetect Cilium interface"
+    group: "VMO - Bridge interface"
+    remove:
+    - "charts.cilium.devices"
+    add: |
+      charts:
+        cilium:
+          bpf:
+            hostLegacyRouting: false
+          # devices: ""
+
+  - name: "vmo-br0"
+    displayName: "Run Cilium on Bridge (br0)"
+    group: "VMO - Bridge interface"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          bpf:
+            hostLegacyRouting: true
+          devices: "br0"
+
+  - name: "lb-no-xdp"
+    displayName: "No XDP acceleration"
+    group: "Loadbalancer mode"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          loadBalancer:
+            acceleration: disabled
+
+  - name: "lb-best-effort"
+    displayName: "Best Effort XDP LB acceleration"
+    group: "Loadbalancer mode"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          loadBalancer:
+            acceleration: best-effort
+
+  - name: "lb-xdp"
+    displayName: "Native XDP LB acceleration"
+    group: "Loadbalancer mode"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          loadBalancer:
+            acceleration: native
+
+  - name: "microk8s-enable"
+    displayName: "Enable MicroK8s support"
+    group: "MicroK8s"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          cni:
+            confPath: /var/snap/microk8s/current/args/cni-network
+            binPath: /var/snap/microk8s/current/var/run/cilium
+          ipam:
+            operator:
+              clusterPoolIPv4PodCIDRList: ["10.1.0.0/16"]
+          nodePort:
+            enabled: true
+
+  - name: "microk8s-disable"
+    displayName: "Disable MicroK8s support"
+    group: "MicroK8s"
+    remove: []
+    add: |
+      charts:
+        cilium:
+          cni:
+            confPath: /etc/cni/net.d
+            binPath:  /opt/cni/bin
+          ipam:
+            operator:
+              clusterPoolIPv4PodCIDRList: ["100.64.0.0/18"]
+          nodePort:
+            enabled: false
