@@ -1,10 +1,15 @@
+pack:
+  namespace: ovn-kubernetes
 charts:
   ovn-kubernetes-chart:
     nameOverride: ovn-kubernetes
+    fullnameOverride: ovn-kubernetes
 
     # -- Variables related to the OVN Kubernetes Resource Injector
     ovn-kubernetes-resource-injector:
       enabled: false
+      nameOverride: ovn-kubernetes-resource-injector
+      fullnameOverride: ovn-kubernetes-resource-injector
       resourceName: nvidia.com/bf3-p0-vfs
       controllerManager:
         webhook:
