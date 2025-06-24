@@ -1,0 +1,6 @@
+apiVersion: v2
+name: sriov-nw-dev-mgmt
+description: Installs components needed for SR-IOV network device management
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

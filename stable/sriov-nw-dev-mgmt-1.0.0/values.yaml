@@ -4,7 +4,7 @@ pack:
     images: []
 
 charts:
-  sriov-dev-mgmt:
+  sriov-nw-dev-mgmt:
     networkDevicePlugin:
       daemonset:
         image: ghcr.io/k8snetworkplumbingwg/sriov-network-device-plugin

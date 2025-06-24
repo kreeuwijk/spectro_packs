@@ -2,18 +2,18 @@
   "annotations": {
     "docsURL": "",
     "source": "spectrocloud",
-    "description": "SRIOV Networking"
+    "description": "SR-IOV Network Device Management"
   },
   "cloudTypes": [
     "edge-native",
     "maas"
   ],
-  "displayName": "SRIOV Networking",
+  "displayName": "SR-IOV Network Device Management",
   "charts": [
-    "charts/sriov-dev-mgmt-1.0.0.tgz"
+    "charts/sriov-nw-dev-mgmt-1.0.0.tgz"
   ],
   "layer": "addon",
   "addonType":"system app",
-  "name": "sriov-networking",
+  "name": "sriov-nw-dev-mgmt",
   "version": "1.0.0"
 }
