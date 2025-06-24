@@ -1,7 +1,9 @@
-# spectrocloud.com/enabled-presets: IPAM mode:ipam-kubernetes,Cilium Operator:op-multi-node,Kube-proxy replacement:ebpf-kubeproxy,Pod networking:podnw-vxlan,VMO Compatibility:vmo-disable,VMO - Bridge interface:vmo-auto,Loadbalancer mode:lb-no-xdp,MicroK8s:microk8s-disable
 pack:
   content:
     images: []
+  namespace: sriov-network-operator
+  namespaceLabels:
+    "sriov-network-operator": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=v{{ .spectro.system.kubernetes.version | substr 0 4 }}"
 
 charts:
   sriov-network-operator-chart:
@@ -29,9 +31,9 @@ charts:
                   - key: "node-role.kubernetes.io/control-plane"
                     operator: In
                     values: [""]
-      nameOverride: ""
-      fullnameOverride: ""
-      resourcePrefix: "openshift.io"
+      nameOverride: "sriov-network-operator"
+      fullnameOverride: "sriov-network-operator"
+      resourcePrefix: "spectro"
       cniBinPath: "/opt/cni/bin"
       clusterType: "kubernetes"
       # minimal amount of time (in minutes) the operator will wait before removing
@@ -48,17 +50,17 @@ charts:
           namespace: "monitoring"
           deployRules: false
       admissionControllers:
-        enabled: false
+        enabled: true
         certificates:
           secretNames:
             operator: "operator-webhook-cert"
             injector: "network-resources-injector-cert"
           certManager:
             # When enabled, makes use of certificates managed by cert-manager.
-            enabled: false
+            enabled: true
             # When enabled, certificates are generated via cert-manager and then name will match the name of the secrets
             # defined above
-            generateSelfSigned: false
+            generateSelfSigned: true
           # If not specified, no secret is created and secrets with the names defined above are expected to exist in the
           # cluster. In that case, the ca.crt must be base64 encoded twice since it ends up being an env variable.
           custom:
@@ -97,7 +99,7 @@ charts:
             #      -----END EC PRIVATE KEY-----
     sriovOperatorConfig:
       # deploy sriovOperatorConfig CR with the below values
-      deploy: false
+      deploy: true
       # node selectors for sriov-network-config-daemon
       configDaemonNodeSelector: {}
       # log level for both operator and sriov-network-config-daemon

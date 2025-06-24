@@ -1,4 +1,3 @@
-# spectrocloud.com/enabled-presets: IPAM mode:ipam-kubernetes,Cilium Operator:op-multi-node,Kube-proxy replacement:ebpf-kubeproxy,Pod networking:podnw-vxlan,VMO Compatibility:vmo-disable,VMO - Bridge interface:vmo-auto,Loadbalancer mode:lb-no-xdp,MicroK8s:microk8s-disable
 pack:
   content:
     images: []
