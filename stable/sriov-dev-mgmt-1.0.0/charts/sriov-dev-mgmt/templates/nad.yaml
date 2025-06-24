@@ -1,0 +1,11 @@
+{{- range $nad := .Values.networkDevicePlugin.networkAttachmentDefinitions -}}
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: {{ $nad.name }}
+  namespace: {{ $nad.namespace }}
+  annotations: {{ $nad.annotations | toYaml | nindent 4 }}
+spec:
+  config: |
+{{ $nad.config | indent 4 }}
+{{ end }}

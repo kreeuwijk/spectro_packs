@@ -1,0 +1,69 @@
+networkDevicePlugin:
+  daemonset:
+    image: ghcr.io/k8snetworkplumbingwg/sriov-network-device-plugin
+    tag: v3.9.0
+    imagePullPolicy: IfNotPresent
+    tolerations:
+    # - key: node-role.kubernetes.io/control-plane
+    #   operator: Exists
+    #   effect: NoSchedule
+  config: |
+    {
+      "resourceList": [{
+          "resourceName": "intel_sriov_netdevice",
+          "selectors": {
+            "vendors": ["8086"],
+            "devices": ["154c", "10ed", "1889"],
+            "drivers": ["i40evf", "iavf", "ixgbevf"]
+          }
+        },
+        {
+          "resourceName": "intel_sriov_dpdk",
+          "selectors": {
+            "vendors": ["8086"],
+            "devices": ["154c", "10ed", "1889"],
+            "drivers": ["vfio-pci"],
+            "pfNames": ["enp0s0f0","enp2s2f1"]
+          }
+        },
+        {
+          "resourceName": "mlnx_sriov_rdma",
+          "selectors": {
+            "vendors": ["15b3"],
+            "devices": ["1018"],
+            "drivers": ["mlx5_ib"],
+            "isRdma": true
+          }
+        },
+        {
+          "resourceName": "brcm_sriov_bnxt",
+          "selectors": {
+            "vendors": ["14e4"],
+            "devices": ["1750"],
+            "drivers": ["bnxt_en"]
+          }
+        }
+      ]
+    }
+  networkAttachmentDefinitions:
+    - name: sriov-net1
+      namespace: default
+      annotations:
+        k8s.v1.cni.cncf.io/resourceName: intel.com/intel_sriov_netdevice
+      config: |
+        {
+          "type": "sriov",
+          "cniVersion": "0.3.1",
+          "name": "sriov-network",
+          "vlan": 0,
+          "ipam": {}
+        }
+sriovCNI:
+  daemonset:
+    image: ghcr.io/k8snetworkplumbingwg/sriov-cni
+    tag: v2.9.0
+    imagePullPolicy: IfNotPresent
+    tolerations:
+    # - key: node-role.kubernetes.io/control-plane
+    #   operator: Exists
+    #   effect: NoSchedule

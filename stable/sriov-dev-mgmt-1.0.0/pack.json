@@ -1,0 +1,19 @@
+{
+  "annotations": {
+    "docsURL": "",
+    "source": "spectrocloud",
+    "description": "SRIOV Networking"
+  },
+  "cloudTypes": [
+    "edge-native",
+    "maas"
+  ],
+  "displayName": "SRIOV Networking",
+  "charts": [
+    "charts/sriov-networking-1.0.0.tgz"
+  ],
+  "layer": "addon",
+  "addonType":"system app",
+  "name": "sriov-networking",
+  "version": "1.0.0"
+}
