@@ -7,6 +7,8 @@ pack:
 
 charts:
   sriov-network-operator-chart:
+    nameOverride: sriov-network-operator
+    fullnameOverride: sriov-network-operator
     operator:
       tolerations:
         - key: "node-role.kubernetes.io/master"
