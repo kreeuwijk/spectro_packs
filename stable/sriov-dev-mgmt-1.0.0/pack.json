@@ -10,7 +10,7 @@
   ],
   "displayName": "SRIOV Networking",
   "charts": [
-    "charts/sriov-networking-1.0.0.tgz"
+    "charts/sriov-dev-mgmt-1.0.0.tgz"
   ],
   "layer": "addon",
   "addonType":"system app",
