@@ -24,7 +24,7 @@ operator:
                 values: [""]
   nameOverride: ""
   fullnameOverride: ""
-  resourcePrefix: "openshift.io"
+  resourcePrefix: "spectro"
   cniBinPath: "/opt/cni/bin"
   clusterType: "kubernetes"
   # minimal amount of time (in minutes) the operator will wait before removing
@@ -90,7 +90,7 @@ operator:
         #      -----END EC PRIVATE KEY-----
 sriovOperatorConfig:
   # deploy sriovOperatorConfig CR with the below values
-  deploy: false
+  deploy: true
   # node selectors for sriov-network-config-daemon
   configDaemonNodeSelector: {}
   # log level for both operator and sriov-network-config-daemon
