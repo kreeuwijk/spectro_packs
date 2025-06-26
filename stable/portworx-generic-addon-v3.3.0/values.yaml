@@ -1,0 +1,157 @@
+# spectrocloud.com/enabled-presets: License Models:px-enterprise,Node selection:px-deploy-worker-only,Palette Mode:px-normal-mode
+pack:
+  content:
+    images:
+      # From https://install.portworx.com/3.2.3/air-gapped
+      - image: docker.io/nginxinc/nginx-unprivileged:alpine-slim
+      - image: docker.io/portworx/autopilot:1.3.17
+      - image: docker.io/portworx/ccm-go:1.4.26
+      - image: docker.io/portworx/cluster-diags:3.3.0"
+      - image: docker.io/portworx/oci-monitor:3.3.0.1
+      - image: docker.io/portworx/oci-monitor:25.4.0
+      - image: docker.io/portworx/portworx-dynamic-plugin:1.1.4
+      - image: docker.io/portworx/px-enterprise:3.3.0.1
+      - image: docker.io/portworx/px-operator:25.2.1
+      - image: docker.io/portworx/log-upload:px-1.1.40
+      - image: docker.io/portworx/realtime-metrics:1.0.31
+      - image: docker.io/openstorage/cmdexecutor:25.2.2
+      - image: docker.io/openstorage/stork:25.2.2
+      - image: docker.io/purestorage/telemetry-envoy:1.1.16
+      - image: registry.k8s.io/kube-controller-manager-amd64:v1.31.0
+      - image: registry.k8s.io/kube-scheduler-amd64:v1.21.4
+      - image: registry.k8s.io/kube-scheduler-amd64:v1.31.0
+      - image: registry.k8s.io/pause:3.1
+      - image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.13.0
+      - image: registry.k8s.io/sig-storage/csi-provisioner:v5.2.0
+      - image: registry.k8s.io/sig-storage/csi-resizer:v1.13.2
+      - image: registry.k8s.io/sig-storage/csi-snapshotter:v8.2.0
+      - image: registry.k8s.io/sig-storage/snapshot-controller:v8.2.0
+      - image: quay.io/prometheus/alertmanager:v0.28.1
+      - image: quay.io/prometheus/prometheus:v3.4.0
+      - image: quay.io/prometheus-operator/prometheus-operator:v0.82.2
+      - image: quay.io/prometheus-operator/prometheus-config-reloader:v0.82.2
+      - image: quay.io/jetstack/cert-manager-controller:v1.17.0"
+      - image: quay.io/jetstack/cert-manager-webhook:v1.17.0"
+      - image: quay.io/jetstack/cert-manager-cainjector:v1.17.0"
+      - image: quay.io/jetstack/cert-manager-acmesolver:v1.17.0"
+
+charts:
+  px-operator:
+    namespace: portworx-operator
+
+  portworx-generic:
+    license:
+      # Valid options for "type" are: enterprise, saas, csi
+      # If you want to deploy the PX Enterprise Trial version, or need manual offline activation,
+      # select the "enterprise" type and set "activateLicense" to false.
+      type: enterprise
+      # The next block only gets used if the type is set to "saas"
+      saas:
+        key: <PAY-AS-YOU-GO-KEY>
+      # The next block only gets used if the type is set to "enterprise"
+      enterprise:
+        activateLicense: true
+        activationId: <Activation ID>
+        # customLicenseServer:
+        #   url: http://hostname:7070/fne/bin/capability
+        #   importUnknownCa: true
+        #   licenseBorrowInterval: 1w15m
+        #   addFeatures:
+        #   - feature1
+        #   - feature2
+
+    storageCluster:
+      # When autoGenerateName is true, a name of type "px-cluster-1234abcd-12ab-12ab-12ab-123456abcdef" is generated and the "name" field is ignored
+      autoGenerateName: false
+      name: "px-{{.spectro.system.cluster.name}}"
+      namespace: portworx
+      # annotations:
+      #   If you need additional annotations, specify them here
+      spec:
+        # Select a preset from the pane on the right, or use the Portworx Spec Builder to define a custom configuration and
+        # then paste that spec section here. (Spec Builder: https://central.portworx.com/specGen/wizard)
+        # ### Example spec
+        # image: portworx/oci-monitor:3.3.0.1
+        # imagePullPolicy: Always
+        # deleteStrategy:
+        #   type: UninstallAndWipe
+        # kvdb:
+        #   internal: true
+        #   # endpoints:
+        #   # - etcd:https://etcd.company.domain:2379
+        #   # authSecret: px-kvdb-auth
+        # storage:
+        #   useAll: true
+        #   journalDevice: auto
+        #   kvdbDevice: /dev/sdb
+        # network:
+        #   dataInterface: eth0
+        #   mgmtInterface: eth1
+        # secretsProvider: k8s
+        # stork:
+        #   enabled: true
+        #   args:
+        #     webhook-controller: "true"
+        # autopilot:
+        #   enabled: true
+        #   providers:
+        #   - name: default
+        #     params:
+        #       url: http://prometheus-operator-prometheus.monitoring.svc.cluster.local:9090
+        #     type: prometheus
+        # runtimeOptions:
+        #   default-io-profile: "6"
+        # csi:
+        #   enabled: true
+        # monitoring:
+        #   telemetry:
+        #       enabled: true
+        #   prometheus:
+        #     enabled: false
+        #     exportMetrics: true
+
+    # To automatically create the px-vsphere-secret for VMware, uncomment this section
+    # vsphereSecret:
+    #   user: ""
+    #   password: ""
+
+    # To automatically create the px-azure secret for Azure, uncomment this section
+    # azureSecret:
+    #   tenantId:
+    #   clientId:
+    #   clientSecret: 
+
+    storageClass:
+      name: spectro-storage-class
+      isDefaultStorageClass: true
+      annotations: {}
+      #   If you need additional annotations, specify them here
+      reclaimPolicy: Delete # Delete or Retain
+      volumeBindingMode: WaitForFirstConsumer # WaitForFirstConsumer or Immediate
+      allowVolumeExpansion: true
+      parameters: {}
+        # repl: "2"
+        # io_profile: "auto_journal"
+        # nodiscard: "true"
+        # priority_io: "high"
+        # sharedv4: true
+        # sharedv4_svc_type: "ClusterIP"
+        # sharedv4_mount_options: vers=3.0,nolock
+        # stork.libopenstorage.org/preferRemoteNode: "false"
+        # Add additional parameters as needed (https://docs.portworx.com/portworx-install-with-kubernetes/storage-operations/create-pvcs/dynamic-provisioning/)
+
+    # External kvdb related config, only used if storageCluster.spec.kvdb.internal = false
+    externalKvdb:
+      useCertsForSSL: false
+      # cacert: |
+      #   -----BEGIN CERTIFICATE-----
+      #   < KEY DATA >
+      #   -----END CERTIFICATE-----
+      # key: |
+      #   -----BEGIN RSA PRIVATE KEY-----
+      #   < KEY DATA >
+      #   -----END RSA PRIVATE KEY-----
+      # cert: |
+      #   -----BEGIN CERTIFICATE-----
+      #   < KEY DATA >
+      #   -----END CERTIFICATE-----

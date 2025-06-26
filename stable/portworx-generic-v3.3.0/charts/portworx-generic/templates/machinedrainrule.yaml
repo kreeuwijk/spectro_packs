@@ -1,0 +1,17 @@
+{{- if .Capabilities.APIVersions.Has "cluster.x-k8s.io/v1beta1/MachineDrainRule" }}
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: MachineDrainRule
+metadata:
+  name: portworx
+  namespace: {{ .Values.storageCluster.namespace }}
+spec:
+  drain:
+    behavior: Drain
+    order: 100
+  machines:
+  - selector: {}
+  pods:
+  - selector:
+      matchLabels:
+        operator.libopenstorage.org/managed-by: portworx
+{{- end }}
