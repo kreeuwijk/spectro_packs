@@ -60,6 +60,11 @@ charts:
         #   - feature1
         #   - feature2
 
+    # Create a MachineDrainRule for Cluster API so repaves go smoothly
+    machineDrainRule:
+      create: true
+      namespace: "cluster-{{ .spectro.system.cluster.uid }}"
+
     storageCluster:
       # When autoGenerateName is true, a name of type "px-cluster-1234abcd-12ab-12ab-12ab-123456abcdef" is generated and the "name" field is ignored
       autoGenerateName: false
