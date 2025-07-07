@@ -28,4 +28,5 @@ reclaimPolicy: {{ $storageclass.reclaimPolicy }}
 {{- if $storageclass.volumeBindingMode }}
 volumeBindingMode: {{ $storageclass.volumeBindingMode }}
 {{- end}}
+---
 {{- end}}
