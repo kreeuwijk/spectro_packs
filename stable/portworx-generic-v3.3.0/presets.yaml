@@ -168,9 +168,6 @@ presets:
                 prometheus:
                   enabled: false
                   exportMetrics: true
-          storageClass:
-            parameters:
-              repl: 2
 
   - name: px-spec-aws
     displayName: AWS Cloud Storage for EKS
@@ -233,9 +230,6 @@ presets:
                 prometheus:
                   enabled: false
                   exportMetrics: true
-          storageClass:
-            parameters:
-              repl: 2
 
   - name: px-spec-azure
     displayName: Azure Cloud Storage for AKS
@@ -317,9 +311,6 @@ presets:
             tenantId: "your_azure_tenant_id"
             clientId: "your_azure_client_id"
             clientSecret: "your_client_secret"
-          storageClass:
-            parameters:
-              repl: 2
 
   - name: px-spec-google
     displayName: Google Cloud Storage for GKE
@@ -382,9 +373,6 @@ presets:
                 prometheus:
                   enabled: false
                   exportMetrics: true
-          storageClass:
-            parameters:
-              repl: 2
 
   - name: px-spec-vmware
     displayName: VMware vSphere Datastores
@@ -468,9 +456,6 @@ presets:
           vsphereSecret:
             user: "username_for_vCenter_here"
             password: "your_password"
-          storageClass:
-            parameters:
-              repl: 2
 
   - name: px-spec-flasharray
     displayName: Pure Storage FlashArray
@@ -537,9 +522,6 @@ presets:
               env:
               - name: PURE_FLASHARRAY_SAN_TYPE
                 value: "ISCSI" # or "FC"
-          storageClass:
-            parameters:
-              repl: 2
 
   - name: px-spec-flasharray-csi
     displayName: Pure Storage FlashArray (CSI mode)
@@ -589,9 +571,9 @@ presets:
               env:
               - name: PURE_FLASHARRAY_SAN_TYPE
                 value: "ISCSI" # or "FC"
-          storageClass:
-            parameters:
-              backend: "pure_block"
+          storageClasses:
+            # Ensure you remove the "repl" parameter from your PX-CSI storageClass and set the following parameter instead:
+            # backend: "pure_block"
 
   - name: px-internal-kvdb
     displayName: Use internal Kvdb

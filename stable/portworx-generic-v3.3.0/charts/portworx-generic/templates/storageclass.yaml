@@ -1,29 +1,31 @@
+{{- range $storageclass := .Values.storageClasses -}}
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
-  name: {{ .Values.storageClass.name | default "spectro-storage-class" | quote }}
+  name: {{ $storageclass.name | default "spectro-storage-class" | quote }}
   annotations:
-  {{- if .Values.storageClass.annotations }}
-{{ toYaml .Values.storageClass.annotations | indent 4 }}
-  {{- if .Values.storageClass.isDefaultStorageClass }}
-    storageclass.kubernetes.io/is-default-class: {{ .Values.storageClass.isDefaultStorageClass | quote }}
+  {{- if $storageclass.annotations }}
+{{ toYaml $storageclass.annotations | indent 4 }}
+  {{- if $storageclass.isDefaultStorageClass }}
+    storageclass.kubernetes.io/is-default-class: {{ $storageclass.isDefaultStorageClass | quote }}
   {{- end}}
-  {{- else if .Values.storageClass.isDefaultStorageClass }}
-    storageclass.kubernetes.io/is-default-class: {{ .Values.storageClass.isDefaultStorageClass | quote }}
+  {{- else if $storageclass.isDefaultStorageClass }}
+    storageclass.kubernetes.io/is-default-class: {{ $storageclass.isDefaultStorageClass | quote }}
   {{- else }}
     {}
   {{- end }}
 provisioner: pxd.portworx.com
 parameters:
-  {{- range $key, $value := .Values.storageClass.parameters }}
+  {{- range $key, $value := $storageclass.parameters }}
   {{ $key }}: {{ $value | quote }}
   {{- end}}
-{{- if .Values.storageClass.allowVolumeExpansion }}
-allowVolumeExpansion: {{ .Values.storageClass.allowVolumeExpansion }}
+{{- if $storageclass.allowVolumeExpansion }}
+allowVolumeExpansion: {{ $storageclass.allowVolumeExpansion }}
 {{- end}}
-{{- if .Values.storageClass.reclaimPolicy }}
-reclaimPolicy: {{ .Values.storageClass.reclaimPolicy }}
+{{- if $storageclass.reclaimPolicy }}
+reclaimPolicy: {{ $storageclass.reclaimPolicy }}
 {{- end}}
-{{- if .Values.storageClass.volumeBindingMode }}
-volumeBindingMode: {{ .Values.storageClass.volumeBindingMode }}
+{{- if $storageclass.volumeBindingMode }}
+volumeBindingMode: {{ $storageclass.volumeBindingMode }}
+{{- end}}
 {{- end}}

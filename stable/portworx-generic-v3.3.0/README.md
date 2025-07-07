@@ -20,11 +20,11 @@ A Kubernetes data-services platform designed to provide persistent storage, data
 
 ## Usage
 
-To create a `StorageClass` of your choice, use the pack's values.yaml `charts.portworx-generic.storageClass` parameter section. To make a storageClass as a default storageClass, set the parameter `charts.portworx-generic.storageClass.isDefaultStorageClass` to `true` in `charts.portworx-generic.storageClass` section of pack's values.yaml. By default, the storageClass `spectro-storage-class` is created and used as the default storageClass.
+To create a `StorageClass` of your choice, use the pack's values.yaml `charts.portworx-generic.storageClasses` parameter section. To make a storageClass as a default storageClass, set the parameter `isDefaultStorageClass` to `true` in `charts.portworx-generic.storageClasses` section of pack's values.yaml. By default, the storageClass `spectro-storage-class` is created and used as the default storageClass.
 
 ## Licensing
 License of type `Portworx Essentials` has reached end of life. So this software (any version) using that license stops working on May 1, 2025.
-This pack also supports `Portworx CSI` license, to be used with Kubevirt
+This pack also supports `Portworx CSI` license, to be used with Kubevirt.
 The default option is `Portworx Enterprise` license, which runs in 30-day trial mode when no license is provided. 
 
 > 💡 **Tip:**

@@ -121,8 +121,8 @@ charts:
     #   clientId:
     #   clientSecret: 
 
-    storageClass:
-      name: spectro-storage-class
+    storageClasses:
+    - name: spectro-storage-class
       isDefaultStorageClass: true
       annotations: {}
       #   If you need additional annotations, specify them here
