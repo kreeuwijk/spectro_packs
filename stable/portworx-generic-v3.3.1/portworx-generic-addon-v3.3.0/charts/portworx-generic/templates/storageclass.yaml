@@ -1,0 +1,32 @@
+{{- range $storageclass := .Values.storageClasses -}}
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: {{ $storageclass.name | default "spectro-storage-class" | quote }}
+  annotations:
+  {{- if $storageclass.annotations }}
+{{ toYaml $storageclass.annotations | indent 4 }}
+  {{- if $storageclass.isDefaultStorageClass }}
+    storageclass.kubernetes.io/is-default-class: {{ $storageclass.isDefaultStorageClass | quote }}
+  {{- end}}
+  {{- else if $storageclass.isDefaultStorageClass }}
+    storageclass.kubernetes.io/is-default-class: {{ $storageclass.isDefaultStorageClass | quote }}
+  {{- else }}
+    {}
+  {{- end }}
+provisioner: pxd.portworx.com
+parameters:
+  {{- range $key, $value := $storageclass.parameters }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end}}
+{{- if $storageclass.allowVolumeExpansion }}
+allowVolumeExpansion: {{ $storageclass.allowVolumeExpansion }}
+{{- end}}
+{{- if $storageclass.reclaimPolicy }}
+reclaimPolicy: {{ $storageclass.reclaimPolicy }}
+{{- end}}
+{{- if $storageclass.volumeBindingMode }}
+volumeBindingMode: {{ $storageclass.volumeBindingMode }}
+{{- end}}
+---
+{{- end}}
