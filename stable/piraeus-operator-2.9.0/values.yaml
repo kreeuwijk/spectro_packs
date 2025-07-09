@@ -29,6 +29,11 @@ pack:
       - image: us-docker.pkg.dev/palette-images/packs/csi-piraeus-operator/2.8.1/linstor-gui:v1.9.5
       - image: gcr.io/kubebuilder/kube-rbac-proxy:v0.13.1
   namespace: piraeus-system
+  releaseNameOverride:
+    piraeus-cluster: piraeus-cluster
+    piraeus: piraeus
+    linstor-gui: linstor-gui
+    piraeus-dashboard: piraeus-dashboard
   namespaceLabels:
     "piraeus-system": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=v{{ .spectro.system.kubernetes.version | substr 0 4 }}"
 
