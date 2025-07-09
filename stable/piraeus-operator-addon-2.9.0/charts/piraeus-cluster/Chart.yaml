@@ -3,8 +3,8 @@ name: piraeus-cluster
 description: |
   This chart creates the custom resources to form the Piraeus Cluster.
 type: application
-version: 1.0.0
-appVersion: "v1.0.0"
+version: 1.0.1
+appVersion: "v1.0.1"
 maintainers:
   - name: Spectro Cloud
     url: https://spectrocloud.com
