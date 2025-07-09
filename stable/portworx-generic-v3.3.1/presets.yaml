@@ -130,7 +130,7 @@ presets:
           storageCluster:
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: docker.io/portworx/oci-monitor:3.3.0.1
+              image: portworx/oci-monitor:3.3.1
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -192,7 +192,7 @@ presets:
               portworx.io/is-eks: "true"
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: docker.io/portworx/oci-monitor:3.3.0.1
+              image: portworx/oci-monitor:3.3.1
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -253,7 +253,7 @@ presets:
               portworx.io/is-aks: "true"
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: docker.io/portworx/oci-monitor:3.3.0.1
+              image: portworx/oci-monitor:3.3.1
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -335,7 +335,7 @@ presets:
               portworx.io/is-gke: "true"
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: docker.io/portworx/oci-monitor:3.3.0.1
+              image: portworx/oci-monitor:3.3.1
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -394,7 +394,7 @@ presets:
           storageCluster:
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: docker.io/portworx/oci-monitor:3.3.0.1
+              image: portworx/oci-monitor:3.3.1
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -478,7 +478,7 @@ presets:
           storageCluster:
             spec:
               # Use the Portworx Spec Builder at https://central.portworx.com/landing/login to define custom configurations, then paste the spec section here
-              image: docker.io/portworx/oci-monitor:3.3.0.1
+              image: portworx/oci-monitor:3.3.1
               imagePullPolicy: Always
               deleteStrategy:
                 type: UninstallAndWipe
@@ -576,7 +576,7 @@ presets:
             # backend: "pure_block"
 
   - name: px-internal-kvdb
-    displayName: Use internal Kvdb
+    displayName: Use internal Kvdb, no TLS
     group: Kvdb and Etcd
     remove:
       - charts.portworx-generic.externalKvdb
@@ -589,6 +589,23 @@ presets:
             spec:
               kvdb:
                 internal: true
+                enableTLS: false
+
+  - name: px-internal-kvdb-tls
+    displayName: Use internal Kvdb, with TLS
+    group: Kvdb and Etcd
+    remove:
+      - charts.portworx-generic.externalKvdb
+      - charts.portworx-generic.storageCluster.spec.kvdb.endpoints
+      - charts.portworx-generic.storageCluster.spec.kvdb.authSecret
+    add: |
+      charts:
+        portworx-generic:
+          storageCluster:
+            spec:
+              kvdb:
+                internal: true
+                enableTLS: true
 
   - name: px-external-kvdb
     displayName: Use external Kvdb over HTTP
@@ -665,4 +682,20 @@ presets:
               - name: PX_HTTPS_PROXY
                 value: "http://username:password@your-proxy-server:3128"
               - name: NO_PROXY
-                value: "127.0.0.1,localhost,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,.company.local"
+                value: "127.0.0.1,localhost,10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16,.cluster.local"
+
+  - name: px-custom-ca
+    displayName: Mount custom CA cert
+    group: Custom CA certs
+    remove: []
+    add: |
+      charts:
+        portworx-generic:
+          storageCluster:
+            spec:
+              volumes:
+              - name: custom-ca-cert
+                mountPath: /etc/pwx/custom/ca/cert
+                secret:
+                  # You need to manually create a secret in the portworx namespace that contains the PEM certificate
+                  secretName: your-secret-name

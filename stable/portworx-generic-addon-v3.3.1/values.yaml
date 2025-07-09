@@ -2,34 +2,34 @@
 pack:
   content:
     images:
-      # From https://install.portworx.com/3.2.3/air-gapped
-      - image: docker.io/nginxinc/nginx-unprivileged:alpine-slim
-      - image: docker.io/portworx/autopilot:1.3.17
-      - image: docker.io/portworx/ccm-go:1.4.26
-      - image: docker.io/portworx/cluster-diags:3.3.0"
-      - image: docker.io/portworx/oci-monitor:3.3.0.1
+      # From https://install.portworx.com/3.3.1/air-gapped
+      - image: docker.io/portworx/px-enterprise:3.3.1"
+      - image: docker.io/portworx/oci-monitor:3.3.1"
       - image: docker.io/portworx/oci-monitor:25.4.0
-      - image: docker.io/portworx/portworx-dynamic-plugin:1.1.4
-      - image: docker.io/portworx/px-enterprise:3.3.0.1
-      - image: docker.io/portworx/px-operator:25.2.1
-      - image: docker.io/portworx/log-upload:px-1.1.40
-      - image: docker.io/portworx/realtime-metrics:1.0.31
-      - image: docker.io/openstorage/cmdexecutor:25.2.2
-      - image: docker.io/openstorage/stork:25.2.2
-      - image: docker.io/purestorage/telemetry-envoy:1.1.16
-      - image: registry.k8s.io/kube-controller-manager-amd64:v1.31.0
-      - image: registry.k8s.io/kube-scheduler-amd64:v1.21.4
-      - image: registry.k8s.io/kube-scheduler-amd64:v1.31.0
-      - image: registry.k8s.io/pause:3.1
-      - image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.13.0
-      - image: registry.k8s.io/sig-storage/csi-provisioner:v5.2.0
-      - image: registry.k8s.io/sig-storage/csi-resizer:v1.13.2
-      - image: registry.k8s.io/sig-storage/csi-snapshotter:v8.2.0
-      - image: registry.k8s.io/sig-storage/snapshot-controller:v8.2.0
-      - image: quay.io/prometheus/alertmanager:v0.28.1
-      - image: quay.io/prometheus/prometheus:v3.4.0
-      - image: quay.io/prometheus-operator/prometheus-operator:v0.82.2
-      - image: quay.io/prometheus-operator/prometheus-config-reloader:v0.82.2
+      - image: docker.io/openstorage/stork:25.3.0"
+      - image: docker.io/openstorage/cmdexecutor:25.3.0"
+      - image: docker.io/portworx/autopilot:1.3.17"
+      - image: docker.io/portworx/cluster-diags:3.3.0"
+      - image: docker.io/portworx/ccm-go:1.4.26"
+      - image: docker.io/portworx/realtime-metrics:1.0.31"
+      - image: docker.io/purestorage/telemetry-envoy:1.1.16"
+      - image: docker.io/portworx/log-upload:px-1.1.40"
+      - image: docker.io/portworx/px-operator:25.2.2"
+      - image: registry.k8s.io/pause:3.1"
+      - image: registry.k8s.io/kube-scheduler-amd64:v1.31.0"
+      - image: registry.k8s.io/kube-controller-manager-amd64:v1.31.0"
+      - image: docker.io/portworx/portworx-dynamic-plugin:1.1.4"
+      - image: docker.io/nginxinc/nginx-unprivileged:alpine-slim"
+      - image: registry.k8s.io/kube-scheduler-amd64:v1.21.4"
+      - image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.13.0"
+      - image: registry.k8s.io/sig-storage/csi-provisioner:v5.2.0"
+      - image: registry.k8s.io/sig-storage/csi-resizer:v1.13.2"
+      - image: registry.k8s.io/sig-storage/csi-snapshotter:v8.2.0"
+      - image: registry.k8s.io/sig-storage/snapshot-controller:v8.2.0"
+      - image: quay.io/prometheus/prometheus:v3.4.0"
+      - image: quay.io/prometheus-operator/prometheus-operator:v0.82.2"
+      - image: quay.io/prometheus-operator/prometheus-config-reloader:v0.82.2"
+      - image: quay.io/prometheus/alertmanager:v0.28.1"
       - image: quay.io/jetstack/cert-manager-controller:v1.17.0"
       - image: quay.io/jetstack/cert-manager-webhook:v1.17.0"
       - image: quay.io/jetstack/cert-manager-cainjector:v1.17.0"
@@ -76,7 +76,7 @@ charts:
         # Select a preset from the pane on the right, or use the Portworx Spec Builder to define a custom configuration and
         # then paste that spec section here. (Spec Builder: https://central.portworx.com/specGen/wizard)
         # ### Example spec
-        # image: portworx/oci-monitor:3.3.0.1
+        # image: portworx/oci-monitor:3.3.1
         # imagePullPolicy: Always
         # deleteStrategy:
         #   type: UninstallAndWipe
