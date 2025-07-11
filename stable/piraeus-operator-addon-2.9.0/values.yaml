@@ -2,30 +2,30 @@
 pack:
   content:
     images:
-      - image: quay.io/piraeusdatastore/piraeus-operator:v2.8.1
-      - image: quay.io/piraeusdatastore/piraeus-server:v1.31.0
-      - image: quay.io/piraeusdatastore/piraeus-csi:v1.7.1
+      - image: quay.io/piraeusdatastore/piraeus-operator:v2.9.0
+      - image: quay.io/piraeusdatastore/piraeus-server:v1.31.2
+      - image: quay.io/piraeusdatastore/piraeus-csi:v1.8.0
       - image: quay.io/piraeusdatastore/drbd-reactor:v1.8.0
       - image: quay.io/piraeusdatastore/piraeus-ha-controller:v1.3.0
       - image: quay.io/piraeusdatastore/drbd-shutdown-guard:v1.0.0
-      - image: quay.io/piraeusdatastore/ktls-utils:v0.11
-      - image: quay.io/piraeusdatastore/drbd9-centos7:v9.2.13
-      - image: quay.io/piraeusdatastore/drbd9-almalinux8:v9.2.13
-      - image: quay.io/piraeusdatastore/drbd9-almalinux9:v9.2.13
-      - image: quay.io/piraeusdatastore/drbd9-bionic:v9.2.13
-      - image: quay.io/piraeusdatastore/drbd9-focal:v9.2.13
-      - image: quay.io/piraeusdatastore/drbd9-jammy:v9.2.13
-      - image: quay.io/piraeusdatastore/drbd9-noble:v9.2.13
-      - image: quay.io/piraeusdatastore/drbd9-bookworm:v9.2.13
-      - image: quay.io/piraeusdatastore/drbd9-bullseye:v9.2.13
-      - image: quay.io/piraeusdatastore/drbd9-buster:v9.2.13
-      - image: registry.k8s.io/sig-storage/csi-attacher:v4.8.1
-      - image: registry.k8s.io/sig-storage/livenessprobe:v2.15.0
-      - image: registry.k8s.io/sig-storage/csi-provisioner:v5.2.0
+      - image: quay.io/piraeusdatastore/ktls-utils:v1.1.0
+      - image: quay.io/piraeusdatastore/drbd9-centos7:v9.2.14
+      - image: quay.io/piraeusdatastore/drbd9-almalinux8:v9.2.14
+      - image: quay.io/piraeusdatastore/drbd9-almalinux9:v9.2.14
+      - image: quay.io/piraeusdatastore/drbd9-bionic:v9.2.14
+      - image: quay.io/piraeusdatastore/drbd9-focal:v9.2.14
+      - image: quay.io/piraeusdatastore/drbd9-jammy:v9.2.14
+      - image: quay.io/piraeusdatastore/drbd9-noble:v9.2.14
+      - image: quay.io/piraeusdatastore/drbd9-bookworm:v9.2.14
+      - image: quay.io/piraeusdatastore/drbd9-bullseye:v9.2.14
+      - image: quay.io/piraeusdatastore/drbd9-buster:v9.2.14
+      - image: registry.k8s.io/sig-storage/csi-attacher:v4.9.0
+      - image: registry.k8s.io/sig-storage/livenessprobe:v2.16.0
+      - image: registry.k8s.io/sig-storage/csi-provisioner:v5.3.0
       - image: registry.k8s.io/sig-storage/csi-snapshotter:v8.2.1
       - image: registry.k8s.io/sig-storage/csi-resizer:v1.13.2
-      - image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.14.0
-      - image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.13.0
+      - image: registry.k8s.io/sig-storage/csi-external-health-monitor-controller:v0.15.0
+      - image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.14.0
       - image: us-docker.pkg.dev/palette-images/packs/csi-piraeus-operator/2.8.1/linstor-gui:v1.9.5
       - image: gcr.io/kubebuilder/kube-rbac-proxy:v0.13.1
   namespace: piraeus-system
