@@ -1,6 +1,8 @@
 apiVersion: piraeus.io/v1
 kind: LinstorCluster
 metadata:
+  annotations:
+    "helm.sh/resource-policy": "keep"
   name: linstorcluster
   namespace: {{ .Release.Namespace }}
 spec:
