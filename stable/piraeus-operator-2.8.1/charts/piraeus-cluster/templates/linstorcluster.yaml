@@ -1,6 +1,9 @@
 apiVersion: piraeus.io/v1
 kind: LinstorCluster
 metadata:
+  annotations:
+    "helm.sh/hook": "post-install"
+    "helm.sh/resource-policy": "keep"
   name: linstorcluster
   namespace: piraeus-system
 spec:
