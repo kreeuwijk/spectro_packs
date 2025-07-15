@@ -1,0 +1,42 @@
+{
+    "annotations": {
+        "osName": "ubuntu", 
+        "os_spectro_version": "0", 
+        "os_version": "u-2404", 
+        "skipK8sInstall": "true", 
+        "sshUsername": "ubuntu"
+    },
+    "commit_msg": "",
+    "cloudTypes": [
+        "maas"
+    ],
+    "displayName": "Ubuntu (MAAS)", 
+    "eol": "2034-04-30",
+    "group": "LTS", 
+    "kubeManifests": [], 
+    "layer": "os", 
+    "name": "ubuntu-maas", 
+    "version": "24.04",
+    "constraints": {
+        "dependencies": [
+            {
+                "packName": "kubernetes-rke2",
+                "layer": "k8s",
+                "minVersion": "1.26.0",
+                "type": "required"
+            },
+            {
+                "packName": "kubernetes",
+                "layer": "k8s",
+                "minVersion": "1.25.1",
+                "type": "required"
+            },
+            {
+                "packName": "kubernetes-microk8s",
+                "layer": "k8s",
+                "minVersion": "1.25.0",
+                "type": "required"
+            }
+        ]
+    }
+}
