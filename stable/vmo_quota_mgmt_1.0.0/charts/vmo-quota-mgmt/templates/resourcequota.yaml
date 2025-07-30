@@ -1,0 +1,16 @@
+{{- range $quota := .Values.quotas -}}
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: vmo-quota
+  namespace:  {{ $quota.namespace }}
+spec:
+  hard:
+    {{- range $key, $value := $quota.limits }}
+    limits.{{ $key }}: {{ $value | quote }}
+    {{- end}}
+    {{- range $key, $value := $quota.requests }}
+    requests.{{ $key }}: {{ $value | quote }}
+    {{- end}}
+---
+{{- end}}

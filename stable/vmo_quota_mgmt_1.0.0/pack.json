@@ -1,0 +1,16 @@
+{
+  "addonType":"system app",
+  "annotations": {
+    "source": "spectrocloud"
+  },
+  "cloudTypes": [
+   "all"
+  ],
+  "displayName": "VMO Quota Management",
+  "charts": [
+    "charts/vmo-quota-mgmt-1.0.0.tgz"
+  ],
+  "layer": "addon",
+  "name": "vmo-quota-mgmt",
+  "version": "1.0.0"
+}
