@@ -6,11 +6,15 @@ metadata:
   namespace:  {{ $quota.namespace }}
 spec:
   hard:
+  {{- if $quota.limits -}}
     {{- range $key, $value := $quota.limits }}
     limits.{{ $key }}: {{ $value | quote }}
     {{- end}}
+  {{- end}}
+  {{- if $quota.requests -}}
     {{- range $key, $value := $quota.requests }}
     requests.{{ $key }}: {{ $value | quote }}
     {{- end}}
+  {{- end}}
 ---
 {{- end}}

@@ -6,11 +6,11 @@
   "cloudTypes": [
    "all"
   ],
-  "displayName": "VMO Quota Management",
+  "displayName": "VMO Namespace Management",
   "charts": [
-    "charts/vmo-quota-mgmt-1.0.0.tgz"
+    "charts/vmo-ns-mgmt-1.0.0.tgz"
   ],
   "layer": "addon",
-  "name": "vmo-quota-mgmt",
+  "name": "vmo-ns-mgmt",
   "version": "1.0.0"
 }

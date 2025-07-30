@@ -1,0 +1,34 @@
+quotas:
+  - namespace: default
+    limits:
+      cpu: 9
+    requests:
+      memory: 33Gi
+      storage: 120Gi
+  - namespace: virtual-machines
+    limits:
+      cpu: 40
+    requests:
+      memory: 150Gi
+      storage: 1024Gi
+
+rbac:
+  - namespace: default
+    viewers:
+      groups:
+        - Viewers Group
+  - namespace: virtual-machines
+    admins:
+      users:
+        - test.user@company.com
+      groups:
+        - Test Group
+    powerusers:
+      users: []
+      groups: []
+    users:
+      users: []
+      groups: []
+    viewers:
+      users: []
+      groups: []

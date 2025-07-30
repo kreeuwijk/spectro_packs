@@ -1,19 +1,40 @@
 pack:
   content:
     images: []
-
+  #namespaceAnnotations:
+  #  "virtual-machines": "alpha.kubevirt.io/auto-memory-limits-ratio=1.2"
 charts:
-  vmo-quota-mgmt:
+  vmo-ns-mgmt:
     quotas: []
-      # - namespace: default
-      #   limits:
-      #     cpu: 9
-      #   requests:
-      #     memory: 33Gi
-      #     storage: 120Gi
       # - namespace: virtual-machines
       #   limits:
-      #     cpu: 40
+      #     cpu: 100
       #   requests:
-      #     memory: 150Gi
-      #     storage: 1024Gi
+      #     memory: 256Gi
+      #     storage: 1Ti
+    rbac:
+      # - namespace: example
+      #   admins:
+      #     groups:
+      #.      - VMO Admins group
+      #   users:
+      #     groups:
+      #       - VMO Users group
+      # - namespace: default
+      #   viewers:
+      #     users: []
+      #     groups:
+      #       - "VMO Users group"
+      # - namespace: virtual-machines
+      #   admins:
+      #     users: []
+      #     groups: []
+      #   powerusers:
+      #     users: []
+      #     groups: []
+      #   users:
+      #     users: []
+      #     groups: []
+      #   viewers:
+      #     users: []
+      #     groups: []

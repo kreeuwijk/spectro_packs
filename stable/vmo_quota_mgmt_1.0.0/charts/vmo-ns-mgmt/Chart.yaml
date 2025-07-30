@@ -1,4 +1,4 @@
 apiVersion: v2
-name: vmo-quota-mgmt
+name: vmo-ns-mgmt
 version: 1.0.0
 appVersion: 1.0.0
