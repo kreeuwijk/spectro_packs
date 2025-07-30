@@ -1,5 +1,5 @@
 {{- range $rbac := .Values.rbac -}}
-{{- if $rbac.admins -}}
+{{- if $rbac.admins }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -22,7 +22,7 @@ subjects:
 {{- end }}
 {{- end }}
 ---
-{{- if $rbac.powerusers -}}
+{{- if $rbac.powerusers }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -45,7 +45,7 @@ subjects:
 {{- end }}
 {{- end }}
 ---
-{{- if $rbac.users -}}
+{{- if $rbac.users }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -68,7 +68,7 @@ subjects:
 {{- end }}
 {{- end }}
 ---
-{{- if $rbac.viewers -}}
+{{- if $rbac.viewers }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:

@@ -16,13 +16,16 @@ rbac:
   - namespace: default
     viewers:
       groups:
-        - Viewers Group
+        - Viewers Group 1
+        - Viewers Group 2
   - namespace: virtual-machines
     admins:
       users:
-        - test.user@company.com
+        - test.user1@company.com
+        - test.user2@company.com
       groups:
-        - Test Group
+        - Test Group 1
+        - Test Group 2
     powerusers:
       users: []
       groups: []
