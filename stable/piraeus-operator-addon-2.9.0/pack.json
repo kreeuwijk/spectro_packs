@@ -1,12 +1,12 @@
 {
-
+  "addonType":"system app",
   "annotations": {
     "prerequisitesRequired": "true",
     "source": "community",
     "contributor": "spectrocloud"
   },
   "cloudTypes": [
-    "all"
+    "edge-native"
   ],
   "displayName": "Piraeus Operator",
   "charts": [
