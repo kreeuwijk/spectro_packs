@@ -35,7 +35,7 @@ charts:
       # -- GENEVE UDP port (default 6081)
       encapPort: 6081
       # -- The gateway mode (shared or local), if not given, gateway functionality is disabled
-      gatewayMode: local
+      gatewayMode: shared
       # -- Optional extra gateway options
       gatewayOpts: ""
       # -- This allows ovnkube-node to run without SYS_ADMIN capability, by performing interface setup in the CNI plugin
