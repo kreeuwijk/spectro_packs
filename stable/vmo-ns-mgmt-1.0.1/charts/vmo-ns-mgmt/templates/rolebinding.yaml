@@ -91,4 +91,29 @@ subjects:
 {{- end }}
 {{- end }}
 ---
-{{- end}}
+{{- if $rbac.custom }}
+{{- range $custom := $rbac.custom }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: vmo-rolebinding-custom-{{ $custom.role }}
+  namespace:  {{ $rbac.namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ $custom.role | quote }}
+subjects:
+{{- range $group := $custom.groups }}
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: {{ $group | quote }}
+{{- end }}
+{{- range $user := $custom.users }}
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: {{ $user | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+---
+{{- end }}

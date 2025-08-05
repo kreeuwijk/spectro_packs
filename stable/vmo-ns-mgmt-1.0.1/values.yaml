@@ -5,36 +5,51 @@ pack:
   #  "virtual-machines": "alpha.kubevirt.io/auto-memory-limits-ratio=1.2"
 charts:
   vmo-ns-mgmt:
+    goldenImagesNamespace: vmo-golden-images
+    vmEnabledNamespaces: []
+    #   - default
+    #   - virtual-machines
+    #   - customer-ns-1
+    #   - customer-ns-2
+
     quotas: []
-      # - namespace: virtual-machines
-      #   limits:
-      #     cpu: 100
-      #   requests:
-      #     memory: 256Gi
-      #     storage: 1Ti
-    rbac:
-      # - namespace: example
-      #   admins:
-      #     groups:
-      #.      - VMO Admins group
-      #   users:
-      #     groups:
-      #       - VMO Users group
-      # - namespace: default
-      #   viewers:
-      #     users: []
-      #     groups:
-      #       - "VMO Users group"
-      # - namespace: virtual-machines
-      #   admins:
-      #     users: []
-      #     groups: []
-      #   powerusers:
-      #     users: []
-      #     groups: []
-      #   users:
-      #     users: []
-      #     groups: []
-      #   viewers:
-      #     users: []
-      #     groups: []
+    # - namespace: customer-ns-1
+    #   limits:
+    #     cpu: 100
+    #   requests:
+    #     memory: 256Gi
+    #     storage: 1Ti
+
+    rbac: []
+    # - namespace: default
+    #   viewers:
+    #     users: []
+    #     groups:
+    #       - "VMO All Users group"
+    # - namespace: customer-ns-1
+    #   admins:
+    #     groups:
+    #       - VMO Admins group
+    #   users:
+    #     groups:
+    #       - VMO Users group
+    #   custom:
+    #     - role: admin    # Name of the ClusterRole
+    #       groups:
+    #         - Custom Group
+    #       users:
+    #         - custom.user1@company.com
+    # - namespace: customer-ns-2
+    #   admins:
+    #     users: []
+    #     groups: []
+    #   powerusers:
+    #     users: []
+    #     groups: []
+    #   users:
+    #     users: []
+    #     groups: []
+    #   viewers:
+    #     users: []
+    #     groups: []
+    #   custom: []

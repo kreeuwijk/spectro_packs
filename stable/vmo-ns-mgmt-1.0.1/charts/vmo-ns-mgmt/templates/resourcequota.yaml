@@ -1,4 +1,4 @@
-{{- range $quota := .Values.quotas -}}
+{{- range $quota := .Values.quotas }}
 apiVersion: v1
 kind: ResourceQuota
 metadata:
@@ -9,12 +9,12 @@ spec:
   {{- if $quota.limits -}}
     {{- range $key, $value := $quota.limits }}
     limits.{{ $key }}: {{ $value | quote }}
-    {{- end}}
-  {{- end}}
+    {{- end }}
+  {{- end }}
   {{- if $quota.requests -}}
     {{- range $key, $value := $quota.requests }}
     requests.{{ $key }}: {{ $value | quote }}
-    {{- end}}
-  {{- end}}
+    {{- end }}
+  {{- end }}
 ---
-{{- end}}
+{{- end }}
