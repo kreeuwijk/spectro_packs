@@ -59,6 +59,7 @@ rules:
       resources:
           - namespaces
           - nodes
+          - nodes/status
           - pods
           - services
           - endpoints
@@ -83,12 +84,23 @@ rules:
           - egressqoses
           - egressservices
           - adminpolicybasedexternalroutes
+          - userdefinednetworks
+          - clusteruserdefinednetworks
+          - networkqoses
       verbs: [ "get", "list", "watch" ]
     - apiGroups: ["k8s.cni.cncf.io"]
       resources:
           - network-attachment-definitions
           - multi-networkpolicies
       verbs: ["list", "get", "watch"]
+    - apiGroups: ["k8s.cni.cncf.io"]
+      resources:
+          - network-attachment-definitions
+      verbs: [ "patch", "update" ]
+    - apiGroups: [ "k8s.cni.cncf.io" ]
+      resources:
+      - network-attachment-definitions
+      verbs: [ "create", "delete" ]
     - apiGroups: ["policy.networking.k8s.io"]
       resources:
           - adminnetworkpolicies/status
@@ -99,9 +111,16 @@ rules:
           - egressfirewalls/status
           - egressips
           - egressqoses
+          - networkqoses
           - egressservices/status
           - adminpolicybasedexternalroutes/status
           - egressqoses/status
+          - userdefinednetworks
+          - userdefinednetworks/status
+          - clusteruserdefinednetworks
+          - clusteruserdefinednetworks/status
+          - clusteruserdefinednetworks/finalizers
+          - networkqoses/status
       verbs: [ "patch", "update" ]
     - apiGroups: [""]
       resources:
@@ -113,6 +132,12 @@ rules:
           - pods/status
           - services/status
       verbs: [ "patch", "update" ]
+    {{- if eq (hasKey .Values.global "enableDNSNameResolver" | ternary .Values.global.enableDNSNameResolver false) true }}
+    - apiGroups: ["network.openshift.io"]
+      resources:
+          - dnsnameresolvers
+      verbs: [ "create", "delete", "list", "patch", "update", "watch" ]
+    {{- end }}
 
 
 # https://github.com/ovn-org/ovn-kubernetes/blob/e1e7d40f9a6c6038b52696c1b8f8915a4d73160e/go-controller/pkg/ovn/topology_version.go#L28

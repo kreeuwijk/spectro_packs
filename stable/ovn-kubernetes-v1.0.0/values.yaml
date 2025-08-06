@@ -4,19 +4,21 @@ pack:
 
 charts:
   ovn-kubernetes:
-    # Values for ovn-kubernetes.
+    # Values for ovn-kubernetes with single-node zone interconnect
+    # Requires: ovnkube-single-node-zone, ovnkube-control-plane
 
     # -- list of dependent subcharts that need to be installed for the given deployment mode, these subcharts haven't been tested yet.
     tags:
       ovn-ipsec: false
-      ovnkube-control-plane: false
+      ovnkube-db: false
       ovnkube-db-raft: false
+      ovnkube-master: false
+      ovnkube-node: false
       ovnkube-node-dpu: false
       ovnkube-node-dpu-host: false
-      ovnkube-single-node-zone: false
       ovnkube-zone-controller: false
 
-    # -- Endpoint of Kubernetes api server ("auto" or "https://ip:port")
+    # -- Endpoint of Kubernetes api server
     k8sAPIServer: auto
     # -- IP range for Kubernetes pods, /14 is the top level range, under which each /23 range will be assigned to a node
     podNetwork: 10.244.0.0/16/24
@@ -44,12 +46,16 @@ charts:
       v4JoinSubnet: "100.64.0.0/16"
       # -- The v4 masquerade subnet used for assigning masquerade IPv4 addresses
       v4MasqueradeSubnet: "169.254.0.0/17"
+      # -- The v4 subnet for transit switch
+      v4TransitSwitchSubnet: "100.88.0.0/16"
       # -- The v6 join subnet used for assigning join switch IPv6 addresses
       v6JoinSubnet: "fd98::/64"
       # -- The v6 masquerade subnet used for assigning masquerade IPv6 addresses
       v6MasqueradeSubnet: "fd69::/112"
+      # -- The v6 subnet for transit switch
+      v6TransitSwitchSubnet: "fd97::/64"
       # -- Whether or not enable ovnkube identity webhook
-      enableOvnKubeIdentity: true
+      enableOvnKubeIdentity: false
       # -- Indicate if ovnkube run master and node in one process
       enableCompactMode: false
       # -- Whether or not to enable hybrid overlay functionality
@@ -76,18 +82,18 @@ charts:
       enableMultiNetwork: false
       # -- Configure to use user defined networks (UDN) feature with ovn-kubernetes
       enableNetworkSegmentation: false
+      # -- Configure to enable workloads with preconfigured network connect to user defined networks (UDN) with ovn-kubernetes
+      enablePreconfiguredUDNAddresses: false
       # -- Configure to enable IPsec
       enableIpsec: false
       # -- Use SSL transport to NB/SB db and northd
       enableSsl: false
       # -- Configure to enable interconnecting multiple zones
-      enableInterconnect: false
+      enableInterconnect: true
       # -- Configure to use AdminPolicyBasedExternalRoute CRD feature with ovn-kubernetes
       enableMultiExternalGateway: true
       # -- Configure to use stateless network policy feature with ovn-kubernetes
       enableStatelessNetworkPolicy: false
-      # -- Configure to use the IPAMClaims CRD feature with ovn-kubernetes, thus granting persistent IPs across restarts / migration for KubeVirt VMs
-      enablePersistentIPs: false
       # -- Configure to use service template feature with ovn-kubernetes
       enableSvcTemplate: true
       # -- Enables metrics related to scaling
@@ -97,13 +103,16 @@ charts:
       # -- Indicates if ovn-controller should enable/disable the logical flow in-memory cache when processing Southbound database logical flow changes
       # @default -- true
       enableLFlowCache: true
-      # -- Configure to use DNSNameResolver feature with ovn-kubernetes
-      enableDNSNameResolver: false
       # -- Maximum number of logical flow cache entries ovn-controller may create when the logical flow cache is enabled
       # @default -- unlimited
       lFlowCacheLimit: ""
       # -- Maximum size of the logical flow cache (in KB) ovn-controller may create when the logical flow cache is enabled
       lFlowCacheLimitKb: ""
+      # -- Configure to use the IPAMClaims CRD feature with ovn-kubernetes, thus granting persistent IPs across restarts / migration for KubeVirt VMs
+      # @default -- true
+      enablePersistentIPs: true
+      # -- Configure to use DNSNameResolver feature with ovn-kubernetes
+      enableDNSNameResolver: false
       # -- Whether to disable SNAT of egress traffic in namespaces annotated with routing-external-gws
       disableSnatMultipleGws: ""
       # -- Controls if forwarding is allowed on OVNK controlled interfaces
@@ -113,8 +122,6 @@ charts:
       disablePacketMtuCheck: ""
       # -- Deprecated: iface-id-ver is always enabled
       disableIfaceIdVer: false
-      # -- Enable/disable requested-chassis option on lsp during pod creation. Must be set to true when cluster has DPUs
-      disableRequestedchassis: false
       # -- The largest number of messages per second that gets logged before drop
       # @default 20
       aclLoggingRateLimit: 20
@@ -150,8 +157,6 @@ charts:
       ofctrlWaitBeforeClear: ""
       # -- Separate log file for libovsdb client 
       libovsdbClientLogFile: ""
-      # -- Label for indicating that the node is managing its own network
-      noHostSubnetLabel: ""
       image:
         # -- Image repository for ovn-kubernetes components
         repository: ghcr.io/ovn-kubernetes/ovn-kubernetes/ovn-kube-ubuntu
@@ -159,24 +164,10 @@ charts:
         tag: master
         # -- Image pull policy
         pullPolicy: IfNotPresent
-      dpuImage:
-        # -- Image repository for ovn-kubernetes components
-        repository: ghcr.io/ovn-kubernetes/ovn-kubernetes/ovn-kube-ubuntu
-        # -- Specify image tag to run
-        tag: master
-        # -- Image pull policy
-        pullPolicy: IfNotPresent
-      # -- The name of secret used for pulling image. Use only if needed
-      imagePullSecretName: ""
-      # -- The secret used for pulling image. Use only if needed. Set create to have have secret created by helm
-      dockerConfigSecret:
-        registry: ghcr.io
-        auth: blah_blah_blah
-        create: false
 
-    ovnkube-master:
-        # -- number of ovnkube-master pods
-        replicas: 1
+    ovnkube-control-plane:
+        # -- number of ovnkube-control-plane pods
+        replicas: 3
 
     # -- prometheus monitoring related fields
     monitoring:

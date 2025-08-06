@@ -24,9 +24,14 @@ spec:
         component: network
         type: infra
         kubernetes.io/os: "linux"
+        ovn-db-pod: "true"
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
     spec:
+      {{- if .Values.global.imagePullSecretName }}
+      imagePullSecrets:
+      - name: {{ .Values.global.imagePullSecretName }}
+      {{- end }}
       serviceAccountName: ovnkube-node
       hostNetwork: true
       dnsPolicy: Default
@@ -192,7 +197,7 @@ spec:
             memory: 300Mi
         env:
         - name: OVN_DAEMONSET_VERSION
-          value: "1.0.0s"
+          value: "1.0.0"
         - name: OVN_LOGLEVEL_NORTHD
           value: {{ default "-vconsole:info -vfile:info" .Values.northdLogLevel | quote }}
         - name: K8S_APISERVER
@@ -271,6 +276,10 @@ spec:
           readOnly: true
         - mountPath: /etc/ovn/
           name: host-var-lib-ovs
+          readOnly: true
+        - mountPath: /run/systemd/private
+          name: run-systemd
+          subPath: private
           readOnly: true
         resources:
           requests:
@@ -352,7 +361,7 @@ spec:
         - name: OVN_HYBRID_OVERLAY_NET_CIDR
           value: {{ default "" .Values.global.hybridOverlayNetCidr | quote }}
         - name: OVN_DISABLE_SNAT_MULTIPLE_GWS
-          value: {{ default "" .Values.disableSnatMultipleGws | quote }}
+          value: {{ default "" .Values.global.disableSnatMultipleGws | quote }}
         - name: OVN_DISABLE_FORWARDING
           value: {{ default "" .Values.global.disableForwarding | quote }}
         - name: OVN_ENCAP_PORT
@@ -375,6 +384,10 @@ spec:
           value: {{ default "" .Values.global.v4JoinSubnet | quote }}
         - name: OVN_V6_JOIN_SUBNET
           value: {{ default "" .Values.global.v6JoinSubnet | quote }}
+        - name: OVN_V4_MASQUERADE_SUBNET
+          value: {{ default "" .Values.global.v4MasqueradeSubnet | quote }}
+        - name: OVN_V6_MASQUERADE_SUBNET
+          value: {{ default "" .Values.global.v6MasqueradeSubnet | quote }}
         - name: OVN_MULTICAST_ENABLE
           value: {{ default "" .Values.global.enableMulticast | quote }}
         - name: OVN_UNPRIVILEGED_MODE
@@ -399,6 +412,10 @@ spec:
           value: {{ default "" .Values.global.lFlowCacheLimitKb | quote }}
         - name: OVN_MULTI_NETWORK_ENABLE
           value: {{ hasKey .Values.global "enableMultiNetwork" | ternary .Values.global.enableMultiNetwork false | quote }}
+        - name: OVN_NETWORK_SEGMENTATION_ENABLE
+          value: {{ default "" .Values.global.enableNetworkSegmentation | quote }}
+        - name: OVN_PRE_CONF_UDN_ADDR_ENABLE
+          value: {{ default "" .Values.global.enablePreconfiguredUDNAddresses | quote }}
         - name: OVNKUBE_NODE_MGMT_PORT_NETDEV
           value: {{ default "" .Values.global.nodeMgmtPortNetdev | quote }}
         - name: OVN_EMPTY_LB_EVENTS
@@ -421,7 +438,13 @@ spec:
         - name: OVN_ENABLE_OVNKUBE_IDENTITY
           value: {{ hasKey .Values.global "enableOvnKubeIdentity" | ternary .Values.global.enableOvnKubeIdentity true | quote }}
         - name: OVN_ENABLE_SVC_TEMPLATE_SUPPORT
-          value: {{ hasKey .Values.global "enableSvcTemplate" | ternary .Values.global.enableSvcTemplate true | quote }
+          value: {{ hasKey .Values.global "enableSvcTemplate" | ternary .Values.global.enableSvcTemplate true | quote }}
+        - name: OVN_ENABLE_DNSNAMERESOLVER
+          value: {{ hasKey .Values.global "enableDNSNameResolver" | ternary .Values.global.enableDNSNameResolver false | quote }}
+        - name: OVN_OBSERV_ENABLE
+          value: {{ hasKey .Values.global "enableObservability" | ternary .Values.global.enableObservability false | quote }}
+        - name: OVN_NETWORK_QOS_ENABLE
+          value: {{ hasKey .Values.global "enableNetworkQos" | ternary .Values.global.enableNetworkQos false | quote }}
         readinessProbe:
           exec:
             command: ["/usr/bin/ovn-kube-util", "readiness-probe", "-t", "ovnkube-node"]
@@ -574,5 +597,8 @@ spec:
       - name: host-var-lib-ovs
         hostPath:
           path: /var/lib/openvswitch
+      - name: run-systemd
+        hostPath:
+          path: /run/systemd
       tolerations:
       - operator: "Exists"

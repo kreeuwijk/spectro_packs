@@ -26,6 +26,10 @@ spec:
         type: infra
         kubernetes.io/os: "linux"
     spec:
+      {{- if .Values.global.imagePullSecretName }}
+      imagePullSecrets:
+      - name: {{ .Values.global.imagePullSecretName }}
+      {{- end }}
       priorityClassName: "system-cluster-critical"
       serviceAccountName: ovnkube-node
       hostNetwork: true
@@ -86,6 +90,10 @@ spec:
         - mountPath: /var/run/netns
           name: host-netns
           mountPropagation: Bidirectional
+        - mountPath: /run/systemd/private
+          name: run-systemd
+          subPath: private
+          readOnly: true
         # ovnkube-node dpu-host mounts
         - mountPath: /var/run/ovn
           name: var-run-ovn
@@ -190,6 +198,8 @@ spec:
           value: {{ default "" .Values.global.extGatewayNetworkInterface | quote }}
         - name: OVN_ENABLE_OVNKUBE_IDENTITY
           value: {{ hasKey .Values.global "enableOvnKubeIdentity" | ternary .Values.global.enableOvnKubeIdentity true | quote }}
+        - name: OVN_NETWORK_QOS_ENABLE
+          value: {{ hasKey .Values.global "enableNetworkQos" | ternary .Values.global.enableNetworkQos false | quote }}
         - name: OVNKUBE_NODE_MODE
           value: "dpu-host"
         - name: OVNKUBE_NODE_MGMT_PORT_NETDEV
@@ -240,6 +250,9 @@ spec:
       - name: host-netns
         hostPath:
           path: /var/run/netns
+      - name: run-systemd
+        hostPath:
+          path: /run/systemd
       - name: var-run-ovn
         emptyDir: {}
       tolerations:
