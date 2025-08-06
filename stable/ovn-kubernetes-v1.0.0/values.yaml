@@ -17,6 +17,7 @@ charts:
       ovnkube-node-dpu: false
       ovnkube-node-dpu-host: false
       ovnkube-zone-controller: false
+      ovs-node: false
 
     # -- Endpoint of Kubernetes api server
     k8sAPIServer: auto
@@ -167,7 +168,7 @@ charts:
 
     ovnkube-control-plane:
         # -- number of ovnkube-control-plane pods
-        replicas: 3
+        replicas: 2
 
     # -- prometheus monitoring related fields
     monitoring:
