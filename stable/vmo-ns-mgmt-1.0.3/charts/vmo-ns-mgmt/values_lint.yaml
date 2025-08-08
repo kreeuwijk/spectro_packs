@@ -4,20 +4,32 @@ vmEnabledNamespaces:
   - virtual-machines
   - customer-vm-1
   - customer-vm-2
+  - customer-vm-3
 
 quotas:
   - namespace: customer-vm-1
+    clusters:
+      - demo-cluster1
+      - demo-cluster2
     limits:
       cpu: 9
     requests:
       memory: 33Gi
       storage: 120Gi
   - namespace:  customer-vm-2
+    clusters:
+      - demo-cluster1
     limits:
       cpu: 40
     requests:
       memory: 150Gi
       storage: 1024Gi
+  - namespace:  customer-vm-3
+    limits:
+      cpu: 100
+    requests:
+      memory: 250Gi
+      storage: 2Ti
 
 rbac:
   - namespace: default
@@ -26,6 +38,9 @@ rbac:
         - Viewers Group 1
         - Viewers Group 2
   - namespace: customer-vm-1
+    clusters:
+      - demo-cluster1
+      - demo-cluster2
     admins:
       users:
         - test.user1@company.com

@@ -1,4 +1,6 @@
-{{- range $rbac := .Values.rbac -}}
+{{ range $index, $cluster := (lookup "cluster.spectrocloud.com/v1alpha1" "SpectroCluster" "" "").items }}
+  {{- range $rbac := $.Values.rbac -}}
+    {{- if or (has $cluster.metadata.name $rbac.clusters) (not (hasKey $rbac "clusters")) }}
 {{- if $rbac.admins }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -115,5 +117,7 @@ subjects:
 {{- end }}
 {{- end }}
 {{- end }}
+    {{- end }}
+  {{- end }}
 ---
 {{- end }}

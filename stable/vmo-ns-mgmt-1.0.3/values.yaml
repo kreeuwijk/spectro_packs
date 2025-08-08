@@ -11,14 +11,32 @@ charts:
     #   - virtual-machines
     #   - customer-ns-1
     #   - customer-ns-2
+    #   - customer-ns-3
 
     quotas: []
-    # - namespace: customer-ns-1
+    # - namespace: customer-vm-1
+    #   clusters:
+    #     - demo-cluster1
+    #     - demo-cluster2
+    #   limits:
+    #     cpu: 9
+    #   requests:
+    #     memory: 33Gi
+    #     storage: 120Gi
+    # - namespace:  customer-vm-2
+    #   clusters:
+    #     - demo-cluster1
+    #   limits:
+    #     cpu: 40
+    #   requests:
+    #     memory: 150Gi
+    #     storage: 1024Gi
+    # - namespace:  customer-vm-3
     #   limits:
     #     cpu: 100
     #   requests:
-    #     memory: 256Gi
-    #     storage: 1Ti
+    #     memory: 250Gi
+    #     storage: 2Ti
 
     rbac: []
     # - namespace: default
@@ -27,6 +45,9 @@ charts:
     #     groups:
     #       - "VMO All Users group"
     # - namespace: customer-ns-1
+    #   clusters:
+    #     - demo-cluster1
+    #     - demo-cluster2
     #   admins:
     #     groups:
     #       - VMO Admins group
