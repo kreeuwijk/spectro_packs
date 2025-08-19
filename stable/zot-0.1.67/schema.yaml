@@ -1,0 +1,2 @@
+charts.zot.registry.password:
+  schema: '{{ required | format "${password}" | hints "Provide password here, if you want to customize it" }}'

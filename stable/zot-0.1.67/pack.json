@@ -1,0 +1,21 @@
+{
+  "addonType": "registry",
+  "cloudTypes": [
+    "edge-native"
+  ],
+  "displayName": "Zot Registry",
+  "kubeManifests": [
+  ],
+  "layer": "addon",
+  "name": "zot-registry",
+  "version": "0.1.67",
+  "annotations": {
+    "source": "spectrocloud",
+    "fips": "unknown",
+    "architecture": "amd64,arm64",
+    "airgap": "true"
+  },
+  "charts": [
+    "charts/zot-0.1.67.tgz"
+  ]
+}
