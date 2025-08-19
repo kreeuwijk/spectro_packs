@@ -1,7 +1,7 @@
 {
   "addonType": "registry",
   "cloudTypes": [
-    "edge-native"
+    "all"
   ],
   "displayName": "Zot Registry",
   "kubeManifests": [
