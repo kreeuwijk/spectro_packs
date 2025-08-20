@@ -1,6 +1,0 @@
-apiVersion: v2
-appVersion: 1.0.0
-description: Helm chart to deploy ovnkube-node-dpu
-name: ovnkube-node-dpu
-type: application
-version: 1.0.0

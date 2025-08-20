@@ -1,5 +1,0 @@
-apiVersion: v2
-appVersion: 1.0.0
-description: Subchart for ovnkube-node
-name: ovnkube-node
-version: 1.0.0
