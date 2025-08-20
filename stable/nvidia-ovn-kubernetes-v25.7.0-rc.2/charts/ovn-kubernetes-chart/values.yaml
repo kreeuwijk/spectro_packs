@@ -10,14 +10,14 @@ ovn-kubernetes-resource-injector:
       - /ovnkubernetesresourceinjector
       image:
         repository: ghcr.io/nvidia/ovn-kubernetes
-        tag: v25.7.0-beta.4
+        tag: v25.7.0-rc.2
 
 # -- Variables related to manifests that are deployed for nodes with DPU
 nodeWithDPUManifests:
   enabled: false
   image:
     repository: ghcr.io/nvidia/ovn-kubernetes
-    tag: v25.7.0-beta.4
+    tag: v25.7.0-rc.2
     pullPolicy: IfNotPresent
   nodeMgmtPortNetdev: ""
   dpuServiceAccountName: ovn-dpu
@@ -30,7 +30,7 @@ nodeWithoutDPUManifests:
   enabled: false
   image:
     repository: ghcr.io/nvidia/ovn-kubernetes
-    tag: v25.7.0-beta.4
+    tag: v25.7.0-rc.2
     pullPolicy: IfNotPresent
   cniBinDir: "/opt/cni/bin"
   cniConfDir: "/etc/cni/net.d"
@@ -40,7 +40,7 @@ dpuManifests:
   enabled: false
   image:
     repository: ghcr.io/nvidia/ovn-kubernetes
-    tag: v25.7.0-beta.4
+    tag: v25.7.0-rc.2
     pullPolicy: IfNotPresent
   kubernetesSecretName: null # user needs to populate based on DPUServiceCredentialRequest
   vtepCIDR: null # user needs to populate based on DPUServiceIPAM
@@ -59,7 +59,7 @@ controlPlaneManifests:
   enabled: false
   image:
     repository: ghcr.io/nvidia/ovn-kubernetes
-    tag: v25.7.0-beta.4
+    tag: v25.7.0-rc.2
     pullPolicy: IfNotPresent
   cniBinDir: "/opt/cni/bin"
   cniConfDir: "/etc/cni/net.d"

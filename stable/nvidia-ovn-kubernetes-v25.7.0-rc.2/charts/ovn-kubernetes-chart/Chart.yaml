@@ -1,7 +1,7 @@
 annotations:
-  commit: 6042eddab9b1d4bf7d3ba823c7a9e67bdf091347
-  created: "2025-07-14T15:48:21+00:00"
-  dpfVersion: v25.7.0-beta.4
+  commit: c7bd3d764a5875b42754a7ab0102654f0d246da1
+  created: "2025-08-05T16:26:21+00:00"
+  dpfVersion: v25.7.0-rc.2
 apiVersion: v2
 appVersion: 1.0.0
 dependencies:
@@ -18,4 +18,4 @@ sources:
 - https://github.com/ovn-org/ovn-kubernetes
 - https://github.com/ovn-org/ovn
 type: application
-version: v25.7.0-beta.4
+version: v25.7.0-rc.2
