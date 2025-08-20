@@ -1,0 +1,18 @@
+{
+  "addonType":"system app",
+  "annotations": {
+    "prerequisitesRequired": "true",
+    "source": "community",
+    "contributor": "spectrocloud"
+  },
+  "cloudTypes": [
+    "edge-native"
+  ],
+  "displayName": "Nvidia DPF Operator Prereqs",
+  "charts": [
+    "charts/dpf-operator-v25.7.0-rc.2"
+  ],
+  "layer": "addon",
+  "name": "nvidia-dpf-operator-prereqs",
+  "version": "25.7.0"
+}
