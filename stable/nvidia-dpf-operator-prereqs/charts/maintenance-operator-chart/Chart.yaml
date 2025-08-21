@@ -1,6 +1,0 @@
-apiVersion: v2
-appVersion: v0.1.1
-description: Maintenance Operator Helm Chart
-name: maintenance-operator-chart
-type: application
-version: 0.1.1

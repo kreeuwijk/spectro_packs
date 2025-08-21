@@ -1,0 +1,25 @@
+{{- if or .Values.agent.enabled .Values.server.enabled -}}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "parca.fullname" . }}-test-connection"
+  labels:
+    {{- include "parca.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+{{- if .Values.server.enabled }}
+    - name: wget-server
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "parca.fullname" . }}-server:{{ .Values.server.service.port }}']
+{{- end }}
+{{- if .Values.agent.enabled }}
+    - name: wget-agent
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "parca.fullname" . }}-agent:{{ .Values.agent.service.port }}']
+{{- end }}
+  restartPolicy: Never
+{{- end }}
