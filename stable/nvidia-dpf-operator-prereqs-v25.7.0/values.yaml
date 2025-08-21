@@ -1,5 +1,5 @@
 pack:
-  namespace: dpf-operator
+  namespace: dpf-operator-system
 charts:
   ## installed dependencies except for kamaji.
   argo-cd:
