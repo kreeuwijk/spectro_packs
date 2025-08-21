@@ -8,7 +8,7 @@
   "cloudTypes": [
     "edge-native"
   ],
-  "displayName": "Nvidia DPF Operator Prereqs",
+  "displayName": "Nvidia DPF Prereqs",
   "charts": [
     "charts/argo-cd-7.8.2.tgz",
     "charts/grafana-8.4.6.tgz",
@@ -19,6 +19,6 @@
     "charts/prometheus-25.26.0.tgz"
   ],
   "layer": "addon",
-  "name": "nvidia-dpf-operator-prereqs",
+  "name": "nvidia-dpf-prereqs",
   "version": "25.7.0"
 }
