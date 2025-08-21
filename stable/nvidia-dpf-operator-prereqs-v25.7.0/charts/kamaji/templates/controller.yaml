@@ -19,10 +19,6 @@ spec:
       labels:
         {{- include "kamaji.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ include "kamaji.serviceAccountName" . }}
@@ -33,7 +29,9 @@ spec:
         - --leader-elect
         - --metrics-bind-address={{ .Values.metricsBindAddress }}
         - --tmp-directory={{ .Values.temporaryDirectoryPath }}
-        - --datastore={{ include "datastore.fullname" . }}
+        {{- if not (eq .Values.defaultDatastoreName "") }}
+        - --datastore={{ .Values.defaultDatastoreName }}
+        {{- end }}
         {{- if .Values.telemetry.disabled }}
         - --disable-telemetry
         {{- end }}
@@ -43,8 +41,6 @@ spec:
         {{- with .Values.extraArgs }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-        command:
-        - /kamaji
         env:
           - name: POD_NAMESPACE
             valueFrom:

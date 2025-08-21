@@ -1,11 +1,12 @@
 pack:
-  namespace: ovn-kubernetes
+  namespace: dpf-operator
 charts:
   ## installed dependencies except for kamaji.
   argo-cd:
-    enabled: true
     nameOverride: argo-cd
-    fullnameOverride: oargo-cd
+    fullnameOverride: argo-cd
+    applicationSet:
+      replicas: 0
     dex:
       enabled: false
     notifications:
@@ -16,11 +17,9 @@ charts:
       affinity:
         nodeAffinity:
           # -- Default node affinity rules. Either: `none`, `soft` or `hard`
-          type: soft
+          type: hard
           # -- Default match expressions for node affinity
           matchExpressions:
-            - key: "node-role.kubernetes.io/master"
-              operator: Exists
             - key: "node-role.kubernetes.io/control-plane"
               operator: Exists
       tolerations:
@@ -33,7 +32,6 @@ charts:
 
   ## NFD configuration
   node-feature-discovery:
-    enabled: true
     nameOverride: node-feature-discovery
     fullnameOverride: node-feature-discovery
     master:
@@ -41,9 +39,6 @@ charts:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-              - matchExpressions:
-                  - key: "node-role.kubernetes.io/master"
-                    operator: Exists
               - matchExpressions:
                   - key: "node-role.kubernetes.io/control-plane"
                     operator: Exists
@@ -73,9 +68,6 @@ charts:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: "node-role.kubernetes.io/master"
-                    operator: Exists
-              - matchExpressions:
                   - key: "node-role.kubernetes.io/control-plane"
                     operator: Exists
       tolerations:
@@ -87,7 +79,6 @@ charts:
           effect: NoSchedule
 
   kamaji:
-    enabled: true
     nameOverride: kamaji
     fullnameOverride: kamaji
     affinity:
@@ -95,9 +86,6 @@ charts:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
             - matchExpressions:
-                - key: "node-role.kubernetes.io/master"
-                  operator: Exists
-            - matchExpressions:
                 - key: "node-role.kubernetes.io/control-plane"
                   operator: Exists
     tolerations:
@@ -107,68 +95,82 @@ charts:
       - key: node-role.kubernetes.io/control-plane
         operator: Exists
         effect: NoSchedule
-    etcd:
-      deploy: false
-    datastore:
-      enabled: false
-      nameOverride: default
+    kamaji-etcd:
+      persistentVolumeClaim:
+        storageClassName: local-path-provisioner
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: "node-role.kubernetes.io/control-plane"
+                    operator: Exists
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      jobs:
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                    - key: "node-role.kubernetes.io/control-plane"
+                      operator: Exists
+        tolerations:
+          - key: node-role.kubernetes.io/master
+            operator: Exists
+            effect: NoSchedule
+          - key: node-role.kubernetes.io/control-plane
+            operator: Exists
+            effect: NoSchedule
+      datastore:
+        enabled: true
+        annotations:
+          helm.sh/resource-policy: keep
+        name: default
     image:
-      pullPolicy: IfNotPresent
+      repository: ghcr.io/nvidia/kamaji
+      tag: v1.33.0-25.4.1
+      pullPolicy: Always
     cfssl:
       image:
         tag: v1.6.5
 
-  ## kamaji configuration.
-  kamaji-etcd:
-    enabled: true
-    nameOverride: kamaji-etcd
-    fullnameOverride: kamaji-etcd
-    persistentVolumeClaim:
-      storageClassName: local-path-provisioner
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: "node-role.kubernetes.io/master"
-                  operator: Exists
-            - matchExpressions:
-                - key: "node-role.kubernetes.io/control-plane"
-                  operator: Exists
-    tolerations:
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
-    datastore:
-      enabled: true
-      annotations:
-        helm.sh/resource-policy: keep
-      name: default
-
   ## prometheus configuration.
   prometheus:
-    enabled: false
     nameOverride: prometheus
     fullnameOverride: prometheus
-  ## Unfortunately, there is no affinity and tolerations value in the prometheus helm chart.
-  ## This is only necessary for dev purposes anyway. We should not run this stack on our control planes.
+    server:
+      persistentVolume:
+        storageClass: local-path-provisioner
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: "node-role.kubernetes.io/control-plane"
+                    operator: Exists
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
     alertmanager:
       enabled: false
     prometheus-node-exporter:
       enabled: false
     prometheus-pushgateway:
       enabled: false
-    # We have to disable kube-state-metrics that is a dependency from Prometheus.
-    # Adding KSM manually has the benefit that we can only enable KSM, without Prometheus.
     kube-state-metrics:
       enabled: false
-    # Scrape metrics from deployed providers
     extraScrapeConfigs: |
       - job_name: 'doca-platform-framework'
-        # 15s is a bit often for production but helps to get metrics quicker for development.
         scrape_interval: 15s
         metrics_path: /metrics
         scheme: https
@@ -190,11 +192,23 @@ charts:
 
   ## grafana configuration
   grafana:
-    enabled: false
-    nameOverride: grafana
-    fullnameOverride: grafana
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: "node-role.kubernetes.io/control-plane"
+                  operator: Exists
+    tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
     persistence:
       enabled: true
+      storageClassName: local-path-provisioner
     datasources:
       datasources.yaml:
         apiVersion: 1
@@ -205,41 +219,37 @@ charts:
             access: proxy
             isDefault: true
     dashboardProviders:
-    dashboardproviders.yaml:
-      apiVersion: 1
-      providers:
-        - name: 'default'
-          orgId: 1
-          folder: ''
-          type: file
-          disableDeletion: false
-          editable: true
-          options:
-            path: /var/lib/grafana/dashboards/default
-        - name: 'debug'
-          orgId: 1
-          folder: 'debug'
-          type: file
-          disableDeletion: false
-          editable: true
-          options:
-            path: /var/lib/grafana/dashboards/debug
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+          - name: 'default'
+            orgId: 1
+            folder: ''
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/default
+          - name: 'debug'
+            orgId: 1
+            folder: 'debug'
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/debug
     dashboardsConfigMaps:
       default: dpf-operator-grafana-dashboards
       debug: dpf-operator-grafana-debug-dashboards
 
   ## kube-state-metrics configuration
   kube-state-metrics:
-    enabled: false
     nameOverride: kube-state-metrics
     fullnameOverride: kube-state-metrics
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
-            - matchExpressions:
-                - key: "node-role.kubernetes.io/master"
-                  operator: Exists
             - matchExpressions:
                 - key: "node-role.kubernetes.io/control-plane"
                   operator: Exists
@@ -300,7 +310,6 @@ charts:
   maintenance-operator-chart:
     nameOverride: maintenance-operator
     fullnameOverride: maintenance-operator
-    enabled: true
     operatorConfig:
       maxParallelOperations: 60%
     operator:
@@ -308,9 +317,6 @@ charts:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-              - matchExpressions:
-                  - key: "node-role.kubernetes.io/master"
-                    operator: Exists
               - matchExpressions:
                   - key: "node-role.kubernetes.io/control-plane"
                     operator: Exists
