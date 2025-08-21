@@ -82,46 +82,6 @@ charts:
           operator: Exists
           effect: NoSchedule
 
-  ## kamaji configuration.
-  kamaji-etcd:
-    enabled: true
-    persistentVolumeClaim:
-      storageClassName: spectro-storage-class
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: "node-role.kubernetes.io/master"
-                  operator: Exists
-            - matchExpressions:
-                - key: "node-role.kubernetes.io/control-plane"
-                  operator: Exists
-    tolerations:
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
-    datastore:
-      enabled: true
-      annotations:
-        helm.sh/resource-policy: keep
-      name: default
-  ## Kamaji etcd-defrag configuration.
-  kamaji-etcd-defrag:
-    enabled: true
-    ## The schedule for the etcd-defrag job.
-    schedule: 0 0 * * *
-    image: ghcr.io/ahrtr/etcd-defrag:v0.22.0
-    ## The defrag rule for the etcd-defrag job.
-    ## See: https://github.com/ahrtr/etcd-defrag?tab=readme-ov-file#defragmentation-rule
-    defragRule: "dbQuotaUsage > 0.8 || dbSize - dbSizeInUse > 200*1024*1024"
-    ## # Keep only the X recent successful jobs.
-    successfulJobsHistoryLimit: 3
-    ## Limit the number of retries on failure
-    backoffLimit: 6
   kamaji:
     enabled: true
     affinity:
@@ -151,6 +111,34 @@ charts:
     cfssl:
       image:
         tag: v1.6.5
+
+  ## kamaji configuration.
+  kamaji-etcd:
+    enabled: true
+    persistentVolumeClaim:
+      storageClassName: local-path-provisioner
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: "node-role.kubernetes.io/master"
+                  operator: Exists
+            - matchExpressions:
+                - key: "node-role.kubernetes.io/control-plane"
+                  operator: Exists
+    tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+    datastore:
+      enabled: true
+      annotations:
+        helm.sh/resource-policy: keep
+      name: default
 
   ## prometheus configuration.
   prometheus:
