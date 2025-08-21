@@ -8,6 +8,8 @@ charts:
     # -- Variables related to the OVN Kubernetes Resource Injector
     ovn-kubernetes-resource-injector:
       enabled: false
+      nameOverride: ovn-kubernetes-resource-injector
+      fullnameOverride: ovn-kubernetes-resource-injector
       resourceName: nvidia.com/bf3-vfs
       controllerManager:
         webhook:
@@ -86,7 +88,7 @@ charts:
 
     # -- Variables related to common manifests used by components in both DPU and Host cluster
     commonManifests:
-      enabled: false
+      enabled: true
 
     # -- The name of the namespace where the leases are going to be stored. This value
     # should be the same for the host and DPU components. Defaults to Release.Namespace

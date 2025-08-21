@@ -1,6 +1,0 @@
-#chart-testing is using k3s for testing.
-#we need to overwrite path to socket for it to work
-agent:
-  socketPath: /run/containerd/containerd.sock
-  extraArgs:
-    - --allow-running-in-non-root-pid-namespace

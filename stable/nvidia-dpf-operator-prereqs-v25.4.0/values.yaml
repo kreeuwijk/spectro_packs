@@ -319,69 +319,6 @@ charts:
           operator: Exists
           effect: NoSchedule
 
-  parca:
-    enabled: false
-    agent:
-      ## Disable the agent as it does not work in containerized environments.
-      enabled: false
-    serviceAccount:
-      name: dpf-operator-parca
-    server:
-      tolerations:
-        - key: node-role.kubernetes.io/master
-          operator: Exists
-          effect: NoSchedule
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
-      logLevel: info
-      scrapeConfigs:
-        - job_name: doca-platform
-          kubernetes_sd_configs:
-            - role: pod
-          relabel_configs:
-            ## Add each of the DPF controllers as a target for parca to scrape
-            - source_labels: [__meta_kubernetes_pod_label_dpu_nvidia_com_component]
-              action: keep
-              regex: ".*-controller-manager"
-            - source_labels: [__address__]
-              regex: '([^:]+):.*'
-              target_label: __address__
-              ## The port value hardcoded for pprof here is the default for all controllers in DPF.
-              replacement: '${1}:8082'
-            - action: labelmap
-              regex: __meta_kubernetes_pod_label_(.+)
-            - action: replace
-              source_labels:
-                - __meta_kubernetes_namespace
-              target_label: kubernetes_namespace
-            - action: replace
-              source_labels:
-                - __meta_kubernetes_pod_name
-              target_label: kubernetes_pod_name
-        - job_name: argo-cd
-          kubernetes_sd_configs:
-            - role: pod
-          relabel_configs:
-            ## Add argoCD as a target for parca to scrape
-            - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_component]
-              action: keep
-              regex: "application-controller"
-            - source_labels: [__address__]
-              regex: '([^:]+):.*'
-              target_label: __address__
-              ## The port value hardcoded for pprof here is the default for argoCD controllers
-              replacement: '${1}:8082'
-            - action: labelmap
-              regex: __meta_kubernetes_pod_label_(.+)
-            - action: replace
-              source_labels:
-                - __meta_kubernetes_namespace
-              target_label: kubernetes_namespace
-            - action: replace
-              source_labels:
-                - __meta_kubernetes_pod_name
-              target_label: kubernetes_pod_name
   ## IsOpenShift templates resources - for example ClusterRoleBindings to SecurityContextConstraints - which are relevant
   ## when installing DPF using helm on OpenShift.
   isOpenshift: false
