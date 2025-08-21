@@ -2,6 +2,8 @@ pack:
   namespace: ovn-kubernetes
 charts:
   dpf-operator:
+    nameOverride: dpf-operator
+    fullnameOverride: dpf-operator
     ## dpf-operator configuration.
     controllerManager:
       containerSecurityContext:

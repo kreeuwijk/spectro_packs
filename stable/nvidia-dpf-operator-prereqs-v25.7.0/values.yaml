@@ -4,6 +4,8 @@ charts:
   ## installed dependencies except for kamaji.
   argo-cd:
     enabled: true
+    nameOverride: argo-cd
+    fullnameOverride: oargo-cd
     dex:
       enabled: false
     notifications:
@@ -32,6 +34,8 @@ charts:
   ## NFD configuration
   node-feature-discovery:
     enabled: true
+    nameOverride: node-feature-discovery
+    fullnameOverride: node-feature-discovery
     master:
       affinity:
         nodeAffinity:
@@ -84,6 +88,8 @@ charts:
 
   kamaji:
     enabled: true
+    nameOverride: kamaji
+    fullnameOverride: kamaji
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -115,6 +121,8 @@ charts:
   ## kamaji configuration.
   kamaji-etcd:
     enabled: true
+    nameOverride: kamaji-etcd
+    fullnameOverride: kamaji-etcd
     persistentVolumeClaim:
       storageClassName: local-path-provisioner
     affinity:
@@ -143,6 +151,8 @@ charts:
   ## prometheus configuration.
   prometheus:
     enabled: false
+    nameOverride: prometheus
+    fullnameOverride: prometheus
   ## Unfortunately, there is no affinity and tolerations value in the prometheus helm chart.
   ## This is only necessary for dev purposes anyway. We should not run this stack on our control planes.
     alertmanager:
@@ -181,6 +191,8 @@ charts:
   ## grafana configuration
   grafana:
     enabled: false
+    nameOverride: grafana
+    fullnameOverride: grafana
     persistence:
       enabled: true
     datasources:
@@ -219,6 +231,8 @@ charts:
   ## kube-state-metrics configuration
   kube-state-metrics:
     enabled: false
+    nameOverride: kube-state-metrics
+    fullnameOverride: kube-state-metrics
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -284,6 +298,7 @@ charts:
 
   ## maintenance-operator chart configuration
   maintenance-operator-chart:
+    nameOverride: maintenance-operator
     fullnameOverride: maintenance-operator
     enabled: true
     operatorConfig:
