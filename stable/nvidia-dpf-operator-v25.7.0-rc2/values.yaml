@@ -1,5 +1,7 @@
 pack:
   namespace: dpf-operator-system
+  releaseNameOverride:
+    dpf-operator: dpf-operator
 charts:
   dpf-operator:
     nameOverride: dpf-operator

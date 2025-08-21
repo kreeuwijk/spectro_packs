@@ -192,6 +192,8 @@ charts:
 
   ## grafana configuration
   grafana:
+    nameOverride: grafana
+    fullnameOverride: grafana
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
