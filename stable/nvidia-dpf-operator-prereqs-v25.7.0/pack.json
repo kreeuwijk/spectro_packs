@@ -13,7 +13,6 @@
     "charts/argo-cd-7.8.2.tgz",
     "charts/grafana-8.4.6.tgz",
     "charts/kamaji-1.1.0.tgz",
-    "charts/kamaji-etcd-0.9.0.tgz",
     "charts/kube-state-metrics-5.25.1.tgz",
     "charts/maintenance-operator-chart-0.2.0.tgz",
     "charts/node-feature-discovery-0.17.1.tgz",
