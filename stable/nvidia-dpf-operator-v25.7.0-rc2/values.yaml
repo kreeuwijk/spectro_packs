@@ -1,5 +1,5 @@
 pack:
-  namespace: ovn-kubernetes
+  namespace: dpf-operator-system
 charts:
   dpf-operator:
     nameOverride: dpf-operator
