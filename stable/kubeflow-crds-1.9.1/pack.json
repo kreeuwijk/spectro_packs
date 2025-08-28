@@ -5,8 +5,7 @@
     "source": "spectrocloud"
   },
   "cloudTypes": [
-    "maas",
-    "edge-native"
+      "all"
   ],
   "displayName": "Kubeflow CRDs",
   "charts": [
