@@ -6,6 +6,7 @@ pack:
     kubeflow: kubeflow
     profile: kubeflow-profile
 charts:
+  metacontroller: {}
   profile:
     nameOverride: ""
 
