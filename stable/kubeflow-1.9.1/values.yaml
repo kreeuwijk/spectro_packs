@@ -15,7 +15,7 @@ charts:
     #   spec:
     #     awsIamRole: arn:aws:iam::account-id:role/s3-reader
 
-    owner: {}
+    owner: {} # You must specify something here
       # kind: User
       # name: test-user@kubeflow.org
 
@@ -34,7 +34,7 @@ charts:
     #   edit: kubeflow-edit
     #   view: kubeflow-view
 
-    contributors: []
+    contributors: [] # You must specify something here
     # - user@example.com
 
   kubeflow:
