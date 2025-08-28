@@ -2042,7 +2042,7 @@ charts:
         # Whatever is under .knativeIntegration.knativeServing.operatorSpec will be
         # put directly to the KnativeServing CRD under .spec.
         operatorSpec:
-          version: 1.12.4
+          version: 1.16
           ingress:
             istio:
               enabled: true
@@ -2072,8 +2072,8 @@ charts:
             # For more information, visit official knative operator documentation:
             # https://knative.dev/docs/install/operator/configuring-with-operator/
             istio:
-              gateway.knative-serving.knative-ingress-gateway: "istio-ingressgateway.istio-ingress.svc.cluster.local"
-              local-gateway.knative-serving.knative-local-gateway: "cluster-local-gateway.istio-ingress.svc.cluster.local"
+              #gateway.knative-serving.knative-ingress-gateway: "istio-ingressgateway.istio-ingress.svc.cluster.local"
+              #local-gateway.knative-serving.knative-local-gateway: "cluster-local-gateway.istio-ingress.svc.cluster.local"
               external-gateways: |
                 - name: knative-ingress-gateway
                   namespace: knative-serving
