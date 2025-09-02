@@ -2056,16 +2056,16 @@ charts:
                       protocol: HTTP
                     hosts:
                     - "*"
-              #knative-local-gateway:
-              #  selector:
-              #    istio: cluster-local-gateway
-              #  servers:
-              #    - port:
-              #        number: 80
-              #        name: http
-              #        protocol: HTTP
-              #      hosts:
-              #      - "*"
+              knative-local-gateway:
+                selector:
+                  istio: gateway
+                servers:
+                  - port:
+                      number: 80
+                      name: http
+                      protocol: HTTP
+                    hosts:
+                    - "*"
           config:
             # Note: The configuration options may be copied out of
             # the example blocks, found in each of the supported KNative ConfigMaps.
@@ -2078,10 +2078,10 @@ charts:
                 - name: knative-ingress-gateway
                   namespace: knative-serving
                   service: istio-gateway.istio-system.svc.cluster.local
-              #local-gateways: |
-              #  - name: knative-local-gateway
-              #    namespace: knative-serving
-              #    service: cluster-local-gateway.istio-system.svc.cluster.local
+              local-gateways: |
+                - name: knative-local-gateway
+                  namespace: knative-serving
+                  service: knative-local-gateway.istio-system.svc.cluster.local
             domain: {}
               # example.com: ""
 
