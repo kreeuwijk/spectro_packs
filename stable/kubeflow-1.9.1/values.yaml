@@ -972,7 +972,7 @@ charts:
                 name:
                 key: driver
             host:
-              value: mysql.kubeflow.svc.cluster.local
+              value: katib-db
               secretKeyRef:
                 name:
                 key: host
@@ -987,7 +987,7 @@ charts:
                 name:
                 key: databaseName
             user:
-              value: katib
+              value: root
               secretKeyRef:
                 name:
                 key: username
@@ -1137,7 +1137,7 @@ charts:
               # https://github.com/kubeflow/pipelines/blob/2.2.0/backend/src/v2/config/env.go#L41
               key: secretkey
           host:
-            value: minio
+            value: pipelines-minio
             secretKeyRef:
               name:
               key: host
@@ -1175,7 +1175,7 @@ charts:
               name:
               key: password
           host:
-            value: mysql
+            value: pipelines-db
             secretKeyRef:
               name:
               key: host
@@ -1922,7 +1922,7 @@ charts:
               name:
               key: password
           host:
-            value: mysql
+            value: pipelines-db
             secretKeyRef:
               name:
               key: host
@@ -1932,7 +1932,7 @@ charts:
               name:
               key: port
           dbName:
-            value: metadb_model_registry
+            value: metadb
             secretKeyRef:
               name:
               key: dbName
@@ -1949,10 +1949,10 @@ charts:
       enabled: true
       envoyExtAuthzHttpExtensionProviderName: oauth2-proxy
       rootNamespace: istio-system
-      ingressGatewayNamespace: istio-ingress
+      ingressGatewayNamespace: istio-system
       # Required for KF Profiles Controller to configure
       # correct AuthorizationPolicy principal.
-      ingressGatewayServiceAccountName: istio-ingressgateway
+      ingressGatewayServiceAccountName: istio-gateway
       # one of ['ingressgateway', 'granular']
       # * 'ingressgateway' will deploy one AuthorizationPolicy in the namespace where
       #    istio ingress gateway Pod is being deployed.
@@ -1968,11 +1968,11 @@ charts:
         issuer: https://kubernetes.default.svc.cluster.local
       userAuth:
         userClaim: email
-        issuer: http://dex.dex.svc.cluster.local:5556/dex
+        issuer: http://dex.auth.svc.cluster.local:5556/dex
       gateway:
         name: kubeflow-gateway
         selector:
-          istio: ingressgateway
+          istio: gateway
         # TODO: check if this is used
         servers:
           - hosts:
@@ -1994,7 +1994,7 @@ charts:
       svc:
         name: dex
         port: 5556
-        namespace: dex
+        namespace: auth
 
       # one of: 'internal', 'external'
       # * internal - the in-kubernetes svc address will be used as the dex IdP
@@ -2042,13 +2042,13 @@ charts:
         # Whatever is under .knativeIntegration.knativeServing.operatorSpec will be
         # put directly to the KnativeServing CRD under .spec.
         operatorSpec:
-          version: "1.16"
+          version: "1.18"
           ingress:
             istio:
               enabled: true
               knative-ingress-gateway:
                 selector:
-                  istio: ingressgateway
+                  istio: gateway
                 servers:
                   - port:
                       number: 80
@@ -2056,33 +2056,32 @@ charts:
                       protocol: HTTP
                     hosts:
                     - "*"
-              knative-local-gateway:
-                selector:
-                  istio: cluster-local-gateway
-                servers:
-                  - port:
-                      number: 80
-                      name: http
-                      protocol: HTTP
-                    hosts:
-                    - "*"
+              #knative-local-gateway:
+              #  selector:
+              #    istio: cluster-local-gateway
+              #  servers:
+              #    - port:
+              #        number: 80
+              #        name: http
+              #        protocol: HTTP
+              #      hosts:
+              #      - "*"
           config:
             # Note: The configuration options may be copied out of
             # the example blocks, found in each of the supported KNative ConfigMaps.
             # For more information, visit official knative operator documentation:
             # https://knative.dev/docs/install/operator/configuring-with-operator/
             istio:
-              #gateway.knative-serving.knative-ingress-gateway: "istio-ingressgateway.istio-ingress.svc.cluster.local"
-              #local-gateway.knative-serving.knative-local-gateway: "cluster-local-gateway.istio-ingress.svc.cluster.local"
+              #gateway.knative-serving.knative-ingress-gateway: "istio-gateway.istio-system.svc.cluster.local"
+              #local-gateway.knative-serving.knative-local-gateway: "cluster-local-gateway.istio-system.svc.cluster.local"
               external-gateways: |
                 - name: knative-ingress-gateway
                   namespace: knative-serving
-                  service: istio-ingressgateway.istio-ingress.svc.cluster.local
-
-              local-gateways: |
-                - name: knative-local-gateway
-                  namespace: knative-serving
-                  service: cluster-local-gateway.istio-ingress.svc.cluster.local
+                  service: istio-gateway.istio-system.svc.cluster.local
+              #local-gateways: |
+              #  - name: knative-local-gateway
+              #    namespace: knative-serving
+              #    service: cluster-local-gateway.istio-system.svc.cluster.local
             domain: {}
               # example.com: ""
 
