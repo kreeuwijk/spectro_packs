@@ -13,6 +13,10 @@ spec:
       - key: app.kubernetes.io/component
         operator: In
         values:
+          - {{ include "kubeflow.notebooks.name" . }}
+      - key: app.kubernetes.io/subcomponent
+        operator: In
+        values:
           - {{ include "kubeflow.notebooks.volumesWebApp.name" . }}
   ingress:
     - from:

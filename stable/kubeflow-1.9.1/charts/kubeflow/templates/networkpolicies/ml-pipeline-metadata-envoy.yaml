@@ -13,6 +13,10 @@ spec:
       - key: app.kubernetes.io/component
         operator: In
         values:
+          - {{ include "kubeflow.pipelines.name" . }}
+      - key: app.kubernetes.io/subcomponent
+        operator: In
+        values:
           - {{ include "kubeflow.pipelines.metadataEnvoy.name" . }}
   ingress:
     - from:
