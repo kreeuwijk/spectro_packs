@@ -8,9 +8,9 @@
   ],
   "displayName": "VMO Namespace Management",
   "charts": [
-    "charts/vmo-ns-mgmt-1.0.3.tgz"
+    "charts/vmo-ns-mgmt-1.0.4.tgz"
   ],
   "layer": "addon",
   "name": "vmo-ns-mgmt",
-  "version": "1.0.3"
+  "version": "1.0.4"
 }
