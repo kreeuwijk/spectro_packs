@@ -1,0 +1,318 @@
+presets:
+  - name: "gateway-disabled"
+    displayName: "Disable"
+    group: "Gateway"
+    remove: ["charts.gateway"]
+    add: |
+      charts:
+        gateway:
+          enabled: false
+
+  - name: "gateway-enabled"
+    displayName: "Enable"
+    group: "Gateway"
+    remove: []
+    add: |
+      charts:
+        gateway:
+          enabled: true
+          # Name allows overriding the release name. Generally this should not be set
+          name: ""
+          # revision declares which revision this gateway is a part of
+          revision: ""
+
+          # Controls the spec.replicas setting for the Gateway deployment if set.
+          # Otherwise defaults to Kubernetes Deployment default (1).
+          replicaCount: 1
+
+          kind: Deployment
+
+          rbac:
+            # If enabled, roles will be created to enable accessing certificates from Gateways. This is not needed
+            # when using http://gateway-api.org/.
+            enabled: true
+
+          serviceAccount:
+            # If set, a service account will be created. Otherwise, the default is used
+            create: true
+            # Annotations to add to the service account
+            annotations: {}
+            # The name of the service account to use.
+            # If not set, the release name is used
+            name: ""
+
+          podAnnotations:
+            prometheus.io/port: "15020"
+            prometheus.io/scrape: "true"
+            prometheus.io/path: "/stats/prometheus"
+            inject.istio.io/templates: "gateway"
+            sidecar.istio.io/inject: "true"
+
+          # Define the security context for the pod.
+          # If unset, this will be automatically set to the minimum privileges required to bind to port 80 and 443.
+          # On Kubernetes 1.22+, this only requires the `net.ipv4.ip_unprivileged_port_start` sysctl.
+          securityContext: {}
+          containerSecurityContext: {}
+
+          service:
+            # Type of service. Set to "None" to disable the service entirely
+            type: LoadBalancer
+            ports:
+            - name: status-port
+              port: 15021
+              protocol: TCP
+              targetPort: 15021
+            - name: http2
+              port: 80
+              protocol: TCP
+              targetPort: 80
+            - name: https
+              port: 443
+              protocol: TCP
+              targetPort: 443
+            annotations: {}
+            loadBalancerIP: ""
+            loadBalancerSourceRanges: []
+            externalTrafficPolicy: ""
+            externalIPs: []
+            ipFamilyPolicy: ""
+            ipFamilies: []
+            ## Whether to automatically allocate NodePorts (only for LoadBalancers).
+            # allocateLoadBalancerNodePorts: false
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 2000m
+              memory: 1024Mi
+
+          autoscaling:
+            enabled: true
+            minReplicas: 1
+            maxReplicas: 5
+            targetCPUUtilizationPercentage: 80
+            targetMemoryUtilizationPercentage: {}
+            autoscaleBehavior: {}
+
+          # Pod environment variables
+          env: {}
+
+          # Deployment Update strategy
+          strategy: {}
+          
+          # Sets the Deployment minReadySeconds value
+          minReadySeconds: 0
+          
+          # Optionally configure a custom readinessProbe. By default the control plane
+          # automatically injects the readinessProbe. If you wish to override that
+          # behavior, you may define your own readinessProbe here.
+          readinessProbe: {}
+
+          # Labels to apply to all resources
+          labels: {}
+
+          # Annotations to apply to all resources
+          annotations: {}
+
+          nodeSelector: {}
+
+          tolerations: []
+
+          topologySpreadConstraints: []
+
+          affinity: {}
+
+          # If specified, the gateway will act as a network gateway for the given network.
+          networkGateway: ""
+
+          # Specify image pull policy if default behavior isn't desired.
+          # Default behavior: latest images will be Always else IfNotPresent
+          imagePullPolicy: ""
+
+          imagePullSecrets: []
+
+          # This value is used to configure a Kubernetes PodDisruptionBudget for the gateway.
+          #
+          # By default, the `podDisruptionBudget` is disabled (set to `{}`),
+          # which means that no PodDisruptionBudget resource will be created.
+          #
+          # To enable the PodDisruptionBudget, configure it by specifying the
+          # `minAvailable` or `maxUnavailable`. For example, to set the
+          # minimum number of available replicas to 1, you can update this value as follows:
+          #
+          # podDisruptionBudget:
+          #   minAvailable: 1
+          #
+          # Or, to allow a maximum of 1 unavailable replica, you can set:
+          #
+          # podDisruptionBudget:
+          #   maxUnavailable: 1
+          #
+          # You can also specify the `unhealthyPodEvictionPolicy` field, and the valid values are `IfHealthyBudget` and `AlwaysAllow`.
+          # For example, to set the `unhealthyPodEvictionPolicy` to `AlwaysAllow`, you can update this value as follows:
+          #
+          # podDisruptionBudget:
+          #   minAvailable: 1
+          #   unhealthyPodEvictionPolicy: AlwaysAllow
+          #
+          # To disable the PodDisruptionBudget, you can leave it as an empty object `{}`:
+          #
+          # podDisruptionBudget: {}
+          #
+          podDisruptionBudget: {}
+
+          # Sets the per-pod terminationGracePeriodSeconds setting.
+          terminationGracePeriodSeconds: 30
+
+          # A list of `Volumes` added into the Gateway Pods. See
+          # https://kubernetes.io/docs/concepts/storage/volumes/.
+          volumes: []
+
+          # A list of `VolumeMounts` added into the Gateway Pods. See
+          # https://kubernetes.io/docs/concepts/storage/volumes/.
+          volumeMounts: []
+
+          # Configure this to a higher priority class in order to make sure your Istio gateway pods
+          # will not be killed because of low priority class.
+          # Refer to https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
+          # for more detail.
+          priorityClassName: ""
+
+  - name: "kiali-disabled"
+    displayName: "Disable"
+    group: "Kiali Dashboard"
+    remove: ["charts.kiali-server"]
+    add: |
+      charts:
+        kiali-server:
+          enabled: false
+
+  - name: "kiali-enabled"
+    displayName: "Enable"
+    group: "Kiali Dashboard"
+    remove: []
+    add: |
+      charts:
+        kiali-server:
+          enabled: true
+          fullnameOverride: "kiali"
+
+          # This is required for "openshift" auth strategy.
+          # You have to know ahead of time what your Route URL will be because
+          # right now the helm chart can't figure this out at runtime (it would
+          # need to wait for the Kiali Route to be deployed and for OpenShift
+          # to start it up). If someone knows how to update this helm chart to
+          # do this, a PR would be welcome.
+          kiali_route_url: ""
+
+          #
+          # Settings that mimic the Kiali CR which are placed in the ConfigMap.
+          # Note that only those values used by the Helm Chart will be here.
+          #
+
+          additional_display_details:
+          - annotation: kiali.io/api-spec
+            icon_annotation: kiali.io/api-type
+            title: API Documentation
+
+          istio_namespace: "" # default is where Kiali is installed
+
+          auth:
+            openid: {}
+            openshift: {}
+            strategy: ""
+
+          clustering:
+            autodetect_secrets:
+              enabled: true
+              label: "kiali.io/multiCluster=true"
+            clusters: []
+
+          deployment:
+            additional_service_yaml: {}
+            affinity:
+              node: {}
+              pod: {}
+              pod_anti: {}
+            # The Kiali server helm chart only supports cluster-wide access; setting cluster_wide_access to false is not supported.
+            # For more control over what the Kial Service Account can see, use the Kiali Operator.
+            cluster_wide_access: true
+            configmap_annotations: {}
+            custom_envs: []
+            custom_secrets: []
+            dns:
+              config: {}
+              policy: ""
+            host_aliases: []
+            hpa:
+              api_version: "autoscaling/v2"
+              spec: {}
+            image_digest: "" # use "sha256" if image_version is a sha256 hash (do NOT prefix this value with a "@")
+            image_name: us-docker.pkg.dev/palette-images/packs/istio/1.26.0/kiali
+            image_pull_policy: "Always"
+            image_pull_secrets: []
+            image_version: v2.11.0 # version like "v1.39" (see: https://quay.io/repository/kiali/kiali?tab=tags) or a digest hash
+            ingress:
+              additional_labels: {}
+              class_name: "nginx"
+              #enabled:
+              override_yaml:
+                metadata: {}
+            instance_name: "kiali"
+            logger:
+              log_format: "text"
+              log_level: "info"
+              time_field_format: "2006-01-02T15:04:05Z07:00"
+              sampler_rate: "1"
+            node_selector: {}
+            pod_annotations: {}
+            pod_labels: {}
+            priority_class_name: ""
+            remote_cluster_resources_only: false
+            # if deployment.hpa is defined, this replicas setting will be ignored
+            replicas: 1
+            resources:
+              requests:
+                cpu: "10m"
+                memory: "64Mi"
+              limits:
+                memory: "1Gi"
+            secret_name: "kiali"
+            security_context: {}
+            service_annotations: {}
+            service_type: ""
+            tolerations: []
+            topology_spread_constraints: []
+            version_label: v2.11.0 # v1.39 # v1.39.0 # see: https://quay.io/repository/kiali/kiali?tab=tags
+            view_only_mode: false
+
+          external_services:
+            prometheus:
+              url: "http://prometheus.istio-system:9090/"
+            custom_dashboards:
+              enabled: true
+            istio:
+              root_namespace: ""
+
+          identity: {}
+            #cert_file:
+            #private_key_file:
+
+          kiali_feature_flags:
+            disabled_features: []
+            validations:
+              ignore: ["KIA1301"]
+
+          login_token:
+            signing_key: ""
+
+          server:
+            port: 20001
+            #node_port:
+            observability:
+              metrics:
+                enabled: true
+                port: 9090
+            web_root: ""
