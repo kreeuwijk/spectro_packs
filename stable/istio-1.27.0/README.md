@@ -17,7 +17,8 @@ We install following components of Istio:
 
 | Name | Description | Type | Default Value | Required |
 | --- | --- | --- | --- | --- |
-| gateway.enabled | this customization is used to enable or disable the istio gateway deployment. | Boolean | `false` | yes |
+| istiod.cni.enabled | this customization is used to enable or disable the istio CNI deployment. | Boolean | `false` | yes |
+| istiod.gateway.enabled | this customization is used to enable or disable the istio gateway deployment. | Boolean | `false` | yes |
 | istiod.pilot.image | image tag for istio pilot application | string | `istio-pilot` | yes |
 | istiod.global.hub | image url path for istiod | string | - | yes |
 | istiod.global.tag | image tag version for istiod | string | 1.26.0 | yes |

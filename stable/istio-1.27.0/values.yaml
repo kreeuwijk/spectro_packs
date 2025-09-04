@@ -4,6 +4,8 @@ pack:
   #The namespace (on the target cluster) to install this chart
   #When the namespace is not found, a new namespace will be created with the name specified
   namespace: "istio-system"
+  namespaceLabels:
+    "istio-system": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=latest"
 
   content:
     images:
@@ -66,6 +68,7 @@ charts:
 
   istiod:
     cni:
+      # Enable/disabe via preset to get all configurable options
       enabled: false
 
       hub: ""
@@ -245,6 +248,7 @@ charts:
       env: {}
 
     gateway:
+      # Enable/disabe via preset to get all configurable options
       enabled: false
 
       # Name allows overriding the release name. Generally this should not be set
@@ -461,11 +465,6 @@ charts:
 
     # Set to `type: RuntimeDefault` to use the default profile if available.
     seccompProfile: {}
-
-    # Whether to use an existing CNI installation
-    cni:
-      enabled: false
-      provider: default
 
     # Additional container arguments
     extraContainerArgs: []

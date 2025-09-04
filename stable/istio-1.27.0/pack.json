@@ -11,20 +11,19 @@
   ],
   "displayName": "Istio",
   "charts": [
-    "charts/base-1.26.0.tgz",
-    "charts/istiod-1.26.0.tgz",
-    "charts/gateway-1.26.0.tgz",
+    "charts/base-1.27.0.tgz",
+    "charts/istiod-1.27.0.tgz",
     "charts/kiali-server-2.11.0.tgz"
   ],
   "layer": "addon",
   "name": "istio",
-  "version": "1.26.0",
+  "version": "1.27.0",
   "constraints": {
     "dependencies": [
       {
         "packName": "istio",
         "layer": "addon",
-        "minVersion": "1.26.0",
+        "minVersion": "1.27.0",
         "type": "upgrade"
       },
       {
