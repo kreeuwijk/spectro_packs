@@ -6,7 +6,11 @@ pack:
   namespace: "istio-system"
   namespaceLabels:
     "istio-system": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=latest"
-
+    "cert-manager": "istio-injection=disabled"
+    "kube-system": "istio-injection=disabled"
+    "os-patch": "istio-injection=disabled"
+    "palette-system": "istio-injection=disabled"
+    "spectro-system": "istio-injection=disabled"
   content:
     images:
       - image: us-docker.pkg.dev/palette-images/packs/istio/1.27.0/istio-install-cni:1.27.0
