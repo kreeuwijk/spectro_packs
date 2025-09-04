@@ -1,0 +1,1 @@
+The chart schema files has been removed from gateway-1.27.0.tgz in order to allow conditional enablement
