@@ -1,4 +1,4 @@
-# spectrocloud.com/enabled-presets: Gateway:gateway-disabled,Kiali Dashboard:kiali-disabled
+# spectrocloud.com/enabled-presets: CNI:cni-disabled,Gateway:gateway-disabled,Kiali Dashboard:kiali-disabled
 
 pack:
   #The namespace (on the target cluster) to install this chart
