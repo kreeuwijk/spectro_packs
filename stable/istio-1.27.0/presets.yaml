@@ -2,10 +2,13 @@ presets:
   - name: "cni-disabled"
     displayName: "Disable"
     group: "CNI"
-    remove: ["charts.istiod.cni"]
+    remove: ["charts.istio-extras.cni"]
     add: |
       charts:
         istiod:
+          cni:
+            enabled: false
+        istio-extras:
           cni:
             # Enable/disabe via preset to get all configurable options
             enabled: false
@@ -13,10 +16,13 @@ presets:
   - name: "cni-enabled"
     displayName: "Enable"
     group: "CNI"
-    remove: ["charts.istiod.cni"]
+    remove: ["charts.istio-extras.cni"]
     add: |
       charts:
         istiod:
+          cni:
+            enabled: true
+        istio-extras:
           cni:
             # Enable/disabe via preset to get all configurable options
             enabled: true
@@ -201,10 +207,10 @@ presets:
   - name: "gateway-disabled"
     displayName: "Disable"
     group: "Gateway"
-    remove: ["charts.istiod.gateway"]
+    remove: ["charts.istio-extras.gateway"]
     add: |
       charts:
-        istiod:
+        istio-extras:
           gateway:
             # Enable/disabe via preset to get all configurable options
             enabled: false
@@ -212,10 +218,10 @@ presets:
   - name: "gateway-enabled"
     displayName: "Enable"
     group: "Gateway"
-    remove: ["charts.istiod.gateway"]
+    remove: ["charts.istio-extras.gateway"]
     add: |
       charts:
-        istiod:
+        istio-extras:
           gateway:
             # Enable/disabe via preset to get all configurable options
             enabled: true

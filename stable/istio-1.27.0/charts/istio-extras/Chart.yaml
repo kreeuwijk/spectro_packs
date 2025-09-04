@@ -1,0 +1,18 @@
+apiVersion: v2
+appVersion: 1.27.0
+description: Helm chart for istio extra components
+dependencies:
+  - name: cni
+    version: 1.27.0
+    condition: cni.enabled
+  - name: gateway
+    version: 1.27.0
+    condition: gateway.enabled
+icon: https://istio.io/latest/favicons/android-192x192.png
+keywords:
+- istio-cni
+- istio-gateway
+name: istio-extras
+sources:
+- https://github.com/istio/istio
+version: 1.27.0

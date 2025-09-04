@@ -1,0 +1,5 @@
+cni:
+  enabled: false
+
+gateway:
+  enabled: false

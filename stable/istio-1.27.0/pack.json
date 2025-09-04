@@ -13,7 +13,8 @@
   "charts": [
     "charts/base-1.27.0.tgz",
     "charts/istiod-1.27.0.tgz",
-    "charts/kiali-server-2.11.0.tgz"
+    "charts/kiali-server-2.11.0.tgz",
+    "charts/istio-extras-1.27.0.tgz"
   ],
   "layer": "addon",
   "name": "istio",
