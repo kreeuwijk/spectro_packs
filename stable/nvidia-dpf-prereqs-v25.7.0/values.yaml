@@ -1,10 +1,16 @@
 pack:
   namespace: dpf-operator-system
+  releaseNameOverride:
+    nvidia-dpf-prereqs-argo-cd: argo-cd
+    nvidia-dpf-prereqs-grafana: grafana
+    nvidia-dpf-prereqs-kamaji: kamaji
+    nvidia-dpf-prereqs-kube-state-metrics: kube-state-metrics
+    nvidia-dpf-prereqs-maintenance-operator: maintenance-operator
+    nvidia-dpf-prereqs-node-feature-discovery: node-feature-discovery
+    nvidia-dpf-prereqs-prometheus: prometheus
 charts:
   ## installed dependencies except for kamaji.
   argo-cd:
-    nameOverride: argo-cd
-    fullnameOverride: argo-cd
     applicationSet:
       replicas: 0
     dex:
@@ -32,8 +38,6 @@ charts:
 
   ## NFD configuration
   node-feature-discovery:
-    nameOverride: node-feature-discovery
-    fullnameOverride: node-feature-discovery
     master:
       affinity:
         nodeAffinity:
@@ -79,8 +83,6 @@ charts:
           effect: NoSchedule
 
   kamaji:
-    nameOverride: kamaji
-    fullnameOverride: kamaji
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -142,8 +144,6 @@ charts:
 
   ## prometheus configuration.
   prometheus:
-    nameOverride: prometheus
-    fullnameOverride: prometheus
     server:
       persistentVolume:
         storageClass: local-path-provisioner
@@ -192,8 +192,6 @@ charts:
 
   ## grafana configuration
   grafana:
-    nameOverride: grafana
-    fullnameOverride: grafana
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -246,8 +244,6 @@ charts:
 
   ## kube-state-metrics configuration
   kube-state-metrics:
-    nameOverride: kube-state-metrics
-    fullnameOverride: kube-state-metrics
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -310,8 +306,6 @@ charts:
 
   ## maintenance-operator chart configuration
   maintenance-operator-chart:
-    nameOverride: maintenance-operator
-    fullnameOverride: maintenance-operator
     operatorConfig:
       maxParallelOperations: 60%
     operator:
