@@ -2,21 +2,6 @@ pack:
   content:
     images: []
   namespace: kubeflow
-  namespaceLabels:
-    "auth": "istio-injection=disabled"
-    "cert-manager": "istio-injection=disabled"
-    "gpu-operator": "istio-injection=disabled"
-    "knative-operator": "istio-injection=disabled"
-    "kube-system": "istio-injection=disabled"
-    "os-patch": "istio-injection=disabled"
-    "palette-system": "istio-injection=disabled"
-    "spectro-system": "istio-injection=disabled"
-    #"metallb-system": "istio-injection=disabled"
-    #"piraeus-system": "istio-injection=disabled"
-    #"runai": "istio-injection=disabled"
-    #"runai-backend": "istio-injection=disabled"
-    #"runai-reservation": "istio-injection=disabled"
-    #"runai-scale-adjust": "istio-injection=disabled"
   releaseNameOverride:
     kubeflow: kubeflow
     profile: kubeflow-profile
