@@ -1,8 +1,7 @@
 # spectrocloud.com/enabled-presets: CNI:cni-disabled,Gateway:gateway-disabled,Kiali Dashboard:kiali-disabled
-
 pack:
-  #The namespace (on the target cluster) to install this chart
-  #When the namespace is not found, a new namespace will be created with the name specified
+  releaseNameOverride:
+    istio-extras: istio-gateway
   namespace: "istio-system"
   namespaceLabels:
     "istio-system": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=latest"
