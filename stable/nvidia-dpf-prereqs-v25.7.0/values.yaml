@@ -5,7 +5,7 @@ pack:
     grafana: grafana
     kamaji: kamaji
     kube-state-metrics: kube-state-metrics
-    maintenance-operator: maintenance-operator
+    maintenance-operator-chart: maintenance-operator
     node-feature-discovery: node-feature-discovery
     prometheus: prometheus
 charts:
