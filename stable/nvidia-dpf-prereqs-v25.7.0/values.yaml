@@ -1,13 +1,13 @@
 pack:
   namespace: dpf-operator-system
   releaseNameOverride:
-    nvidia-dpf-prereqs-argo-cd: argo-cd
-    nvidia-dpf-prereqs-grafana: grafana
-    nvidia-dpf-prereqs-kamaji: kamaji
-    nvidia-dpf-prereqs-kube-state-metrics: kube-state-metrics
-    nvidia-dpf-prereqs-maintenance-operator: maintenance-operator
-    nvidia-dpf-prereqs-node-feature-discovery: node-feature-discovery
-    nvidia-dpf-prereqs-prometheus: prometheus
+    argo-cd: argo-cd
+    grafana: grafana
+    kamaji: kamaji
+    kube-state-metrics: kube-state-metrics
+    maintenance-operator: maintenance-operator
+    node-feature-discovery: node-feature-discovery
+    prometheus: prometheus
 charts:
   ## installed dependencies except for kamaji.
   argo-cd:
