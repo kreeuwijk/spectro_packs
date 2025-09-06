@@ -7,7 +7,7 @@
     "cloudTypes": [
       "all"
     ],
-    "displayName": "oauth2-proxy",
+    "displayName": "OAauth2 Proxy",
     "charts": [
       "charts/oauth2-proxy-8.2.0.tgz"
     ],
