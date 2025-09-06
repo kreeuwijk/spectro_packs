@@ -1,0 +1,46 @@
+{
+  "addonType": "servicemesh",
+  "annotations": {
+    "docsURL": "https://docs.spectrocloud.com/integrations/istio",
+    "source": "spectrocloud",
+    "architecture": "amd64,arm64",
+    "airgap": "true"
+  },
+  "cloudTypes": [
+    "all"
+  ],
+  "displayName": "Istio Gateway",
+  "charts": [
+    "charts/gateway-1.27.0.tgz"
+  ],
+  "layer": "addon",
+  "name": "istio-gateway",
+  "version": "1.27.0",
+  "constraints": {
+    "dependencies": [
+      {
+        "packName": "istio",
+        "layer": "addon",
+        "minVersion": "1.27.0",
+        "type": "upgrade"
+      },
+      {
+        "packName": "kubernetes",
+        "layer": "k8s",
+        "minVersion": "1.27",
+        "maxVersion": "",
+        "type": "optional"
+      }
+    ],
+    "resources": [
+      {
+        "type": "cpu",
+        "minLimit": 100
+      },
+      {
+        "type": "memory",
+        "minLimit": 128
+      }
+    ]
+  }
+}
