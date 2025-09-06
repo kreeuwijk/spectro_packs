@@ -1,7 +1,8 @@
 # spectrocloud.com/enabled-presets: CNI:cni-disabled,Gateway:gateway-disabled,Kiali Dashboard:kiali-disabled
 pack:
-  #releaseNameOverride:
-  #  gateway: gateway-2
+  releaseNameOverride:
+    # Set the name for your additional gateway here
+    gateway: gateway-2
   namespace: "istio-system"
   content:
     images:
@@ -12,8 +13,8 @@ pack:
         version: 1.27.0
 charts:
   gateway:
-    # Name allows overriding the release name. Set this for an additional gateway
-    name: "istio-gateway-2"
+    # Don't set this option, set releaseNameOverride instead in line 4.
+    name: ""
     # revision declares which revision this gateway is a part of
     revision: ""
 
