@@ -31,6 +31,9 @@ spec:
           - /dashboard_lib.bundle.js
           - /assets*
           - /app.css
+          # Exclude paths used by Knative healthchecks
+          - /metrics
+          - /healthz
   selector:
     matchLabels:
       {{- toYaml .Values.istioIntegration.gateway.selector | nindent 6 }}
