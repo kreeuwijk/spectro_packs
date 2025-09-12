@@ -5,6 +5,7 @@ pack:
   content:
     images:
       - image: kubeflow/training-operator:v1-04f9f13
+      - image: alpine:3.10
 
 charts:
   training-operator: {}
