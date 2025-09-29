@@ -6,7 +6,7 @@
     "contributor": "spectrocloud"
   },
   "cloudTypes": [
-    "edge-native"
+    "all"
   ],
   "displayName": "Nvidia DPF Prereqs",
   "charts": [
