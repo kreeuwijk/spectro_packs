@@ -8,7 +8,7 @@ metadata:
 data:
   net_cidr:      {{ .Values.podNetwork }}
   svc_cidr:      {{ .Values.serviceNetwork }}
-  k8s_apiserver: {{ .Values.k8sAPIServer }}
+  k8s_apiserver: {{ include "k8sEndpoint" . }}
   mtu:           {{ .Values.mtu | quote }}
   host_network_namespace: "ovn-host-network"
 ---
