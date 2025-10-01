@@ -7,7 +7,7 @@
     "cloudTypes": [
       "all"
     ],
-    "displayName": "dpf-operator",
+    "displayName": "Nvidia DPF Operator",
     "charts": [
       "charts/dpf-operator-v25.7.0.tgz",
       "charts/dpf-operator-config-1.0.0.tgz"

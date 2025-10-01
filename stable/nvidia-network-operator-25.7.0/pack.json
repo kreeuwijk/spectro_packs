@@ -7,7 +7,7 @@
     "cloudTypes": [
       "all"
     ],
-    "displayName": "network-operator",
+    "displayName": "Nvidia Network Operator",
     "charts": [
       "charts/network-operator-25.7.0.tgz"
     ],
