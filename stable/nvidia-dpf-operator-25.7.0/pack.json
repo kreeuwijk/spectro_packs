@@ -9,7 +9,8 @@
     ],
     "displayName": "dpf-operator",
     "charts": [
-      "charts/dpf-operator-v25.7.0.tgz"
+      "charts/dpf-operator-v25.7.0.tgz",
+      "charts/dpf-operator-config-1.0.0.tgz"
     ],
     "layer":"addon",
     "name": "dpf-operator",

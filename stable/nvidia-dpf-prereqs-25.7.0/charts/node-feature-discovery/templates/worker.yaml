@@ -92,8 +92,13 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.uid
-      {{- with .Values.worker.extraEnvs }}
-        {{- toYaml . | nindent 8 }}
+      {{- range $env := .Values.worker.extraEnvs }}
+        - name: {{ $env.name | quote }}
+          {{- if and (eq $env.name "KUBERNETES_SERVICE_HOST") (eq $env.value "auto") }}
+          value: {{ include "k8sServiceHost" $ }}
+          {{- else }}
+          value: {{ $env.value | quote }}
+          {{- end }}
       {{- end}}
         resources:
         {{- toYaml .Values.worker.resources | nindent 12 }}

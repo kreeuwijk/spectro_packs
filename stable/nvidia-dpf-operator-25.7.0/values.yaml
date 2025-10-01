@@ -11,6 +11,20 @@ pack:
       - image: ghcr.io/ahrtr/etcd-defrag:v0.22.0
 
 charts:
+  dpf-operator-config:
+    #imagePullSecrets:
+    #  - dockerio-secret
+    overrides:
+      kubernetesAPIServerVIP: "auto"
+      kubernetesAPIServerPort: 6443
+    provisioningController:
+      bfbPVCName: "bfb-pvc"
+      dmsTimeout: 900
+    kamajiClusterManager:
+      disable: false
+    networking:
+      controlPlaneMTU: 9000
+      highSpeedMTU: 9000
   dpf-operator:
     ## dpf-operator configuration.
     controllerManager:
