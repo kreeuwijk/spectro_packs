@@ -3,6 +3,8 @@ pack:
   releaseNameOverride:
       dpf-operator: dpf-operator
   namespace: dpf-operator-system
+  namespaceLabels:
+    "dpf-operator-system": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=latest"
   content:
     images:
       - image: nvcr.io/nvidia/doca/dpf-system:v25.7.0

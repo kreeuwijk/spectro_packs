@@ -3,6 +3,8 @@ pack:
   releaseNameOverride:
       network-operator: network-operator
   namespace: nvidia-network-operator
+  namespaceLabels:
+    "nvidia-network-operator": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=latest"
   content:
     images:
       - image: nvcr.io/nvidia/mellanox/node-feature-discovery:network-operator-v25.7.0
