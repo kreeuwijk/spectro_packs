@@ -1,5 +1,4 @@
 pack:
-  spectrocloud.com/display-name: dpf-operator
   releaseNameOverride:
       dpf-operator: dpf-operator
   namespace: dpf-operator-system

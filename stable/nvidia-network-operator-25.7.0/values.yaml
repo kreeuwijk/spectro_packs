@@ -1,5 +1,4 @@
 pack:
-  spectrocloud.com/display-name: network-operator
   releaseNameOverride:
       network-operator: network-operator
   namespace: nvidia-network-operator
