@@ -74,6 +74,7 @@ charts:
       cniConfDir: "/etc/cni/net.d"
 
     # -- Endpoint of Kubernetes API server
+    # Use "auto" for CAPI and "https://{{ .spectro.system.cluster.kubevip }}:6443" for agent/appliance mode.
     k8sAPIServer: https://172.25.0.2:6443
     # -- IP range for Kubernetes pods, /14 is the top level range, under which each /23 range will be assigned to a node
     podNetwork: 10.244.0.0/16/24

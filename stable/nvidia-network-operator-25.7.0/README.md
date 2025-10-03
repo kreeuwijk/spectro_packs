@@ -1,10 +1,6 @@
-# Nvidia Network Operator Helm Chart
+# NVIDIA Network Operator
 
-Nvidia Network Operator Helm Chart provides an easy way to install and manage the lifecycle of Nvidia network operator.
-
-## Nvidia Network Operator
-
-Nvidia Network Operator
+The Nvidia Network Operator pack installs and manages the lifecycle of Nvidia Network Operator. It's a versatile operator that can facilitate many different networking scenarios. Nvidia Network Operator
 leverages [Kubernetes CRDs](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)
 and [Operator SDK](https://github.com/operator-framework/operator-sdk) to manage Networking related Components in order
 to enable Fast networking, RDMA and GPUDirect for workloads in a Kubernetes cluster. Network Operator works in
@@ -17,83 +13,131 @@ RDMA workloads in a kubernetes cluster including:
 * Kubernetes device plugins to provide hardware resources for fast network
 * Kubernetes secondary network for Network intensive workloads
 
-### Documentation
 
-For more information please visit the official [documentation](https://docs.nvidia.com/networking/software/cloud-orchestration/index.html).
-
-## Additional components
-
-### Node Feature Discovery
-
-Nvidia Network Operator relies on the existance of specific node labels to operate properly. e.g label a node as having
-Nvidia networking hardware available. This can be achieved by either manually labeling Kubernetes nodes or using
-[Node Feature Discovery](https://github.com/kubernetes-sigs/node-feature-discovery) to perform the labeling.
-
-To allow zero touch deployment of the Operator we provide a helm chart to be used to optionally deploy Node Feature
-Discovery in the cluster. This is enabled via `nfd.enabled` chart parameter.
-
-### SR-IOV Network Operator
-
-Nvidia Network Operator can operate in unison with SR-IOV Network Operator to enable SR-IOV workloads in a Kubernetes
-cluster. We provide a helm chart to be used to optionally
-deploy [SR-IOV Network Operator](https://github.com/k8snetworkplumbingwg/sriov-network-operator) in the cluster. This is
-enabled via `sriovNetworkOperator.enabled` chart parameter.
-
-SR-IOV Network Operator can work in conjuction with [IB Kubernetes](#ib-kubernetes) to use InfiniBand PKEY Membership
-Types
-
-For more information on how to configure SR-IOV in your Kubernetes cluster using SR-IOV Network Operator refer to the
-project's github.
-
-## QuickStart
-
-### System Requirements
+## Prerequisites
 
 * RDMA capable hardware: Mellanox ConnectX-5 NIC or newer.
-* NVIDIA GPU and driver supporting GPUDirect e.g Quadro RTX 6000/8000 or Tesla T4 or Tesla V100 or Tesla V100.
+* NVIDIA GPU and driver supporting GPUDirect e.g Quadro RTX 6000/8000 or newer.
   (GPU-Direct only)
-* Operating Systems: Ubuntu 20.04 LTS.
+* Operating Systems: Ubuntu 20.04 LTS or newer.
 
 > __NOTE__: ConnectX-6 Lx is not supported.
 
-### Tested Network Adapters
 
-The following Network Adapters have been tested with network-operator:
+## Parameters
 
-* ConnectX-5
-* ConnectX-6 Dx
+### dpf-operator-config
+| **Parameter** | **Type** | **Default Value** | **Description** |
+|---|---|---|---|
+| nfd.enabled | bool | `true` | Deploy Node Feature Discovery operator |
+| nfd.deployNodeFeatureRules | bool | `true` | | Deploy Node Feature Rules to label the nodes with the discovered features |
+| upgradeCRDs | bool | `true` | Enable CRDs upgrade with helm pre-install and pre-upgrade hooks |
+| sriovNetworkOperator.enabled | bool | `false` | Deploy SR-IOV Network Operator |
+| nicConfigurationOperator.enabled | bool | `false` | Deploy NIC Configuration Operator (deprecated) |
+| maintenanceOperator.enabled | bool | `false` | Deploy Maintenance Operator |
+| node-feature-discovery.enableNodeFeatureApi | bool | `true` | The Node Feature API enable communication between nfd master and worker through NodeFeature CRs. Otherwise communication is through gRPC |
+| node-feature-discovery.featureGates.NodeFeatureAPI | bool | `true` |  |
+| node-feature-discovery.image.repository | bool | `"nvcr.io/nvidia/mellanox/node-feature-discovery"` |  |
+| node-feature-discovery.image.tag | bool | `"network-operator-v25.7.0"` |  |
+| node-feature-discovery.image.pullPolicy | bool | `"IfNotPresent"` |  |
+| node-feature-discovery.imagePullSecrets | list | `[]` | imagePullSecrets for node-feature-discovery Network Operator related images |
+| node-feature-discovery.master.serviceAccount.name | string | `"node-feature-discovery"` |  |
+| node-feature-discovery.master.serviceAccount.create | bool | `true` |  |
+| node-feature-discovery.master.config.extraLabelNs | list | `["nvidia.com"]` |  |
+| node-feature-discovery.gc.enable | bool | `true` | Specifies whether the NFD Garbage Collector should be created |
+| node-feature-discovery.gc.replicaCount | int | `1` | Specifies the number of replicas for the NFD Garbage Collector |
+| node-feature-discovery.gc.serviceAccount.name | string | `"node-feature-discovery"` | The name of the service account for garbage collector to use. If not set and create is true, a name is generated using the fullname template and -gc suffix |
+| node-feature-discovery.gc.serviceAccount.create | bool | `false` |  |
+| node-feature-discovery.worker.serviceAccount.name | string | `"node-feature-discovery"` |  |
+| node-feature-discovery.worker.serviceAccount.create | bool | `false` | Disable creation to avoid duplicate serviceaccount creation by master spec above |
+| node-feature-discovery.worker.serviceAccount.tolerations | list | Tolerations for control plane taints and `nvidia.com/gpu:NoSchedule` |  |
+| node-feature-discovery.worker.serviceAccount.config.sources.pci.deviceClassWhitelist | list | `["0300","0302"]` |  |
+| node-feature-discovery.worker.serviceAccount.config.sources.pci.deviceLabelFields | list | `["vendor"]` |  |
+| sriov-network-operator.cniBinPath | string | `"/opt/cni/bin"` | Directory where SRIOV CNI binaries will be deployed on the node |
+| sriov-network-operator.operator.resourcePrefix | string | `"nvidia.com"` | Prefix to be used for resources names |
+| sriov-network-operator.operator.admissionControllers.enabled | bool | `false` | Enables admission controller |
+| sriov-network-operator.operator.admissionControllers.certificates.secretNames.operator | string | `"operator-webhook-cert"` |  |
+| sriov-network-operator.operator.admissionControllers.certificates.secretNames.injector | string | `"network-resources-injector-cert"` |  |
+| sriov-network-operator.operator.admissionControllers.certificates.certManager.enabled | bool | `true` | When enabled, makes use of certificates managed by cert-manager |
+| sriov-network-operator.operator.admissionControllers.certificates.certManager.generateSelfSigned | bool | `true` | When enabled, certificates are generated via cert-manager and then name will match the name of the secrets defined above |
+| sriov-network-operator.operator.admissionControllers.certificates.custom.enabled | bool | `false` | If not specified, no secret is created and secrets with the names defined above are expected to exist in the cluster. In that case, the ca.crt must be base64 encoded twice since it ends up being an env variable |
+| sriov-network-operator.operator.admissionControllers.certificates.custom.operator.caCrt | string | `""` | |
+| sriov-network-operator.operator.admissionControllers.certificates.custom.operator.tlsCrt | string | `""` | |
+| sriov-network-operator.operator.admissionControllers.certificates.custom.operator.tlsKey | string | `""` | |
+| sriov-network-operator.operator.admissionControllers.certificates.custom.injector.caCrt | string | `""` | |
+| sriov-network-operator.operator.admissionControllers.certificates.custom.injector.tlsCrt | string | `""` | |
+| sriov-network-operator.operator.admissionControllers.certificates.custom.injector.tlsKey | string | `""` | |
+| sriov-network-operator.images.operator | string | `"nvcr.io/nvidia/mellanox/sriov-network-operator:network-operator-v25.7.0"` |  |
+| sriov-network-operator.images.sriovConfigDaemon | string | `"nvcr.io/nvidia/mellanox/sriov-network-operator-config-daemon:network-operator-v25.7.0"` |  |
+| sriov-network-operator.images.sriovCni | string | `"nvcr.io/nvidia/mellanox/sriov-cni:network-operator-v25.7.0"` |  |
+| sriov-network-operator.images.ibSriovCni | string | `"nvcr.io/nvidia/mellanox/ib-sriov-cni:network-operator-v25.7.0"` |  |
+| sriov-network-operator.images.ovsCni | string | `"nvcr.io/nvidia/mellanox/ovs-cni-plugin:network-operator-v25.7.0` |  |
+| sriov-network-operator.images.rdmaCni | string | `"nvcr.io/nvidia/mellanox/rdma-cni:network-operator-v25.7.0"` |  |
+| sriov-network-operator.images.sriovDevicePlugin | string | `"nvcr.io/nvidia/mellanox/sriov-network-device-plugin:network-operator-v25.7.0"` |  |
+| sriov-network-operator.images.resourcesInjector | string | `"ghcr.io/k8snetworkplumbingwg/network-resources-injector:v1.7.0"` |  |
+| sriov-network-operator.images.webhook | string | `"nvcr.io/nvidia/mellanox/sriov-network-operator-webhook:network-operator-v25.7.0"` |  |
+| sriov-network-operator.imagePullSecrets | list | `[]` | imagePullSecrets for sriov-network-operator related images |
+| sriov-network-operator.sriovOperatorConfig.deploy | bool | `true` | Deploy ``SriovOperatorConfig`` custom resource |
+| sriov-network-operator.sriovOperatorConfig.configDaemonNodeSelector | map | `beta.kubernetes.io/os: "linux"` and `network.nvidia.com/operator.mofed.wait: "false"` | Selects the nodes to be configured |
+| nic-configuration-operator-chart.operator.image.repository | string | `"nvcr.io/nvidia/mellanox"` | |
+| nic-configuration-operator-chart.operator.image.name | string | `"nic-configuration-operator"` | |
+| nic-configuration-operator-chart.operator.image.tag | string | `"network-operator-v25.7.0"` | |
+| nic-configuration-operator-chart.configDaemon.image.repository | string | `"nvcr.io/nvidia/mellanox"` | |
+| nic-configuration-operator-chart.configDaemon.image.name | string | `"nic-configuration-operator-daemon"` | |
+| nic-configuration-operator-chart.configDaemon.image.tag | string | `"network-operator-v25.7.0"` | |
+| maintenance-operator-chart.operatorConfig.deploy | bool | `false` | Deploy MaintenanceOperatorConfig. Maintenance Operator might be already deployed on the cluster, in that case no need to deploy MaintenanceOperatorConfig |
+| maintenance-operator.imagePullSecrets | list | `[]` | imagePullSecrets for maintenance-operator related images |
+| maintenance-operator-chart.operator.image.repository | string | `"nvcr.io/nvidia/mellanox"` | |
+| maintenance-operator-chart.operator.image.name | string | `"maintenance-operator"` | |
+| maintenance-operator-chart.operator.image.tag | string | `"network-operator-v25.7.0"` | |
+| maintenance-operator-chart.operator.admissionController.enable | bool | `false` | Enable admission controller of the operator |
+| maintenance-operator-chart.operator.admissionController.certificates.secretNames.operator | string | `"maintenance-webhook-cert"` | Secret name containing certificates for the operator admission controller |
+| maintenance-operator-chart.operator.admissionController.certificates.certManager.enable | bool | `false` | Use cert-manager for certificates |
+| maintenance-operator-chart.operator.admissionController.certificates.certManager.generateSelfSigned | bool | `false` | Generate self-signed certificates with cert-manager |
+| maintenance-operator-chart.operator.admissionController.certificates.custom.enable | bool | `false` | Enable custom certificates using secrets |
+| operator.resources.limits.cpu | string | `"500m" | |
+| operator.resources.limits.memory | string | `"128Mi" | |
+| operator.resources.requests.cpu | string | `"5m" | |
+| operator.resources.requests.memory | string | `"64Mi" | |
+| operator.tolerations | list | Tolerations for control plane taints | |
+| operator.nodeSelector | map | `{}` | Configure node selector settings for the operator |
+| operator.affinity | map | Affinity for control plane nodes | Configure node affinity settings for the operator |
+| operator.repository | string | `"nvcr.io/nvidia/cloud-native"` | Network Operator image repository |
+| operator.image | string | `"network-operator"` | Network Operator image name |
+| operator.imagePullSecrets | list | `[]` | imagePullSecrets for Network Operator related images |
+| operator.nameOverride | string | `""` | Name to be used as part of objects name generation |
+| operator.fullnameOverride | string | `""` | Name to be used to replace generated names |
+| operator.tag | string | `""` | If defined will use the given image tag, else chart AppVersion will be used |
+| operator.cniBinDirectory | string | `"/opt/cni/bin"` | Directory where CNI binaries will be deployed on the node |
+| operator.cniNetworkDirectory | string | `"/etc/cni/net.d"` | Directory where CNI network configuration will be deployed on the nodes |
+| operator.maintenanceOperator.useRequestor | bool | `false` | Enable the use of maintenance operator upgrade logic |
+| operator.maintenanceOperator.requestorID | string | `"nvidia.network.operator"` | |
+| operator.maintenanceOperator.nodeMaintenanceNamePrefix | string | `"nvidia.network.operator"` | |
+| operator.maintenanceOperator.nodeMaintenanceNamespace | string | `"default"` | |
+| operator.useDTK | bool | `true` | Enable the use of Driver ToolKit to compile DOCA-OFED Drivers (OpenShift only) |
+| operator.admissionController.enable | bool | `false` | Deploy with admission controller |
+| operator.admissionController.useCertManager | bool | `false` | Use cert-manager for generating self-signed certificate |
+| operator.admissionController.certificate.caCrt | string | `""` | Custom certificate instead of using cert-manager|
+| operator.admissionController.certificate.tlsCrt | string | `""` | Custom certificate instead of using cert-manager|
+| operator.admissionController.certificate.tlsKey | string | `""` | Custom certificate instead of using cert-manager|
+| operator.ofedDriver.initContainer.enable | bool | `true` | Deploy OFED init container |
+| operator.ofedDriver.initContainer.repository | string | `"nvcr.io/nvidia/mellanox"` | OFED init container image repository |
+| operator.ofedDriver.initContainer.image | string | `"network-operator-init-container"` | OFED init container image name |
+| operator.ofedDriver.initContainer.version | string | `"network-operator-v25.7.0"` | OFED init container image version |
+| imagePullSecrets | list | `[]` | An optional list of references to secrets to use for pulling any of the Network Operator images |
 
-### Prerequisites
 
-- Kubernetes v1.17+
-- Helm v3.5.3+
-- Ubuntu 20.04 LTS
+## Upgrade
 
-### Install Helm
+### Upgrade CRDs to compatible version
 
-Helm provides an install script to copy helm binary to your system:
+The network-operator helm chart contains a hook(pre-install, pre-upgrade) that will automatically upgrade required CRDs in the cluster.
+The hook is enabled by default. If you don't want to upgrade CRDs with helm automatically, 
+you can disable auto upgrade by setting `upgradeCRDs: false` in the helm chart values.
+Then you can follow the guide below to download and apply CRDs for the concrete version of the network-operator.
 
-```
-$ curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-$ chmod 500 get_helm.sh
-$ ./get_helm.sh
-```
 
-For additional information and methods for installing Helm, refer to the official [helm website](https://helm.sh/)
-
-### Deploy Network Operator
-
-```
-# Add Repo
-$ helm repo add nvidia https://helm.ngc.nvidia.com/nvidia
-$ helm repo update
-
-# Install Operator
-$ helm install -n network-operator --create-namespace --wait network-operator nvidia/network-operator
-
-# View deployed resources
-$ kubectl -n network-operator get pods
-```
+## Usage
 
 #### Deploy Network Operator without Node Feature Discovery
 
@@ -128,25 +172,6 @@ $ helm install --set nfd.enabled=false -n network-operator --create-namespace --
 
 > __Note:__ By default the operator is deployed without an instance of `NicClusterPolicy` and `MacvlanNetwork`
 > custom resources. The user is required to create it later with configuration matching the cluster or use chart parameters to deploy it together with the operator.
-
-#### Deploy development version of Network Operator
-
-To install development version of Network Operator you need to clone repository first and install helm chart from the
-local directory:
-
-```
-# Clone Network Operator Repository
-$ git clone https://github.com/Mellanox/network-operator.git
-
-# Update chart dependencies
-$ cd network-operator/deployment/network-operator && helm dependency update
-
-# Install Operator
-$ helm install -n network-operator --create-namespace --wait network-operator ./
-
-# View deployed resources
-$ kubectl -n network-operator get pods
-```
 
 #### Deploy Network Operator with Admission Controller
 
@@ -183,61 +208,33 @@ This command will generate a new RSA key pair with 2048 bits and create a self-s
 private key (`server.key`) that are valid for 365 days.
 
 
-## Upgrade
+## Additional components
 
-> __NOTE__: Upgrade capabilities are limited now. Additional manual actions required when containerized OFED driver is used
+### Node Feature Discovery
 
-Before starting the upgrade to a specific release version, please, check release notes for this version to ensure that
-no additional actions are required.
+Nvidia Network Operator relies on the existance of specific node labels to operate properly. e.g label a node as having
+Nvidia networking hardware available. This can be achieved by either manually labeling Kubernetes nodes or using
+[Node Feature Discovery](https://github.com/kubernetes-sigs/node-feature-discovery) to perform the labeling.
+
+To allow zero touch deployment of the Operator we provide a helm chart to be used to optionally deploy Node Feature
+Discovery in the cluster. This is enabled via `nfd.enabled` chart parameter.
+
+### SR-IOV Network Operator
+
+Nvidia Network Operator can operate in unison with SR-IOV Network Operator to enable SR-IOV workloads in a Kubernetes
+cluster. We provide a helm chart to be used to optionally
+deploy [SR-IOV Network Operator](https://github.com/k8snetworkplumbingwg/sriov-network-operator) in the cluster. This is
+enabled via `sriovNetworkOperator.enabled` chart parameter.
+
+SR-IOV Network Operator can work in conjuction with [IB Kubernetes](#ib-kubernetes) to use InfiniBand PKEY Membership
+Types
+
+For more information on how to configure SR-IOV in your Kubernetes cluster using SR-IOV Network Operator refer to the
+project's github.
 
 
-### Check available releases
+## References
 
-```
-helm search repo nvidia/network-operator -l
-```
-
-> __NOTE__: add `--devel` option if you want to list beta releases as well
-
-### Upgrade CRDs to compatible version
-
-The network-operator helm chart contains a hook(pre-install, pre-upgrade) that will automatically upgrade required CRDs in the cluster.
-The hook is enabled by default. If you don't want to upgrade CRDs with helm automatically, 
-you can disable auto upgrade by setting `upgradeCRDs: false` in the helm chart values.
-Then you can follow the guide below to download and apply CRDs for the concrete version of the network-operator.
-
-It is possible to retrieve updated CRDs from the Helm chart or from the release branch on GitHub. Example bellow show
-how to download and unpack Helm chart for specified release and then apply CRDs update from it.
-
-```
-helm pull nvidia/network-operator --version <VERSION> --untar --untardir network-operator-chart
-```
-
-> __NOTE__: `--devel` option required if you want to use the beta release
-
-```
-kubectl apply -f network-operator-chart/network-operator/crds \
-              -f network-operator-chart/network-operator/charts/sriov-network-operator/crds
-```
-
-### Prepare Helm values for the new release
-
-Download Helm values for the specific release
-
-```
-helm show values nvidia/network-operator --version=<VERSION> > values-<VERSION>.yaml
-```
-
-Edit `values-<VERSION>.yaml` file as required for your cluster.
-
-### Apply Helm chart update
-
-```
-helm upgrade -n network-operator  network-operator nvidia/network-operator --version=<VERSION> -f values-<VERSION>.yaml --force
-```
-
-> __NOTE__: `--devel` option required if you want to use the beta release
-
-## Chart parameters
-
-In order to tailor the deployment of the network operator to your cluster needs, Chart parameters are available. See official [documentation](https://docs.nvidia.com/networking/software/cloud-orchestration/index.html).
+- [Official Documentation](https://docs.nvidia.com/networking/software/cloud-orchestration/index.html)
+- [Operator SDK](https://github.com/operator-framework/operator-sdk)
+- [GPU-Operator](https://github.com/NVIDIA/gpu-operator)

@@ -14,6 +14,7 @@ charts:
     #imagePullSecrets:
     #  - dockerio-secret
     overrides:
+      # Use "auto" for CAPI and "{{ .spectro.system.cluster.kubevip }}" for agent/appliance mode.
       kubernetesAPIServerVIP: "auto"
       kubernetesAPIServerPort: 6443
     provisioningController:

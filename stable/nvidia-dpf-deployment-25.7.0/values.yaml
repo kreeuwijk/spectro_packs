@@ -17,8 +17,8 @@ charts:
         serviceConfiguration:
           helmChart:
             values:
-              # Use "auto" for CAPI and "{{ .spectro.system.cluster.kubevip }}" for agent/appliance mode.
-              k8sAPIServer: "auto"
+              # Use "auto" for CAPI and "https://{{ .spectro.system.cluster.kubevip }}:6443" for agent/appliance mode.
+              k8sAPIServer: "https://172.25.0.2:6443"
               podNetwork: "10.233.64.0/18/24"
               serviceNetwork: "10.233.0.0/18"
               mtu: 8940
