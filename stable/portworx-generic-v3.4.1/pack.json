@@ -1,0 +1,37 @@
+{
+  "annotations": {
+    "docsURL": "",
+    "source": "spectrocloud"
+  },
+  "cloudTypes": [
+    "aws",
+    "eks",
+    "azure",
+    "aks",
+    "gcp",
+    "gke",
+    "edge-native",
+    "maas",
+    "openstack",
+    "vsphere",
+    "custom"
+  ],
+  "displayName": "Portworx /w Operator",
+  "charts": [
+    "charts/px-operator-1.4.1.tgz",
+    "charts/portworx-generic-1.5.1.tgz"
+  ],
+  "layer": "csi",
+  "name": "csi-portworx-generic",
+  "version": "3.3.1",
+  "constraints": {
+    "dependencies": [
+      {
+        "packName": "kubernetes",
+        "layer": "k8s",
+        "maxVersion": "1.32.99",
+        "type": "optional"
+      }
+    ]
+  } 
+}
