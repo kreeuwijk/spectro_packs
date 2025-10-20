@@ -1,4 +1,5 @@
 {
+  "addonType":"system app",
   "annotations": {
     "docsURL": "",
     "source": "spectrocloud"
@@ -21,8 +22,8 @@
     "charts/px-operator-1.5.0.tgz",
     "charts/portworx-generic-1.6.0.tgz"
   ],
-  "layer": "csi",
-  "name": "csi-portworx-generic",
+  "layer": "addon",
+  "name": "portworx-add-on",
   "version": "3.4.1",
   "constraints": {
     "dependencies": [
@@ -33,5 +34,5 @@
         "type": "optional"
       }
     ]
-  } 
+  }
 }
