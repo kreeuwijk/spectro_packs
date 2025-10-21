@@ -23,25 +23,19 @@
 {{- end }}
 
 {{- define "portworx-generic.CPIversion" -}}
-{{- if semverCompare "~1.22.0" .Capabilities.KubeVersion.Version }}
-          image: gcr.io/spectro-images-public/packs/csi-vsphere-csi/3.1.2/cpi-manager:v1.22.9
-{{- else if semverCompare "~1.23.0" .Capabilities.KubeVersion.Version }}
-          image: gcr.io/spectro-images-public/packs/csi-vsphere-csi/3.1.2/cpi-manager:v1.23.5
-{{- else if semverCompare "~1.24.0" .Capabilities.KubeVersion.Version }}
-          image: gcr.io/spectro-images-public/packs/csi-vsphere-csi/3.1.2/cpi-manager:v1.24.6
-{{- else if semverCompare "~1.25.0" .Capabilities.KubeVersion.Version }}
-          image: gcr.io/spectro-images-public/packs/csi-vsphere-csi/3.1.2/cpi-manager:v1.25.3
-{{- else if semverCompare "~1.26.0" .Capabilities.KubeVersion.Version }}
-          image: gcr.io/spectro-images-public/packs/csi-vsphere-csi/3.1.2/cpi-manager:v1.26.2
-{{- else if semverCompare "~1.27.0" .Capabilities.KubeVersion.Version }}
-          image: gcr.io/spectro-images-public/packs/csi-vsphere-csi/3.3.1/cpi-manager:v1.27.0
+{{- if semverCompare "~1.27.0" .Capabilities.KubeVersion.Version }}
+          image: us-docker.pkg.dev/palette-images/packs/csi-vsphere-csi/3.4.0/cpi-manager:v1.27.0
 {{- else if semverCompare "~1.28.0" .Capabilities.KubeVersion.Version }}
-          image: gcr.io/spectro-images-public/packs/csi-vsphere-csi/3.3.1/cpi-manager:v1.28.0
+          image: us-docker.pkg.dev/palette-images/packs/csi-vsphere-csi/3.4.0/cpi-manager:v1.28.0
 {{- else if semverCompare "~1.29.0" .Capabilities.KubeVersion.Version }}
-          image: gcr.io/spectro-images-public/packs/csi-vsphere-csi/3.3.1/cpi-manager:v1.29.0
+          image: us-docker.pkg.dev/palette-images/packs/csi-vsphere-csi/3.4.0/cpi-manager:v1.29.0
 {{- else if semverCompare "~1.30.0" .Capabilities.KubeVersion.Version }}
-          image: gcr.io/spectro-images-public/packs/csi-vsphere-csi/3.3.1/cpi-manager:v1.30.0
-{{- else }} # Default to the 1.30.0 CPI
-          image: gcr.io/spectro-images-public/packs/csi-vsphere-csi/3.3.1/cpi-manager:v1.30.0
+          image: us-docker.pkg.dev/palette-images/packs/csi-vsphere-csi/3.5.0/cpi-manager:v1.30.0
+{{- else if semverCompare "~1.31.0" .Capabilities.KubeVersion.Version }}
+          image: us-docker.pkg.dev/palette-images/packs/csi-vsphere-csi/3.5.0/cpi-manager:v1.31.0
+{{- else if semverCompare "~1.32.0" .Capabilities.KubeVersion.Version }}
+          image: us-docker.pkg.dev/palette-images/packs/csi-vsphere-csi/3.5.0/cpi-manager:v1.32.0
+{{- else }} # Default to the 1.33.0 CPI
+          image: us-docker.pkg.dev/palette-images/packs/csi-vsphere-csi/3.5.0/cpi-manager:v1.33.0
 {{- end }}
 {{- end }}

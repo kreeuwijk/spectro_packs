@@ -146,55 +146,46 @@ metadata:
     component: cloud-controller-manager
     tier: control-plane
   namespace: kube-system
-  annotations:
-    scheduler.alpha.kubernetes.io/critical-pod: ""
 spec:
   selector:
     matchLabels:
-      app: vsphere-cloud-controller-manager
+      name: vsphere-cloud-controller-manager
   updateStrategy:
     type: RollingUpdate
   template:
     metadata:
       labels:
-        app: vsphere-cloud-controller-manager
+        name: vsphere-cloud-controller-manager
         component: cloud-controller-manager
         tier: control-plane
-        release: vsphere-cpi
-        vsphere-cpi-infra: daemonset
+        spectrocloud.com/connection: proxy
     spec:
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-            - matchExpressions:
-              - key: node-role.kubernetes.io/control-plane
-                operator: Exists
-            - matchExpressions:
-              - key: node-role.kubernetes.io/master
-                operator: Exists
+              - matchExpressions:
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: Exists
+              - matchExpressions:
+                  - key: node-role.kubernetes.io/master
+                    operator: Exists
       tolerations:
-      - key: node.cloudprovider.kubernetes.io/uninitialized
-        value: "true"
-        effect: NoSchedule
-      - key: node-role.kubernetes.io/master
-        effect: NoSchedule
-        operator: Exists
-      - key: node-role.kubernetes.io/control-plane
-        effect: NoSchedule
-        operator: Exists
-      - key: node.kubernetes.io/not-ready
-        effect: NoSchedule
-        operator: Exists
-      - key: CriticalAddonsOnly
-        effect: NoExecute
-        operator: Exists
+        - key: node.cloudprovider.kubernetes.io/uninitialized
+          value: "true"
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+          operator: Exists
+        - key: node-role.kubernetes.io/control-plane
+          effect: NoSchedule
+          operator: Exists
+        - key: node.kubernetes.io/not-ready
+          effect: NoSchedule
+          operator: Exists
       securityContext:
-        fsGroup: 1001
         runAsUser: 1001
       serviceAccountName: cloud-controller-manager
-      hostNetwork: true
-      dnsPolicy: ClusterFirst
       priorityClassName: system-node-critical
       containers:
         - name: vsphere-cloud-controller-manager
@@ -210,6 +201,7 @@ spec:
           resources:
             requests:
               cpu: 200m
+      hostNetwork: true
       volumes:
         - name: vsphere-config-volume
           configMap:
