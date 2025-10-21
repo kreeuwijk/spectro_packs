@@ -2,7 +2,10 @@
   "addonType":"system app",
   "annotations": {
     "docsURL": "",
-    "source": "spectrocloud"
+    "source": "spectrocloud",
+    "architecture": "amd64",
+    "airgap": "false",
+    "revision": "20251020"
   },
   "cloudTypes": [
     "aws",
