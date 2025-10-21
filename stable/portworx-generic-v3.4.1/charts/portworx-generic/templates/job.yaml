@@ -44,11 +44,11 @@ spec:
       serviceAccountName: px-activate-license
       initContainers:
         - name: init-px-activate-license
-          image: bitnami/kubectl:{{ .Capabilities.KubeVersion.Major }}.{{ .Capabilities.KubeVersion.Minor | trimSuffix "+" }}
+          image: bitnamilegacy/kubectl:latest
           command: ['sh', '-c', "until kubectl wait --for=condition=ready pod -l name=portworx -n {{ .Values.storageCluster.namespace }} --timeout=1m; do echo Waiting for portworx; sleep 120; done"]
       containers:
         - name: kubectl-pod
-          image: bitnami/kubectl:{{ .Capabilities.KubeVersion.Major }}.{{ .Capabilities.KubeVersion.Minor | trimSuffix "+" }}
+          image: bitnamilegacy/kubectl:latest
           command:
             - "bash"
             - "-c"

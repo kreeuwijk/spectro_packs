@@ -34,6 +34,7 @@ pack:
       - image: quay.io/jetstack/cert-manager-webhook:v1.17.4
       - image: quay.io/jetstack/cert-manager-cainjector:v1.17.4
       - image: quay.io/jetstack/cert-manager-acmesolver:v1.17.4
+      - image: bitnamilegacy/kubectl:latest
 
 charts:
   px-operator:
