@@ -10,6 +10,7 @@
     "all"
   ],
   "charts": [
+    "charts/gateway-api-crds-1.4.0.tgz",
     "charts/kgateway-crds-v2.1.1.tgz",
     "charts/kgateway-v2.1.1.tgz"
   ],

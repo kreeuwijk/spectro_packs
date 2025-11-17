@@ -1,8 +1,9 @@
 # spectrocloud.com/enabled-presets: CNI:cni-disabled,Gateway:gateway-disabled,Kiali Dashboard:kiali-disabled
 pack:
   releaseNameOverride:
-    kgateway: kgateway
+    gateway-api-crds: gateway-api-crds
     kgateway-crds: kgateway-crds
+    kgateway: kgateway
   namespace: "kgateway-system"
   namespaceLabels:
     "kgateway-system": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=latest"
