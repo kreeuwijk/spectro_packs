@@ -1,0 +1,30 @@
+{
+  "addonType": "load balancer",
+  "annotations": {
+    "docsURL": "",
+    "source": "spectrocloud",
+    "architecture": "amd64,arm64",
+    "airgap": "true"
+  },
+  "cloudTypes": [
+    "all"
+  ],
+  "charts": [
+    "charts/kgateway-crds-v2.1.1.tgz",
+    "charts/kgateway-v2.1.1.tgz"
+  ],
+  "layer": "addon",
+  "name": "kgateway",
+  "version": "2.1.1",
+  "constraints": {
+    "dependencies": [
+      {
+        "packName": "kubernetes",
+        "layer": "k8s",
+        "minVersion": "1.31",
+        "maxVersion": "",
+        "type": "optional"
+      }
+    ]
+  }
+}
