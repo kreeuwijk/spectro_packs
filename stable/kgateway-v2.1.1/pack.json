@@ -15,7 +15,7 @@
   ],
   "layer": "addon",
   "name": "kgateway",
-  "version": "2.1.1",
+  "version": "v2.1.1",
   "constraints": {
     "dependencies": [
       {
