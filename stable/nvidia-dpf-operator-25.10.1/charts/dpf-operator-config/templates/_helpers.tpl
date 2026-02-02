@@ -12,6 +12,6 @@ To override the namespace and configMap when using `auto`:
     {{- $kubeconfig := get $configmap.data "kubeconfig" }}
     {{- $k8sServer := get ($kubeconfig | fromYaml) "clusters" | mustFirst | dig "cluster" "server" "" }}
     {{- $uri := (split "https://" $k8sServer)._1 | trim }}
-    {{- (split ":" $uri)._0 | quote }}
+    {{- (split ":" $uri)._0 }}
   {{- end }}
 {{- end }}

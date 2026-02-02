@@ -47,7 +47,7 @@ spec:
   provisioningController: {{ omit .Values.provisioningController "installInterface" | toYaml | nindent 4 }}
     installInterface:
       installViaRedfish:
-        bfbRegistryAddress: "{{ include "k8sServiceHost" . }}:8080"
+        bfbRegistryAddress: '{{ include "k8sServiceHost" . }}:8080'
   {{- else }}
   provisioningController: {{ .Values.provisioningController | toYaml | nindent 4 }}
   {{- end }}  
@@ -64,3 +64,4 @@ spec:
 {{- if .Values.sriovDevicePlugin }}
   sriovDevicePlugin: {{ .Values.sriovDevicePlugin | toYaml | nindent 4 }}
 {{- end }}
+
