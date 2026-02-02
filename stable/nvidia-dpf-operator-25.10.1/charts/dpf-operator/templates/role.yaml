@@ -27,6 +27,20 @@ rules:
 - apiGroups:
   - ""
   resources:
+  - endpoints
+  - services
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
   - namespaces
   verbs:
   - create
@@ -41,19 +55,6 @@ rules:
   - list
   - patch
   - update
-- apiGroups:
-  - ""
-  resources:
-  - services
-  verbs:
-  - create
-  - delete
-  - deletecollection
-  - get
-  - list
-  - patch
-  - update
-  - watch
 - apiGroups:
   - admissionregistration.k8s.io
   resources:
@@ -124,12 +125,54 @@ rules:
   - delete
   - get
   - list
+  - watch
 - apiGroups:
   - cert-manager.io
   resources:
   - '*'
   verbs:
   - '*'
+- apiGroups:
+  - cert-manager.io
+  resources:
+  - certificaterequests
+  - certificates
+  - issuers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - certificates.k8s.io
+  resources:
+  - certificatesigningrequests
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - certificates.k8s.io
+  resources:
+  - certificatesigningrequests/approval
+  - certificatesigningrequests/status
+  verbs:
+  - update
+- apiGroups:
+  - certificates.k8s.io
+  resourceNames:
+  - kubernetes.io/kube-apiserver-client
+  resources:
+  - signers
+  verbs:
+  - approve
 - apiGroups:
   - discovery.k8s.io
   resources:
@@ -159,6 +202,11 @@ rules:
   - maintenance.nvidia.com
   resources:
   - nodemaintenances
+  verbs:
+  - '*'
+- apiGroups:
+  - maintenance.nvidia.com
+  resources:
   - nodemaintenances/status
   verbs:
   - '*'
@@ -208,6 +256,7 @@ rules:
   - dpudevices
   - dpudiscoveries
   - dpuflavors
+  - dpunodemaintenances
   - dpunodes
   - dpus
   - dpusets
@@ -228,6 +277,7 @@ rules:
   - dpudevices/finalizers
   - dpudiscoveries/finalizers
   - dpuflavors/finalizers
+  - dpunodemaintenances/finalizers
   - dpunodes/finalizers
   - dpus/finalizers
   - dpusets/finalizers
@@ -240,6 +290,7 @@ rules:
   - dpuclusters/status
   - dpudevices/status
   - dpudiscoveries/status
+  - dpunodemaintenances/status
   - dpunodes/status
   - dpus/status
   - dpusets/status
@@ -261,6 +312,17 @@ rules:
   - list
   - patch
   - update
+  - watch
+- apiGroups:
+  - storage.dpu.nvidia.com
+  resources:
+  - dpustoragepolicies
+  - dpustoragevendors
+  - dpuvolumeattachments
+  - dpuvolumes
+  verbs:
+  - get
+  - list
   - watch
 - apiGroups:
   - svc.dpu.nvidia.com
