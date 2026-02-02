@@ -6,7 +6,7 @@ pack:
     "dpf-operator-system": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=latest"
   content:
     images:
-      - image: nvcr.io/nvidia/doca/dpf-system:v25.7.0
+      - image: nvcr.io/nvidia/doca/dpf-system:v25.10.1
       - image: ghcr.io/ahrtr/etcd-defrag:v0.22.0
 
 charts:
@@ -35,7 +35,7 @@ charts:
             - ALL
       image:
         repository: "nvcr.io/nvidia/doca/dpf-system"
-        tag: "v25.7.0"
+        tag: "v25.10.1"
       replicas: 1
       serviceAccount:
         annotations: {}
