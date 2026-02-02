@@ -264,7 +264,7 @@ spec:
         - name: OVN_EGRESSQOS_ENABLE
           value: ""
         - name: OVN_MULTI_NETWORK_ENABLE
-          value: "false"
+          value: "{{ .Values.controlPlaneManifests.ovnMultiNetworkEnable | default "false" }}"
         - name: OVN_HYBRID_OVERLAY_NET_CIDR
           value: ""
         - name: OVN_DISABLE_SNAT_MULTIPLE_GWS

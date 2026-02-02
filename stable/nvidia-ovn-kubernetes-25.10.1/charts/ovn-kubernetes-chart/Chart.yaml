@@ -1,9 +1,9 @@
 annotations:
-  commit: ec2bf0e0f3d1139fd613c2f1b57cd4cb6bdeb029
-  created: "2025-08-29T09:56:01+00:00"
-  dpfVersion: v25.7.0
+  commit: 179b8e72fbc4f916dda03ab4d7e61e5141cf2248
+  created: "2026-01-07T17:45:12+00:00"
+  dpfVersion: v25.10.1
 apiVersion: v2
-appVersion: 1.0.0
+appVersion: v25.10.1
 dependencies:
 - condition: ovn-kubernetes-resource-injector.enabled
   name: ovn-kubernetes-resource-injector
@@ -18,4 +18,4 @@ sources:
 - https://github.com/ovn-org/ovn-kubernetes
 - https://github.com/ovn-org/ovn
 type: application
-version: v25.7.0
+version: v25.10.1

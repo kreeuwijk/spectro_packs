@@ -681,7 +681,7 @@ spec:
         - name: OVN_LFLOW_CACHE_LIMIT_KB
           value: ""
         - name: OVN_MULTI_NETWORK_ENABLE
-          value: "false"
+          value: "{{ .Values.dpuManifests.ovnMultiNetworkEnable | default "false" }}"
         - name: OVN_EMPTY_LB_EVENTS
           value: ""
         - name: OVN_ACL_LOGGING_RATE_LIMIT

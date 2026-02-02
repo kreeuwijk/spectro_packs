@@ -10,14 +10,14 @@ ovn-kubernetes-resource-injector:
       - /ovnkubernetesresourceinjector
       image:
         repository: ghcr.io/nvidia/ovn-kubernetes
-        tag: v25.7.0
+        tag: v25.10.1
 
 # -- Variables related to manifests that are deployed for nodes with DPU
 nodeWithDPUManifests:
   enabled: false
   image:
     repository: ghcr.io/nvidia/ovn-kubernetes
-    tag: v25.7.0
+    tag: v25.10.1
     pullPolicy: IfNotPresent
   nodeMgmtPortNetdev: ""
   dpuServiceAccountName: ovn-dpu
@@ -30,7 +30,7 @@ nodeWithoutDPUManifests:
   enabled: false
   image:
     repository: ghcr.io/nvidia/ovn-kubernetes
-    tag: v25.7.0
+    tag: v25.10.1
     pullPolicy: IfNotPresent
   cniBinDir: "/opt/cni/bin"
   cniConfDir: "/etc/cni/net.d"
@@ -40,7 +40,7 @@ dpuManifests:
   enabled: false
   image:
     repository: ghcr.io/nvidia/ovn-kubernetes
-    tag: v25.7.0
+    tag: v25.10.1
     pullPolicy: IfNotPresent
   kubernetesSecretName: null # user needs to populate based on DPUServiceCredentialRequest
   vtepCIDR: null # user needs to populate based on DPUServiceIPAM
@@ -51,6 +51,7 @@ dpuManifests:
   ipamPFIPIndex: 1
   externalDHCP: false
   gatewayDiscoveryNetwork: "169.254.99.100/32" # This is a "dummy" subnet used to get the default gateway address from DHCP server (via option 121)
+  ovnMultiNetworkEnable: false  # Set to true to enable OVN multi-network support
   cniBinDir: "/opt/cni/bin"
   cniConfDir: "/etc/cni/net.d"
 
@@ -59,8 +60,9 @@ controlPlaneManifests:
   enabled: false
   image:
     repository: ghcr.io/nvidia/ovn-kubernetes
-    tag: v25.7.0
+    tag: v25.10.1
     pullPolicy: IfNotPresent
+  ovnMultiNetworkEnable: false  # Set to true to enable OVN multi-network support
   cniBinDir: "/opt/cni/bin"
   cniConfDir: "/etc/cni/net.d"
 

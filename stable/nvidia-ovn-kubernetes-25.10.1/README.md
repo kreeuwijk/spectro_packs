@@ -21,16 +21,16 @@ This CNI should only be used in conjunction with Bluefield-3 DPUs for north-sout
 
 ## Upgrade
 
-To upgrade from the 25.4.0 version to this version, change the pack version in Palette to 25.7.0 and transfer your pack settings. Then also upgrade the DPF Framework to 25.7.0. It is recommend to use the DPF reference profile from Spectro Cloud, as these are already available for both respective versions and contain the whole stack.
+To upgrade from earier versions to this version, change the pack version in Palette to 25.10.1 and transfer your pack settings. Then also upgrade the DPF Framework to 25.10.1. It is recommend to use the DPF reference profile from Spectro Cloud, as these are already available for both respective versions and contain the whole stack.
 
 
 ## Usage
 
-The deploy this CNI, first configure the parameters mentioned above. Then deploy just the Control Plane of your cluster and make sure the `ovn-kubernetes-resource-injector.enabled` setting is set to `false`. Then deploy the DPF Framework to the cluster (Spectro Cloud provides a reference profile for this that aligns to the [HBN-OVN guidance from Nvidia](https://github.com/NVIDIA/doca-platform/blob/v25.7.0/docs/public/user-guides/host-trusted/use-cases/hbn-ovnk/README.md)).
+The deploy this CNI, first configure the parameters mentioned above. Then deploy just the Control Plane of your cluster and make sure the `ovn-kubernetes-resource-injector.enabled` setting is set to `false`. Then deploy the DPF Framework to the cluster (Spectro Cloud provides a reference profile for this that aligns to the [HBN-OVN guidance from Nvidia](https://github.com/NVIDIA/doca-platform/blob/v25.10.1/docs/public/user-guides/host-trusted/use-cases/hbn-ovnk/README.md)).
 
 Once the DPF Framework is deployed, change the `ovn-kubernetes-resource-injector.enabled` setting to `true` and add worker nodes containing Bluefield-3 DPUs in Host-Trusted mode. It will take between 20 and 40 minutes for the DPF Framework to flash the DPUs, reboot the nodes and configure them appropriately. After that, the nodes should become Healthy in Spectro Cloud Palette and ready for workloads.
 
 
 ## References
 
-- [Nvidia DOCA Platform Guidance 25.7.0](https://github.com/NVIDIA/doca-platform/blob/v25.7.0/docs/public/user-guides/host-trusted/use-cases/hbn-ovnk/README.md)
+- [Nvidia DOCA Platform Guidance 25.10.1](https://github.com/NVIDIA/doca-platform/blob/v25.7.0/docs/public/user-guides/host-trusted/use-cases/hbn-ovnk/README.md)
