@@ -29,8 +29,12 @@ spec:
   nvipam: {{ .Values.nvipam | toYaml | nindent 4 }}
 {{- end }}
 {{- if .Values.overrides }}
+  {{- if eq .Values.overrides.kubernetesAPIServerVIP "auto" }}
   overrides: {{ omit .Values.overrides "kubernetesAPIServerVIP" | toYaml | nindent 4 }}
     kubernetesAPIServerVIP: {{ include "k8sServiceHost" . }}
+  {{- else }}
+  overrides: {{ .Values.overrides | toYaml | nindent 4 }}
+  {{- end }}
 {{- end }}
 {{- if .Values.ovsCNI }}
   ovsCNI: {{ .Values.ovsCNI | toYaml | nindent 4 }}
@@ -39,7 +43,14 @@ spec:
   ovsHelper: {{ .Values.ovsHelper | toYaml | nindent 4 }}
 {{- end }}
 {{- if .Values.provisioningController }}
+  {{- if eq (dig "installInterface" "installViaRedfish" "bfbRegistryAddress" "" .Values.provisioningController) "auto" }}
+  provisioningController: {{ omit .Values.provisioningController "installInterface" | toYaml | nindent 4 }}
+    installInterface:
+      installViaRedfish:
+        bfbRegistryAddress: "{{ include "k8sServiceHost" . }}:8080"
+  {{- else }}
   provisioningController: {{ .Values.provisioningController | toYaml | nindent 4 }}
+  {{- end }}  
 {{- end }}
 {{- if .Values.serviceSetController }}
   serviceSetController: {{ .Values.serviceSetController | toYaml | nindent 4 }}

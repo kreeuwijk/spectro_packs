@@ -6,6 +6,11 @@ overrides:
 provisioningController:
   bfbPVCName: "bfb-pvc"
   dmsTimeout: 900
+  installInterface:
+    installViaRedfish:
+      test: abc
+      # Use "auto" for CAPI and "{{ .spectro.system.cluster.kubevip }}:8080" for agent/appliance mode.
+      bfbRegistryAddress: "auto"
 kamajiClusterManager:
   disable: false
 networking:

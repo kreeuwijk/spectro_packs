@@ -20,6 +20,11 @@ charts:
     provisioningController:
       bfbPVCName: "bfb-pvc"
       dmsTimeout: 900
+      # Zero Trust mode only, uncomment lines below for Zero Trust use
+      #installInterface:
+      #  installViaRedfish:
+      #    # Use "auto" for CAPI and "{{ .spectro.system.cluster.kubevip }}:8080" for agent/appliance mode.
+      #    bfbRegistryAddress: "auto"
     kamajiClusterManager:
       disable: false
     networking:
