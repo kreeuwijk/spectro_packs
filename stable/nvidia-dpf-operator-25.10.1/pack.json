@@ -10,7 +10,7 @@
     "displayName": "Nvidia DPF Operator",
     "charts": [
       "charts/dpf-operator-v25.10.1.tgz",
-      "charts/dpf-operator-config-1.0.0.tgz"
+      "charts/dpf-operator-config-1.1.0.tgz"
     ],
     "layer":"addon",
     "name": "dpf-operator",
