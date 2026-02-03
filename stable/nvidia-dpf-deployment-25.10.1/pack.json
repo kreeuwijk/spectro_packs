@@ -7,7 +7,7 @@
     "cloudTypes": [
       "all"
     ],
-    "displayName": "Nvidia DPF Deployment (Trusted-Mode)",
+    "displayName": "Nvidia DPF Deployment",
     "charts": [
       "charts/dpf-deployment-25.10.1.tgz"
     ],

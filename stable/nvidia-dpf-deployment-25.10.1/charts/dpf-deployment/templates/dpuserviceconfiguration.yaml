@@ -21,4 +21,7 @@ spec:
   serviceConfiguration: {{ $conf.serviceConfiguration | toYaml | nindent 4 }}
     {{- end }}
   {{- end }}
+  {{- if $conf.upgradePolicy }}
+  upgradePolicy: {{ $conf.upgradePolicy | toYaml | nindent 4 }}
+  {{- end }}
 {{- end }}

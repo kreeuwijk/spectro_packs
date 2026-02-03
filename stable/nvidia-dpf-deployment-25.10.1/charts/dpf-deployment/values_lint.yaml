@@ -96,6 +96,41 @@ dpuFlavors:
       raw: ""
       permissions: "0644"
 
+dpuSets:
+  - name: passthrough
+    dpuNodeSelector:
+      matchLabels:
+        feature.node.kubernetes.io/dpu-enabled: "true"
+    dpuTemplate:
+      spec:
+        dpuFlavor: passthrough-v25.10.1
+        bfb:
+          name: bf-bundle-v25.10.1
+        nodeEffect:
+          noEffect: true
+
+dpuServiceChains:
+  - name: passthrough
+    template:
+      spec:
+        template:
+          spec:
+            switches:
+              - ports:
+                - serviceInterface:
+                    matchLabels:
+                      interface: p0
+                - serviceInterface:
+                    matchLabels:
+                      interface: pf0hpf
+              - ports:
+                - serviceInterface:
+                    matchLabels:
+                      interface: p1
+                - serviceInterface:
+                    matchLabels:
+                      interface: pf1hpf
+
 dpuServiceConfigurations:
   - name: blueman
   - name: dts

@@ -3,5 +3,4 @@ kind: BFB
 metadata:
   name: bf-bundle-v25.10.1
   namespace: dpf-operator-system
-spec:
-  url: {{ .Values.bfb.url | quote }}
+spec: {{ .Values.bfb | toYaml | nindent 2 }}
