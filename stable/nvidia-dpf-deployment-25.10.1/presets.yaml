@@ -508,26 +508,22 @@ presets:
                     interfaceName: p1
             - name: pf0hpf
               template:
+                metadata:
+                  labels:
+                    interface: "pf0hpf"
                 spec:
-                  template:
-                    metadata:
-                      labels:
-                        interface: "pf0hpf"
-                    spec:
-                      interfaceType: pf
-                      pf:
-                        pfID: 0
+                  interfaceType: pf
+                  pf:
+                    pfID: 0
             - name: pf1hpf
               template:
+                metadata:
+                  labels:
+                    interface: "pf1hpf"
                 spec:
-                  template:
-                    metadata:
-                      labels:
-                        interface: "pf1hpf"
-                    spec:
-                      interfaceType: pf
-                      pf:
-                        pfID: 1
+                  interfaceType: pf
+                  pf:
+                    pfID: 1
 
           dpuServiceCredentialRequests: []
 
