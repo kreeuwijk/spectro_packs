@@ -1,5 +1,7 @@
 #imagePullSecrets:
 #  - dockerio-secret
+dpuDetector:
+  disable: true
 overrides:
   kubernetesAPIServerVIP: "auto"
   kubernetesAPIServerPort: 6443
@@ -10,6 +12,7 @@ provisioningController:
     installViaRedfish:
       # Use "auto" for CAPI and "{{ .spectro.system.cluster.kubevip }}:8080" for agent/appliance mode.
       bfbRegistryAddress: "auto"
+      skipDPUNodeDiscovery: false
 kamajiClusterManager:
   disable: false
 networking:

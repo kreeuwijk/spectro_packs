@@ -44,10 +44,8 @@ spec:
 {{- end }}
 {{- if .Values.provisioningController }}
   {{- if eq (dig "installInterface" "installViaRedfish" "bfbRegistryAddress" "" .Values.provisioningController) "auto" }}
-  provisioningController: {{ omit .Values.provisioningController "installInterface" | toYaml | nindent 4 }}
-    installInterface:
-      installViaRedfish:
-        bfbRegistryAddress: '{{ include "k8sServiceHost" . }}:8080'
+  {{- $autoLookup := dict "installInterface" (dict "installViaRedfish" ( dict "bfbRegistryAddress" (printf "%s:8080" (include "k8sServiceHost" .)))) }}
+  provisioningController: {{ mergeOverwrite .Values.provisioningController $autoLookup | toYaml | nindent 4 }}
   {{- else }}
   provisioningController: {{ .Values.provisioningController | toYaml | nindent 4 }}
   {{- end }}  
