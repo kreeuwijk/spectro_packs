@@ -1,10 +1,10 @@
 # NVIDIA DPF Prereqs for DPF Operator
 
-This pack installs the prerequirements for the Nvidia DPF Operator v25.7.0. In this version of the DPF Operator, the prerequired software components are no longer included, hence a separate pack is needed.
+This pack installs the prerequirements for the Nvidia DPF Operator v25.10.1. In this version of the DPF Operator, the prerequired software components are no longer included, hence a separate pack is needed.
 
 ## Prerequisites
 
-This pack should be used in conjunction with the Nvidia DPF Operator v25.7.0 pack (or Helm chart). If you're deploying DPF clusters in Host-Trusted mode, you also need to combine this with the Nvidia OVN Kubernetes v25.7.0 CNI.
+This pack should be used in conjunction with the Nvidia DPF Operator v25.10.1 pack (or Helm chart). If you're deploying DPF clusters in Host-Trusted mode, you also need to combine this with the Nvidia OVN Kubernetes v25.10.1 CNI.
 
 ## Parameters
 
@@ -16,7 +16,7 @@ This pack should be used in conjunction with the Nvidia DPF Operator v25.7.0 pac
 
 ## Upgrade
 
-This is the first version of the Nvidia DPF Prereqs pack. There are no previous versions to upgrade from.
+To upgrade from a previous version, change the pack version and transfer your custom settings.
 
 
 ## Usage
@@ -25,7 +25,8 @@ The deploy this pack for Host-Trusted mode clusters, first configure the paramet
 
 Once the DPF Framework is deployed, change the `ovn-kubernetes-resource-injector.enabled` setting to `true` and add worker nodes containing Bluefield-3 DPUs in Host-Trusted mode. It will take between 20 and 40 minutes for the DPF Framework to flash the DPUs, reboot the nodes and configure them appropriately. After that, the nodes should become Healthy in Spectro Cloud Palette and ready for workloads.
 
+The deploy this pack in Zero-Trusted mode, deploy this prereqs pack, then the operator pack, then use the Zero Trust - Passthrough preset in the DPF Deployment 25.10.1 pack.
 
 ## References
 
-- [Nvidia DOCA Platform Guidance 25.7.0](https://github.com/NVIDIA/doca-platform/blob/v25.7.0/docs/public/user-guides/host-trusted/use-cases/hbn-ovnk/README.md)
+- [Nvidia DOCA Platform Guidance 25.10.1](https://github.com/NVIDIA/doca-platform/blob/v25.10.1/docs/public/user-guides/host-trusted/use-cases/hbn-ovnk/README.md)

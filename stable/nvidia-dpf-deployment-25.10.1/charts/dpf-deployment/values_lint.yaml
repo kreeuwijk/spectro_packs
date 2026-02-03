@@ -113,23 +113,21 @@ dpuServiceChains:
   - name: passthrough
     template:
       spec:
-        template:
-          spec:
-            switches:
-              - ports:
-                - serviceInterface:
-                    matchLabels:
-                      interface: p0
-                - serviceInterface:
-                    matchLabels:
-                      interface: pf0hpf
-              - ports:
-                - serviceInterface:
-                    matchLabels:
-                      interface: p1
-                - serviceInterface:
-                    matchLabels:
-                      interface: pf1hpf
+        switches:
+          - ports:
+            - serviceInterface:
+                matchLabels:
+                  interface: p0
+            - serviceInterface:
+                matchLabels:
+                  interface: pf0hpf
+          - ports:
+            - serviceInterface:
+                matchLabels:
+                  interface: p1
+            - serviceInterface:
+                matchLabels:
+                  interface: pf1hpf
 
 dpuServiceConfigurations:
   - name: blueman

@@ -469,22 +469,23 @@ presets:
 
           dpuServiceChains:
             - name: passthrough
-              spec:
-                switches:
-                  - ports:
-                    - serviceInterface:
-                        matchLabels:
-                          interface: p0
-                    - serviceInterface:
-                        matchLabels:
-                          interface: pf0hpf
-                  - ports:
-                    - serviceInterface:
-                        matchLabels:
-                          interface: p1
-                    - serviceInterface:
-                        matchLabels:
-                          interface: pf1hpf
+              template:
+                spec:
+                  switches:
+                    - ports:
+                      - serviceInterface:
+                          matchLabels:
+                            interface: p0
+                      - serviceInterface:
+                          matchLabels:
+                            interface: pf0hpf
+                    - ports:
+                      - serviceInterface:
+                          matchLabels:
+                            interface: p1
+                      - serviceInterface:
+                          matchLabels:
+                            interface: pf1hpf
 
           dpuServiceInterfaces:
             - name: p0
