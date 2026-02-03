@@ -6,6 +6,7 @@ pack:
     argo-cd: argo-cd
     grafana: grafana
     kamaji: kamaji
+    kamaji-crds: kamaji-crds
     kube-state-metrics: kube-state-metrics
     maintenance-operator-chart: maintenance-operator
     node-feature-discovery: node-feature-discovery
