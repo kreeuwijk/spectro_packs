@@ -6,9 +6,7 @@ metadata:
   name: {{ $conf.name | quote }}
   namespace: {{ $.Release.Namespace }}
 spec:
-  {{- if $conf.deploymentServiceName }}
   deploymentServiceName: {{ $conf.name | quote }}
-  {{- end }}
   {{- if $conf.helmChart }}
   helmChart: {{ $conf.helmChart | toYaml | nindent 4 }}
   {{- end }}

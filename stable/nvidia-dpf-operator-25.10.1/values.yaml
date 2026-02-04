@@ -1,6 +1,7 @@
 pack:
   releaseNameOverride:
       dpf-operator: dpf-operator
+      dpf-operator-config: dpf-operator-config
   namespace: dpf-operator-system
   namespaceLabels:
     "dpf-operator-system": "pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/enforce-version=latest"
